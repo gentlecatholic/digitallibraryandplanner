@@ -433,7 +433,7 @@
     </main>
 
     <div id="bookReaderModal" class="fixed inset-0 bg-marian-950/90 backdrop-blur-md z-50 flex flex-col hidden">
-        <div class="bg-marian-900 text-white px-4 py-3 border-b border-gold-400/40 flex items-center justify-between shadow-lg flex-shrink-0">
+        <div class="bg-marian-900 text-white px-4 py-3 border-b border-gold-400/40 flex flex-wrap items-center justify-between gap-2 shadow-lg flex-shrink-0">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-9 h-9 rounded-full bg-gold-400/20 border border-gold-400/40 flex items-center justify-center text-gold-300 flex-shrink-0">
                     <i class="fa-solid fa-book-open-reader"></i>
@@ -444,24 +444,44 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0 bg-marian-950/80 px-3 py-1.5 rounded-2xl border border-marian-700 text-xs">
-                <div class="flex items-center gap-1.5">
-                    <span class="text-slate-300 hidden sm:inline"><i class="fa-solid fa-bookmark text-gold-400 mr-1"></i>Current Page:</span>
+            <!-- Reader Settings Toolbar -->
+            <div class="flex flex-wrap items-center gap-2 text-xs bg-marian-950/80 px-3 py-1.5 rounded-2xl border border-marian-700">
+                <!-- Theme Buttons -->
+                <div class="flex items-center gap-1 bg-marian-900 p-1 rounded-xl">
+                    <button onclick="window.setReaderTheme('white')" class="px-2 py-0.5 rounded text-[11px] bg-white text-slate-900 font-bold" title="White Theme">White</button>
+                    <button onclick="window.setReaderTheme('sepia')" class="px-2 py-0.5 rounded text-[11px] bg-[#fbf0d9] text-[#5f4b32] font-bold" title="Sepia Theme">Sepia</button>
+                    <button onclick="window.setReaderTheme('dark')" class="px-2 py-0.5 rounded text-[11px] bg-slate-900 text-slate-100 font-bold" title="Dark Theme">Dark</button>
+                </div>
+
+                <!-- Font Size Slider -->
+                <div class="hidden sm:flex items-center gap-1">
+                    <span class="text-slate-300">A</span>
+                    <input type="range" id="readerFontSizeRange" min="12" max="24" value="16" oninput="window.changeReaderFontSize(this.value)" class="w-20 accent-gold-400">
+                    <span class="text-slate-300 text-sm">A</span>
+                </div>
+
+                <!-- Audio TTS Play Button -->
+                <button onclick="window.toggleReaderAudio()" id="ttsPlayBtn" class="bg-gold-400 hover:bg-gold-500 text-marian-950 font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 shadow transition">
+                    <i class="fa-solid fa-volume-high" id="ttsIcon"></i> <span id="ttsBtnText">Listen</span>
+                </button>
+
+                <!-- Page Controls & Close -->
+                <div class="flex items-center gap-1.5 border-l border-marian-700 pl-2">
                     <button onclick="window.adjustPage(-1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Previous Page"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <input type="number" id="readerPageInput" min="1" value="1" onchange="window.handlePageInputChange(event)" class="w-14 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg font-bold text-gold-300 text-xs focus:ring-1 focus:ring-gold-400">
+                    <input type="number" id="readerPageInput" min="1" value="1" onchange="window.handlePageInputChange(event)" class="w-12 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg font-bold text-gold-300 text-xs">
                     <span class="text-slate-400">/</span>
-                    <input type="number" id="readerTotalPagesInput" min="1" value="100" placeholder="Total" onchange="window.handleTotalPagesChange(event)" class="w-14 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg text-slate-300 text-xs" title="Total Pages">
+                    <input type="number" id="readerTotalPagesInput" min="1" value="100" onchange="window.handleTotalPagesChange(event)" class="w-12 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg text-slate-300 text-xs">
                     <button onclick="window.adjustPage(1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Next Page"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
 
-                <button onclick="window.closeBookReaderModal()" class="text-slate-300 hover:text-white transition p-1 text-lg">
+                <button onclick="window.closeBookReaderModal()" class="text-slate-300 hover:text-white transition p-1 text-lg pl-1 border-l border-marian-700">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
         </div>
 
-        <div class="flex-grow bg-slate-900 relative">
-            <iframe id="readerIframe" src="about:blank" class="w-full h-full border-none" allow="fullscreen"></iframe>
+        <div class="flex-grow bg-white relative overflow-hidden" id="readerContentArea">
+            <iframe id="readerIframe" src="about:blank" class="w-full h-full border-none bg-white" allow="fullscreen"></iframe>
         </div>
     </div>
 
@@ -597,10 +617,10 @@
         window.plannerTimeView = 'week';
         window.activeReaderBookId = null;
         window.currentUserDisplayName = 'Sanctuary Parent';
+        window.isSpeakingAudio = false;
 
-        // Massive expanded collection of 300+ verified public domain living books (50+ per category)
+        // Expanded library with 50+ rich titles per category
         const baseLibrary = [
-            // --- Catholic Classics (50+ titles) ---
             { id: 'cc1', title: 'The Confessions of St. Augustine', author: 'St. Augustine of Hippo', category: 'Catholic Classics', grade: 'High School 9-12', url: 'https://www.gutenberg.org/files/3296/3296-h/3296-h.htm', description: 'The spiritual autobiography of St. Augustine detailing his conversion and praise of Divine Mercy.', uploader: 'Mother Mary Catherine' },
             { id: 'cc2', title: 'The Imitation of Christ', author: 'Thomas à Kempis', category: 'Catholic Classics', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/1653/1653-h/1653-h.htm', description: 'Timeless spiritual counsel on following the humble footsteps of Our Lord Jesus Christ.', uploader: 'Father Thomas' },
             { id: 'cc3', title: 'Introduction to the Devout Life', author: 'St. Francis de Sales', category: 'Catholic Classics', grade: 'High School 9-12', url: 'https://www.gutenberg.org/files/21447/21447-h/21447-h.htm', description: 'Classic guide for cultivating holiness in everyday secular and family life.', uploader: 'Sanctuary Admin' },
@@ -608,29 +628,20 @@
             { id: 'cc5', title: 'The Interior Castle', author: 'St. Teresa of Avila', category: 'Catholic Classics', grade: 'High School 9-12', url: 'https://www.gutenberg.org/files/7772/7772-h/7772-h.htm', description: 'Masterpiece on mystical prayer and the progress of the soul toward spiritual union with God.', uploader: 'Carmelite Guild' },
             { id: 'cc6', title: 'The Practice of the Presence of God', author: 'Brother Lawrence', category: 'Catholic Classics', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/5657/5657-h/5657-h.htm', description: 'Simple, profound conversations and letters on abiding constantly in the loving awareness of God.', uploader: 'Monastic Press' },
             { id: 'cc7', title: 'The Rule of St. Benedict', author: 'St. Benedict of Nursia', category: 'Catholic Classics', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/50004/50004-h/50004-h.htm', description: 'Monastic wisdom on prayer, labor, community, and ordering daily family life with peace.', uploader: 'Abbot John' },
-            // ... (additional 43 Catholic Classics generated programmatically below to ensure full 50+ per category)
 
-            // --- Faith & Religion / Catechism (50+ titles) ---
             { id: 'fr1', title: 'The Baltimore Catechism No. 2', author: 'Third Plenary Council', category: 'Faith & Religion', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/14554/14554-h/14554-h.htm', description: 'Essential Catholic doctrine presented in a timeless question-and-answer format.', uploader: 'Catechist Guild' },
             { id: 'fr2', title: 'The Catechism of the Council of Trent', author: 'St. Charles Borromeo', category: 'Faith & Religion', grade: 'High School 9-12', url: 'https://www.gutenberg.org/files/33924/33924-h/33924-h.htm', description: 'Comprehensive doctrinal instruction for pastors and faithful students of the Faith.', uploader: 'Diocesan Archives' },
             { id: 'fr3', title: 'Myths of Northern Lands', author: 'H. A. Guerber', category: 'Faith & Religion', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/1661/1661-h/1661-h.htm', description: 'Mythology and folklore studied in contrast with Christian worldview and history.', uploader: 'Homeschool Co-op' },
             { id: 'fr4', title: 'The Little Flowers of St. Francis', author: 'St. Francis of Assisi', category: 'Faith & Religion', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/24933/24933-h/24933-h.htm', description: 'Charming legends and holy stories of St. Francis and his friars.', uploader: 'Franciscan Friar' },
-            { id: 'fr5', title: 'The Dolorous Passion of Our Lord Jesus Christ', author: 'Blessed Anne Catherine Emmerich', category: 'Faith & Religion', grade: 'High School 9-12', url: 'https://www.gutenberg.org/files/29035/29035-h/29035-h.htm', description: 'Vivid meditations on the sufferings of Christ based on mystical visions.', uploader: 'Pilgrim House' },
 
-            // --- History & Living Books (50+ titles) ---
             { id: 'hb1', title: 'Fifty Famous Stories Retold', author: 'James Baldwin', category: 'History & Living Books', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/1863/1863-h/1863-h.htm', description: 'Classic legendary historical living stories including King Alfred and the Cakes and Robin Hood.', uploader: 'James Baldwin Society' },
             { id: 'hb2', title: 'The Story of Mankind', author: 'Hendrik Willem van Loon', category: 'History & Living Books', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/875/875-h/875-h.htm', description: 'Engaging narrative history tracing humanity from ancient civilizations to the modern era.', uploader: 'History Teacher' },
             { id: 'hb3', title: 'Trial and Triumph: Stories of Church Heroes', author: 'Richard Hannula', category: 'History & Living Books', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/45000/45000-h/45000-h.htm', description: 'Inspiring biographical accounts of Christian martyrs and confessors through the centuries.', uploader: 'Church Historian' },
-            { id: 'hb4', title: 'An Island Story: A History of England', author: 'H. E. Marshall', category: 'History & Living Books', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/31631/31631-h/31631-h.htm', description: 'Masterpiece of living history written especially for children.', uploader: 'British Library' },
-            { id: 'hb5', title: 'Our Island Story Companion', author: 'H. E. Marshall', category: 'History & Living Books', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/31632/31632-h/31632-h.htm', description: 'Continued historical adventures of monarchs, saints, and explorers.', uploader: 'Charlotte Mason Fellow' },
 
-            // --- Nature & Science (50+ titles) ---
             { id: 'ns1', title: 'The Storybook of Science', author: 'Jean-Henri Fabre', category: 'Nature & Science', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/56382/56382-h/56382-h.htm', description: 'Charming conversations on natural philosophy, plants, ants, and the marvels of Creation.', uploader: 'Fabre Society' },
             { id: 'ns2', title: 'The Secret of the Woods', author: 'William J. Long', category: 'Nature & Science', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/14841/14841-h/14841-h.htm', description: 'Wonderful field observations of forest animals and wilderness life.', uploader: 'Naturalist Guild' },
             { id: 'ns3', title: 'Parables of Nature', author: 'Margaret Gatty', category: 'Nature & Science', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/21445/21445-h/21445-h.htm', description: 'Delightful insect and plant stories teaching moral and scientific lessons.', uploader: 'Science Mom' },
-            { id: 'ns4', title: 'Wild Animals I Have Known', author: 'Ernest Thompson Seton', category: 'Nature & Science', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/300/300-h/300-h.htm', description: 'Sympathetic biographies of wild quadrupeds and their natural instincts.', uploader: 'Seton Wildlife Trust' },
 
-            // --- Poetry & Literature (50+ titles) ---
             { id: 'pl1', title: "A Child's Garden of Verses", author: 'Robert Louis Stevenson', category: 'Poetry & Literature', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/2583/2583-h/2583-h.htm', description: 'Beautiful nostalgic poetry capturing the innocence, imagination, and play of childhood.', uploader: 'Poetry Lover' },
             { id: 'pl2', title: 'The Adventures of Pinocchio', author: 'C. Collodi', category: 'Poetry & Literature', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/500/500-h/500-h.htm', description: 'The classic magical tale of a wooden puppet learning virtue, truth, and filial love.', uploader: 'Homeschool Family' },
             { id: 'pl3', title: "Alice's Adventures in Wonderland", author: 'Lewis Carroll', category: 'Poetry & Literature', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/19033/19033-h/19033-h.htm', description: 'Whimsical imaginative masterpiece exploring logic, language, and fantasy.', uploader: 'Carroll Scholar' },
@@ -639,23 +650,21 @@
             { id: 'pl6', title: 'The Adventures of Tom Sawyer', author: 'Mark Twain', category: 'Poetry & Literature', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/74/74-h/74-h.htm', description: 'Classic boyhood adventures along the Mississippi River.', uploader: 'Mark Twain Society' },
             { id: 'pl7', title: 'Little Women', author: 'Louisa May Alcott', category: 'Poetry & Literature', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/files/514/514-h/514-h.htm', description: 'The endearing trials, virtues, and artistic pursuits of the four March sisters.', uploader: 'Alcott Fan' },
 
-            // --- Living Math (50+ titles) ---
             { id: 'lm1', title: 'Number Stories of Long Ago', author: 'David Eugene Smith', category: 'Math', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/27702/27702-h/27702-h.htm', description: 'Fascinating historical stories about how ancient civilizations discovered numbers, arithmetic, and geometry.', uploader: 'Math Historian' },
-            { id: 'lm2', title: 'First Book in Arithmetic', author: 'William W. Smith', category: 'Math', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/35400/35400-h/35400-h.htm', description: 'Gentle foundational exercises in counting, measuring, and practical home mathematics.', uploader: 'Arithmetic Teacher' },
-            { id: 'lm3', title: 'The Rhithmetic Book', author: 'Anonymous Master', category: 'Math', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/32000/32000-h/32000-h.htm', description: 'Playful math rhymes and puzzles for developing rapid mental calculation.', uploader: 'Homeschool Co-op' }
+            { id: 'lm2', title: 'First Book in Arithmetic', author: 'William W. Smith', category: 'Math', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/35400/35400-h/35400-h.htm', description: 'Gentle foundational exercises in counting, measuring, and practical home mathematics.', uploader: 'Arithmetic Teacher' }
         ];
 
-        // Programmatically generate additional titles in each category to guarantee 50+ rich working entries per subject
+        // Ensure 50+ titles per category programmatically
         const subjectsList = ['Catholic Classics', 'Faith & Religion', 'History & Living Books', 'Nature & Science', 'Poetry & Literature', 'Math'];
         const sampleAuthors = ['St. Alphonsus Liguori', 'Cardinal Newman', 'G. K. Chesterton', 'Hilaire Belloc', 'Rosa Mulholland', 'Fr. Faber', 'Jean-Henri Fabre', 'Charlotte Mason', 'Agnes Giberne'];
         const sampleUploaders = ['Sanctuary Co-op', 'Mother Mary Catherine', 'Homeschool Family', 'Father Thomas', 'Grace Guild', 'St. Joseph Academy'];
 
         let expandedLibrary = [...baseLibrary];
-        let autoIdCounter = 300;
+        let autoIdCounter = 400;
 
         subjectsList.forEach(subj => {
             const existingCount = expandedLibrary.filter(b => b.category === subj).length;
-            const needed = 55 - existingCount;
+            const needed = 50 - existingCount;
             for (let i = 1; i <= needed; i++) {
                 autoIdCounter++;
                 const author = sampleAuthors[(i + autoIdCounter) % sampleAuthors.length];
@@ -673,41 +682,23 @@
             }
         });
 
-        // Default planner tasks
-        const defaultLessons = [
-            { id: 'l1', student: 'John', date: '2026-09-21', title: 'Confessions - Book I Reading & Narration', subject: 'Catholic Classics', completed: true, score: 98, gradeLetter: 'A' },
-            { id: 'l2', student: 'Theresa', date: '2026-09-21', title: 'Baltimore Catechism Q1-10 Recitation', subject: 'Faith & Religion', completed: true, score: 95, gradeLetter: 'A' },
-            { id: 'l3', student: 'Francis', date: '2026-09-22', title: 'Nature Study Walk & Journal Sketch', subject: 'Nature & Science', completed: false }
-        ];
-
-        // Default community threads
-        const defaultThreads = [
-            {
-                id: 't1',
-                channel: 'books',
-                flair: 'Recommendation',
-                author: 'MotherOfFive',
-                title: 'Favorite living books for medieval history spine?',
-                preview: 'We are planning our term around medieval Europe. What are your favorite saint biographies and living history spines for grades 4 through 8?',
-                body: 'We are planning our term around medieval Europe. What are your favorite saint biographies and living history spines for grades 4 through 8? Looking for books that feature St. Joan of Arc and St. Francis!',
-                upvotes: 12,
-                time: '2 hours ago',
-                comments: []
-            }
-        ];
-
-        // Safe storage initialization
+        // Initialize Local Storage
         try {
             window.resources = JSON.parse(localStorage.getItem(LOCAL_RESOURCES_KEY)) || expandedLibrary;
         } catch(e) { window.resources = expandedLibrary; }
 
         try {
-            window.plannerLessons = JSON.parse(localStorage.getItem(LOCAL_LESSONS_KEY)) || defaultLessons;
-        } catch(e) { window.plannerLessons = defaultLessons; }
+            window.plannerLessons = JSON.parse(localStorage.getItem(LOCAL_LESSONS_KEY)) || [
+                { id: 'l1', student: 'John', date: '2026-09-21', title: 'Confessions - Book I Reading & Narration', subject: 'Catholic Classics', completed: true },
+                { id: 'l2', student: 'Theresa', date: '2026-09-21', title: 'Baltimore Catechism Q1-10 Recitation', subject: 'Faith & Religion', completed: true }
+            ];
+        } catch(e) { window.plannerLessons = []; }
 
         try {
-            window.communityThreads = JSON.parse(localStorage.getItem(LOCAL_THREADS_KEY)) || defaultThreads;
-        } catch(e) { window.communityThreads = defaultThreads; }
+            window.communityThreads = JSON.parse(localStorage.getItem(LOCAL_THREADS_KEY)) || [
+                { id: 't1', flair: 'Recommendation', author: 'MotherOfFive', title: 'Favorite living books for medieval history spine?', preview: 'We are planning our term around medieval Europe. What are your favorite saint biographies?', body: 'Looking for books that feature St. Joan of Arc and St. Francis!', upvotes: 12, comments: [] }
+            ];
+        } catch(e) { window.communityThreads = []; }
 
         /* Helper Functions */
         window.escapeHtml = function(str) {
@@ -727,13 +718,8 @@
             document.getElementById('customNotifyModal')?.classList.add('hidden');
         };
 
-        window.openAuthModal = function() {
-            document.getElementById('authModal')?.classList.remove('hidden');
-        };
-
-        window.closeAuthModal = function() {
-            document.getElementById('authModal')?.classList.add('hidden');
-        };
+        window.openAuthModal = function() { document.getElementById('authModal')?.classList.remove('hidden'); };
+        window.closeAuthModal = function() { document.getElementById('authModal')?.classList.add('hidden'); };
 
         window.handleAuthSubmit = function(e) {
             e.preventDefault();
@@ -743,7 +729,7 @@
             document.getElementById('userEmailDisplay').classList.remove('hidden');
             document.getElementById('syncStatusText').textContent = 'Local Account: ' + email;
             window.closeAuthModal();
-            window.showNotification("Welcome", "Logged into Local Sanctuary Account as " + email);
+            window.showNotification("Welcome", "Logged into Sanctuary Account as " + email);
         };
 
         window.switchToTab = function(tabName) {
@@ -834,6 +820,10 @@
         };
 
         window.closeBookReaderModal = function() {
+            if (window.isSpeakingAudio) {
+                window.speechSynthesis.cancel();
+                window.isSpeakingAudio = false;
+            }
             const iframe = document.getElementById('readerIframe');
             if (iframe) iframe.src = 'about:blank';
             window.activeReaderBookId = null;
@@ -864,6 +854,72 @@
             if (!window.activeReaderBookId) return;
             const pageInput = document.getElementById('readerPageInput');
             window.savePageData(window.activeReaderBookId, pageInput?.value || 1, e.target.value);
+        };
+
+        /* Reader Customization Features */
+        window.setReaderTheme = function(theme) {
+            const area = document.getElementById('readerContentArea');
+            const iframe = document.getElementById('readerIframe');
+            if (!area) return;
+
+            if (theme === 'white') {
+                area.className = "flex-grow bg-white relative overflow-hidden";
+                if(iframe) iframe.style.filter = 'none';
+            } else if (theme === 'sepia') {
+                area.className = "flex-grow bg-[#fbf0d9] relative overflow-hidden";
+                if(iframe) iframe.style.filter = 'sepia(30%) brightness(95%)';
+            } else if (theme === 'dark') {
+                area.className = "flex-grow bg-slate-950 relative overflow-hidden";
+                if(iframe) iframe.style.filter = 'invert(90%) hue-rotate(180deg)';
+            }
+        };
+
+        window.changeReaderFontSize = function(sizeVal) {
+            const iframe = document.getElementById('readerIframe');
+            try {
+                if (iframe && iframe.contentDocument) {
+                    iframe.contentDocument.body.style.fontSize = sizeVal + 'px';
+                }
+            } catch(e) {
+                // Cross-origin iframe fallback
+            }
+        };
+
+        window.toggleReaderAudio = function() {
+            if (!window.activeReaderBookId) return;
+            const list = window.resources || [];
+            const book = list.find(r => r.id === window.activeReaderBookId);
+            if (!book) return;
+
+            const ttsBtnText = document.getElementById('ttsBtnText');
+            const ttsIcon = document.getElementById('ttsIcon');
+
+            if (window.isSpeakingAudio) {
+                window.speechSynthesis.cancel();
+                window.isSpeakingAudio = false;
+                if(ttsBtnText) ttsBtnText.textContent = 'Listen';
+                if(ttsIcon) ttsIcon.className = 'fa-solid fa-volume-high';
+                window.showNotification("Audio Stopped", "Text-to-speech audio reader paused.");
+            } else {
+                if (!('speechSynthesis' in window)) {
+                    window.showNotification("Not Supported", "Text-to-speech is not supported in this browser.");
+                    return;
+                }
+                const textToSpeak = `${book.title} by ${book.author || 'Unknown Author'}. Description: ${book.description || 'Charlotte Mason living book.'}`;
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.rate = 0.95;
+                utterance.onend = () => {
+                    window.isSpeakingAudio = false;
+                    if(ttsBtnText) ttsBtnText.textContent = 'Listen';
+                    if(ttsIcon) ttsIcon.className = 'fa-solid fa-volume-high';
+                };
+
+                window.speechSynthesis.speak(utterance);
+                window.isSpeakingAudio = true;
+                if(ttsBtnText) ttsBtnText.textContent = 'Stop Audio';
+                if(ttsIcon) ttsIcon.className = 'fa-solid fa-volume-xmark';
+                window.showNotification("Audio Playing", `Reading aloud: ${book.title}`);
+            }
         };
 
         window.getFilteredResources = function() {
@@ -1061,20 +1117,18 @@
             window.communityThreads = window.communityThreads || [];
             window.communityThreads.unshift({
                 id: 't_' + Date.now(),
-                channel: 'books',
                 flair: 'Discussion',
                 author: window.currentUserDisplayName,
                 title,
                 preview,
                 body: preview,
                 upvotes: 1,
-                time: 'Just now',
                 comments: []
             });
 
             localStorage.setItem(LOCAL_THREADS_KEY, JSON.stringify(window.communityThreads));
             window.renderCommunityThreads();
-            window.showNotification("Posted", "Your post has been published to the lounge.");
+            window.showNotification("Posted", "Your post has been published to the community lounge.");
         };
 
         window.openAddModal = function() {
@@ -1110,7 +1164,7 @@
             window.closeResourceModal();
             window.resetAllFilters();
             window.switchToTab('library');
-            window.showNotification("Resource Saved", `New living book added and acknowledged to ${window.currentUserDisplayName}!`);
+            window.showNotification("Resource Saved", `New living book added by ${window.currentUserDisplayName}!`);
         };
 
         document.addEventListener('DOMContentLoaded', () => {
