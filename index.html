@@ -253,10 +253,20 @@
                             <div class="flex flex-wrap items-center gap-4 text-xs">
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-slate-500 font-medium whitespace-nowrap flex items-center gap-1">
+                                        <i class="fa-solid fa-heart text-red-500"></i> Collection:
+                                    </span>
+                                    <select id="libraryShelfSelect" onchange="window.filterResources()" class="bg-cream-100 border border-slate-300 text-slate-800 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-tealhalo-500 font-bold shadow-sm">
+                                        <option value="all">All Library Books</option>
+                                        <option value="personal">❤️ My Personal Library Shelf</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-slate-500 font-medium whitespace-nowrap flex items-center gap-1">
                                         <i class="fa-solid fa-bookmark text-amber-600"></i> Reading Status:
                                     </span>
                                     <select id="statusFilterSelect" onchange="window.filterResources()" class="bg-cream-100 border border-slate-300 text-slate-800 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-tealhalo-500 font-medium shadow-sm">
-                                        <option value="all">All Books</option>
+                                        <option value="all">All Statuses</option>
                                         <option value="reading">Currently Reading</option>
                                         <option value="want">Want to Read</option>
                                         <option value="completed">Completed</option>
@@ -550,58 +560,58 @@
                     <div id="communityThreadsList" class="space-y-3.5"></div>
                 </div>
 
-                <div class="space-y-4">
-                    <div class="bg-white rounded-3xl border border-cream-300 p-5 card-shadow space-y-3">
-                        <div class="flex items-center gap-2 pb-2 border-b border-cream-200">
-                            <div class="w-8 h-8 rounded-full bg-marian-100 text-marian-800 flex items-center justify-center font-bold text-sm">
-                                <i class="fa-solid fa-church"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-sm heading-serif text-marian-900">Homeschool Sanctuary</h3>
-                                <p class="text-[10px] text-slate-400">Created March 2024</p>
-                            </div>
-                        </div>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            A peaceful sanctuary for Catholic families embracing gentle education, Charlotte Mason methods, classical study, and liturgical living.
-                        </p>
-                        <div class="grid grid-cols-2 gap-2 pt-2 text-center border-t border-cream-200">
-                            <div class="p-2 bg-cream-100 rounded-xl">
-                                <span class="block font-bold text-marian-900 text-sm">1.4k</span>
-                                <span class="text-[10px] text-slate-500">Members</span>
-                            </div>
-                            <div class="p-2 bg-cream-100 rounded-xl">
-                                <span class="block font-bold text-emerald-600 text-sm">38</span>
-                                <span class="text-[10px] text-slate-500">Online Now</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-amber-50/90 rounded-3xl border border-amber-200 p-5 text-amber-900 space-y-2.5">
-                        <h4 class="font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 text-amber-800">
-                            <i class="fa-solid fa-heart-circle-check text-gold-600"></i> Fellowship Guidelines
-                        </h4>
-                        <ul class="text-xs space-y-1.5 text-amber-900/80 list-disc list-inside">
-                            <li>Keep discussions charitable & respectful.</li>
-                            <li>Share copyright-free/public domain ideas.</li>
-                            <li>Offer genuine prayers for posted intentions.</li>
-                        </ul>
-                    </div>
+    <!-- Interactive Book Reader Modal with Auto-Page Tracking -->
+    <div id="bookReaderModal" class="fixed inset-0 bg-marian-950/90 backdrop-blur-md z-50 flex flex-col hidden">
+        <div class="bg-marian-900 text-white px-4 py-3 border-b border-gold-400/40 flex items-center justify-between shadow-lg flex-shrink-0">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-full bg-gold-400/20 border border-gold-400/40 flex items-center justify-center text-gold-300 flex-shrink-0">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 id="readerBookTitle" class="font-bold heading-serif text-amber-100 text-sm sm:text-base truncate">Book Title</h3>
+                    <p id="readerBookAuthor" class="text-[11px] text-blue-200 truncate">by Author</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Empty State Container -->
-        <div id="emptyState" class="hidden text-center py-16 px-4 bg-white rounded-3xl border border-dashed border-slate-300 my-4">
-            <div class="w-20 h-20 bg-cream-200 text-gold-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                <i class="fa-solid fa-book-open"></i>
+            <!-- Page Bookmark Control Panel -->
+            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0 bg-marian-950/80 px-3 py-1.5 rounded-2xl border border-marian-700 text-xs">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-slate-300 hidden sm:inline"><i class="fa-solid fa-bookmark text-gold-400 mr-1"></i>Current Page:</span>
+                    <button onclick="window.adjustPage(-1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Previous Page"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <input type="number" id="readerPageInput" min="1" value="1" onchange="window.handlePageInputChange(event)" class="w-14 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg font-bold text-gold-300 text-xs focus:ring-1 focus:ring-gold-400">
+                    <span class="text-slate-400">/</span>
+                    <input type="number" id="readerTotalPagesInput" min="1" value="100" placeholder="Total" onchange="window.handleTotalPagesChange(event)" class="w-14 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg text-slate-300 text-xs" title="Total Pages">
+                    <button onclick="window.adjustPage(1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Next Page"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                </div>
+
+                <div id="readerSavedNotice" class="text-[10px] text-tealhalo-300 font-semibold hidden sm:flex items-center gap-1">
+                    <i class="fa-solid fa-circle-check"></i> <span id="readerSavedNoticeText">Auto-Saved</span>
+                </div>
+
+                <a id="readerExternalLinkBtn" href="#" target="_blank" class="no-print bg-gold-400 hover:bg-gold-500 text-marian-950 font-bold px-2.5 py-1 rounded-lg text-[11px] transition flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span class="hidden md:inline">Open Native Site</span>
+                </a>
+
+                <button onclick="window.closeBookReaderModal()" class="text-slate-300 hover:text-white transition p-1 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <h3 class="text-xl font-semibold heading-serif text-marian-900">No Resources Found</h3>
-            <p class="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-6">
-                We couldn't find any books matching your search or filter. Try resetting your search or add a new book!
-            </p>
         </div>
 
-    </main>
+        <!-- Resumed Banner -->
+        <div id="readerResumeBanner" class="bg-amber-100 text-amber-950 text-xs px-4 py-2 border-b border-amber-300 flex items-center justify-between flex-shrink-0 animate-fade-in">
+            <span class="flex items-center gap-2 font-medium">
+                <i class="fa-solid fa-rotate-left text-amber-700"></i>
+                <span id="readerResumeBannerText">Resumed reading from Page 1</span>
+            </span>
+            <button onclick="document.getElementById('readerResumeBanner').classList.add('hidden')" class="text-amber-800 hover:text-amber-950 text-xs font-bold">Dismiss</button>
+        </div>
+
+        <!-- Embed Viewport -->
+        <div class="flex-grow bg-slate-900 relative">
+            <iframe id="readerIframe" src="about:blank" class="w-full h-full border-none" allow="fullscreen"></iframe>
+        </div>
+    </div>
 
     <!-- Modals Suite -->
 
@@ -1138,484 +1148,147 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        const SUPABASE_URL = "https://tcssbehxuesuodaahwon.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc3NiZXhodWVzdW9kYWFod29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3MTYzNjYsImV4cCI6MjEwNTI5MjM2Nn0.j9xH2uq7MNdU3Pk4QJBPUFcfGaNqcFI5QpUgvTvoWkA";
-        
-        let supabaseClient = null;
-        let currentUser = null;
-        let authMode = 'login';
-        let isLocalAuthMode = false;
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library';
 
-        const LOCAL_USERS_KEY = 'gentle_catholic_local_users';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_current_user';
+        window.activeReaderBookId = null;
 
-        function getLocalUsers() {
-            try { return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}'); }
-            catch(e) { return {}; }
-        }
-
-        function saveLocalUsers(users) {
-            try { localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users)); }
-            catch(e) {}
-        }
-
-        function getStoredSession() {
-            try { return JSON.parse(localStorage.getItem(LOCAL_SESSION_KEY) || 'null'); }
-            catch(e) { return null; }
-        }
-
-        function saveStoredSession(user) {
+        window.getPageData = function(bookId) {
             try {
-                if (user) localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(user));
-                else localStorage.removeItem(LOCAL_SESSION_KEY);
-            } catch(e) {}
-        }
-
-        try {
-            if (window.supabase && window.supabase.createClient) {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
+                return store[bookId] || { currentPage: 1, totalPages: 100, lastReadAt: null };
+            } catch(e) {
+                return { currentPage: 1, totalPages: 100, lastReadAt: null };
             }
-        } catch (err) {
-            console.error("Supabase init failed:", err);
-        }
+        };
 
-        const INITIAL_RESOURCES = [
-            { id: '1', title: 'The Children\'s Bible Story Book', author: 'Catholic Truth Society', category: 'Faith & Religion', grade: 'All Family Ages', url: 'https://archive.org/details/childrensbiblest00unse', description: 'Classic Old and New Testament stories presented in a gentle narrative style.' },
-            { id: '2', title: 'Story of a Soul: Autobiography of St. Thérèse', author: 'St. Thérèse of Lisieux', category: 'Catholic Classics', grade: 'Middle School 6-8', url: 'https://www.gutenberg.org/ebooks/16772', description: 'The inspiring autobiography detailing her Little Way of spiritual childhood.' },
-            { id: '3', title: 'Fifty Famous Stories Retold', author: 'James Baldwin', category: 'History & Living Books', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/1863/1863-h/1863-h.htm', description: 'Timeless historical tales of courage and virtue including King Alfred and Sir Walter Raleigh.' },
-            { id: '4', title: 'The Burgess Bird Book for Children', author: 'Thornton W. Burgess', category: 'Nature & Science', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/3078/3078-h/3078-h.htm', description: 'A living story approach to nature study with Peter Rabbit.' },
-            { id: '5', title: 'A Child\'s Garden of Verses', author: 'Robert Louis Stevenson', category: 'Poetry & Literature', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/300/300-h/300-h.htm', description: 'Gentle, wholesome poetry capturing the innocence of childhood.' },
-            { id: '6', title: 'Ray\'s Primary Arithmetic', author: 'Joseph Ray', category: 'Math', grade: 'Early Years / K-2', url: 'https://archive.org/details/raysprimaryarith00rayj', description: 'Classic living math approach focusing on oral story problems.' }
-        ];
-
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_custom_resources';
-
-        function loadStoredResources() {
+        window.savePageData = function(bookId, pageNum, totalPages) {
             try {
-                const stored = localStorage.getItem(LOCAL_RESOURCES_KEY);
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
+                const prev = store[bookId] || {};
+                store[bookId] = {
+                    currentPage: Math.max(1, parseInt(pageNum, 10) || 1),
+                    totalPages: Math.max(1, parseInt(totalPages, 10) || prev.totalPages || 100),
+                    lastReadAt: new Date().toISOString()
+                };
+                localStorage.setItem(LOCAL_PAGE_TRACKING_KEY, JSON.stringify(store));
+
+                // Also auto-set status to 'currently reading' if page > 1
+                if (parseInt(pageNum, 10) > 1 && window.getReadingStatus(bookId) === 'none') {
+                    window.setReadingStatus(bookId, 'reading');
                 }
             } catch(e) {}
-            return [...INITIAL_RESOURCES];
-        }
+        };
 
-        function saveResourcesToStorage() {
+        window.isInPersonalLibrary = function(bookId) {
             try {
-                localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
-            } catch(e) {}
-        }
+                const myLib = JSON.parse(localStorage.getItem(LOCAL_MY_LIBRARY_KEY) || '[]');
+                return myLib.includes(bookId);
+            } catch(e) { return false; }
+        };
 
-        window.resources = loadStoredResources();
-        window.currentCategory = 'all';
-        window.currentViewMode = 'grid';
-
-        // Lesson Planner State
-        window.plannerRole = 'parent';
-        window.plannerTimeView = 'week';
-        window.vacations = [
-            { id: 'v1', title: 'All Saints Fall Break', startDate: '2026-11-01', endDate: '2026-11-05' }
-        ];
-
-        window.coursesCatalog = [
-            {
-                id: 'c_hist_8',
-                title: 'Medieval History & Catholic Chivalry',
-                grade: 'Grade 6-8',
-                subject: 'History',
-                weeks: 12,
-                lessons: [
-                    { title: 'The Fall of Rome & Rise of Monasticism', subject: 'History' },
-                    { title: 'St. Benedict & The Holy Rule', subject: 'History' },
-                    { title: 'Charlemagne & The Holy Roman Empire', subject: 'History' },
-                    { title: 'The Cathedral Builders of Europe', subject: 'History' }
-                ]
-            },
-            {
-                id: 'c_catechism_primary',
-                title: 'Baltimore Catechism No. 1',
-                grade: 'Grade 2-4',
-                subject: 'Catechism & Theology',
-                weeks: 8,
-                lessons: [
-                    { title: 'Lesson 1: On God and Creation', subject: 'Catechism & Theology' },
-                    { title: 'Lesson 2: The Trinity and Our Soul', subject: 'Catechism & Theology' },
-                    { title: 'Lesson 3: The Sacraments of Grace', subject: 'Catechism & Theology' }
-                ]
-            },
-            {
-                id: 'c_nature_elem',
-                title: 'Living Nature Study & Creation',
-                grade: 'Grade 1-5',
-                subject: 'Nature & Science',
-                weeks: 10,
-                lessons: [
-                    { title: 'Burgess Bird Study - Chapter 1 & Journal', subject: 'Nature & Science' },
-                    { title: 'Botanical Sketching: Autumn Leaves', subject: 'Nature & Science' }
-                ]
-            }
-        ];
-
-        window.plannerLessons = [
-            { id: 'l1', student: 'John', date: '2026-09-21', title: 'Story of a Soul - Chapter 3 Reading', subject: 'Catholic Classics', completed: false, score: 95, gradeLetter: 'A', attachmentName: 'St Therese Notes.pdf', attachmentUrl: '#' },
-            { id: 'l2', student: 'John', date: '2026-09-21', title: 'Ray\'s Arithmetic - Lesson 14 Drill', subject: 'Living Math', completed: true, score: 90, gradeLetter: 'A-', attachmentName: null, attachmentUrl: null },
-            { id: 'l3', student: 'Theresa', date: '2026-09-22', title: 'Fifty Famous Stories - King Alfred Narration', subject: 'History', completed: false, score: 88, gradeLetter: 'B+', attachmentName: null, attachmentUrl: null },
-            { id: 'l4', student: 'Francis', date: '2026-09-22', title: 'Burgess Bird Book - Chapter 2 Sketch', subject: 'Nature & Science', completed: false, score: 100, gradeLetter: 'A+', attachmentName: 'Bird Journal.pdf', attachmentUrl: '#' }
-        ];
-
-        window.activeAttachmentTaskId = null;
-
-        const INITIAL_COMMUNITY_THREADS = [
-            { 
-                id: 't1', 
-                channel: 'prayer', 
-                flair: 'Prayer Request',
-                author: 'GentleMomma_84', 
-                title: 'Please pray for our homeschool morning time routine consistency!', 
-                preview: 'My mind always wanders during family prayer time and the toddlers get fidgety. Any tips for staying focused and keeping a serene environment without rushing?',
-                body: 'My mind always wanders during family prayer time and the toddlers get fidgety. Any tips for staying focused and keeping a serene environment without rushing?\n\nWe love singing the Angelus at noon, but morning rosary or decade prayers sometimes turn into chaos. Any gentle advice or patron saint recommendations for homeschool mothers seeking patience?',
-                upvotes: 18, 
-                time: '2 hours ago',
-                comments: [
-                    { id: 'c1', author: 'Theresa_M', text: 'St. Monica is my go-to for patience! We started lighting a small blessed candle during morning time, and it gives the little ones a physical signal to sit quietly.', time: '1 hour ago', upvotes: 5 },
-                    { id: 'c2', author: 'FatherJoseph_Fan', text: 'Offering up a single decade with reverent sacred music playing softly in the background worked wonders for our 3yo and 5yo.', time: '30 mins ago', upvotes: 3 }
-                ]
-            },
-            { 
-                id: 't2', 
-                channel: 'books', 
-                flair: 'Recommendation',
-                author: 'Maria_Classical', 
-                title: 'Favorite living books for medieval history spine?', 
-                preview: 'We are finishing up ancient history and moving into the Middle Ages next month. What living books did your family enjoy the most?',
-                body: 'We are finishing up ancient history and moving into the Middle Ages next month. What living books did your family enjoy the most?\n\nLooking for titles suitable for Grades 3 through 7. We love stories centered on chivalry, saints, and medieval cathedrals!',
-                upvotes: 29, 
-                time: 'Yesterday',
-                comments: [
-                    { id: 'c3', author: 'BookwormMom', text: '"The Door in the Wall" by Marguerite de Angeli and "Adam of the Road" are absolute must-reads! Beautiful themes of perseverance.', time: '18 hours ago', upvotes: 8 },
-                    { id: 'c4', author: 'CatholicHomeArt', text: 'Also check out "Saint Joan: The Girl Soldier" for young readers. It reads like an adventure novel.', time: '12 hours ago', upvotes: 4 }
-                ]
-            },
-            { 
-                id: 't3', 
-                channel: 'morning', 
-                flair: 'Morning Time',
-                author: 'Ana_Art_Lover', 
-                title: 'Picture study rotation schedule for Fra Angelico', 
-                preview: 'Here is how we spend 5 minutes on Tuesdays looking at sacred art before reading poetry together.',
-                body: 'Here is how we spend 5 minutes on Tuesdays looking at sacred art before reading poetry together:\n\n1. Display high-res artwork on screen.\n2. Ask children to quietly observe for 2 minutes without speaking.\n3. Turn off screen and have them describe details from memory.\n4. Re-open image and discuss the spiritual symbols (e.g. Marian blue robes, lilies).',
-                upvotes: 15, 
-                time: '3 days ago',
-                comments: [
-                    { id: 'c5', author: 'Clare_S', text: 'This narration step from memory is classic Charlotte Mason! We tried this with "The Annunciation" yesterday and my 7yo noticed things I completely missed.', time: '2 days ago', upvotes: 6 }
-                ]
-            }
-        ];
-
-        const LOCAL_COMMUNITY_KEY = 'gentle_catholic_community_threads';
-
-        function loadStoredThreads() {
+        window.togglePersonalLibrary = function(bookId) {
             try {
-                const stored = localStorage.getItem(LOCAL_COMMUNITY_KEY);
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-                }
-            } catch(e) {}
-            return [...INITIAL_COMMUNITY_THREADS];
-        }
-
-        function saveThreadsToStorage() {
-            try {
-                localStorage.setItem(LOCAL_COMMUNITY_KEY, JSON.stringify(window.communityThreads));
-            } catch(e) {}
-        }
-
-        function getChannelDisplayName(channel) {
-            const channelNames = {
-                'all': 'All Topics',
-                'prayer': 'Prayer Intentions',
-                'books': 'Living Books',
-                'morning': 'Morning Time',
-                'sanctuary': 'Sanctuary Life'
-            };
-            return channelNames[channel] || channel;
-        }
-
-        window.communityThreads = loadStoredThreads();
-        window.currentChannel = 'all';
-        window.communitySort = 'hot';
-        window.userVotes = {};
-        window.activeModalThreadId = null;
-
-        window.escapeHtml = function(str) {
-            if (!str) return '';
-            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        };
-
-        window.showNotification = function(title, message) {
-            const t = document.getElementById('notifyTitle');
-            const m = document.getElementById('notifyMessage');
-            if (t) t.textContent = title;
-            if (m) m.textContent = message;
-            document.getElementById('customNotifyModal')?.classList.remove('hidden');
-        };
-
-        window.closeNotificationModal = function() {
-            document.getElementById('customNotifyModal')?.classList.add('hidden');
-        };
-
-        window.openAuthModal = function() {
-            if (currentUser) {
-                if (confirm("Sign out of cloud sync?")) window.handleSignOut();
-                return;
-            }
-            document.getElementById('authModal')?.classList.remove('hidden');
-        };
-
-        window.closeAuthModal = function() {
-            document.getElementById('authModal')?.classList.add('hidden');
-        };
-
-        window.switchAuthTab = function(mode) {
-            authMode = mode;
-            const tabLogin = document.getElementById('authTabLogin');
-            const tabRegister = document.getElementById('authTabRegister');
-            const submitText = document.getElementById('authSubmitText');
-
-            if (mode === 'login') {
-                if (tabLogin) tabLogin.className = "flex-1 py-3 text-xs font-bold text-marian-900 border-b-2 border-marian-800 bg-white transition";
-                if (tabRegister) tabRegister.className = "flex-1 py-3 text-xs font-semibold text-slate-500 transition";
-                if (submitText) submitText.textContent = "Sign In to Sanctuary Account";
-            } else {
-                if (tabRegister) tabRegister.className = "flex-1 py-3 text-xs font-bold text-marian-900 border-b-2 border-marian-800 bg-white transition";
-                if (tabLogin) tabLogin.className = "flex-1 py-3 text-xs font-semibold text-slate-500 transition";
-                if (submitText) submitText.textContent = "Register Sanctuary Account";
-            }
-        };
-
-        window.handleAuthSubmit = async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('authEmail')?.value.trim().toLowerCase();
-            const password = document.getElementById('authPassword')?.value;
-            const msgBox = document.getElementById('authMessage');
-            if (msgBox) msgBox.classList.add('hidden');
-
-            if (!email || !password) return;
-
-            // Attempt Cloud Auth if Supabase is reachable
-            if (supabaseClient && !isLocalAuthMode) {
-                try {
-                    if (authMode === 'login') {
-                        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                        if (error) throw error;
-                        currentUser = data.user;
-                        isLocalAuthMode = false;
-                    } else {
-                        const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                        if (error) throw error;
-                        if (data.user) {
-                            currentUser = data.user;
-                            isLocalAuthMode = false;
-                        }
-                    }
-                    if (currentUser) {
-                        saveStoredSession(currentUser);
-                        window.updateAuthUI();
-                        window.closeAuthModal();
-                        window.showNotification("Welcome", "Successfully signed into your Cloud Sanctuary profile.");
-                        return;
-                    }
-                } catch (err) {
-                    console.warn("Cloud connection unavailable. Falling back to Local Sanctuary Account Mode.", err);
-                }
-            }
-
-            // Local Sanctuary Account Fallback (Guaranteed to work offline)
-            const localUsers = getLocalUsers();
-
-            if (authMode === 'register') {
-                if (localUsers[email] && localUsers[email].password !== password) {
-                    if (msgBox) {
-                        msgBox.textContent = "An account with this email already exists locally. Please check your password or Sign In.";
-                        msgBox.classList.remove('hidden');
-                    }
-                    return;
-                }
-                localUsers[email] = { email, password, createdAt: new Date().toISOString() };
-                saveLocalUsers(localUsers);
-
-                currentUser = { email, id: 'local_' + Date.now(), isLocal: true };
-                isLocalAuthMode = true;
-                saveStoredSession(currentUser);
-                window.updateAuthUI();
-                window.closeAuthModal();
-                window.showNotification("Sanctuary Account Registered", "Your sanctuary account is active on this browser device.");
-            } else { // Sign In
-                if (localUsers[email]) {
-                    if (localUsers[email].password !== password) {
-                        if (msgBox) {
-                            msgBox.textContent = "Incorrect password. Please try again.";
-                            msgBox.classList.remove('hidden');
-                        }
-                        return;
-                    }
+                let myLib = JSON.parse(localStorage.getItem(LOCAL_MY_LIBRARY_KEY) || '[]');
+                if (myLib.includes(bookId)) {
+                    myLib = myLib.filter(id => id !== bookId);
+                    window.showNotification("Removed", "Book removed from your Personal Library shelf.");
                 } else {
-                    // Auto-create local account on first sign in for seamless experience
-                    localUsers[email] = { email, password, createdAt: new Date().toISOString() };
-                    saveLocalUsers(localUsers);
+                    myLib.push(bookId);
+                    window.showNotification("Added to Personal Library", "Book saved to your personal shelf ❤️");
                 }
-                currentUser = { email, id: 'local_' + Date.now(), isLocal: true };
-                isLocalAuthMode = true;
-                saveStoredSession(currentUser);
-                window.updateAuthUI();
-                window.closeAuthModal();
-                window.showNotification("Welcome Back", "Signed into your local sanctuary profile.");
-            }
-        };
-
-        window.handleSignOut = async function() {
-            if (supabaseClient) {
-                try { await supabaseClient.auth.signOut(); } catch(e){}
-            }
-            currentUser = null;
-            isLocalAuthMode = false;
-            saveStoredSession(null);
-            window.updateAuthUI();
-            window.showNotification("Signed Out", "Logged out of sanctuary account.");
-        };
-
-        window.updateAuthUI = function() {
-            const emailDisplay = document.getElementById('userEmailDisplay');
-            const authBtnText = document.getElementById('authButtonText');
-            const syncStatusText = document.getElementById('syncStatusText');
-            const syncStatusBadge = document.getElementById('syncStatusBadge');
-
-            if (currentUser) {
-                if (emailDisplay) {
-                    emailDisplay.textContent = currentUser.email;
-                    emailDisplay.classList.remove('hidden');
-                }
-                if (authBtnText) authBtnText.textContent = "Sign Out";
-                if (syncStatusText) {
-                    syncStatusText.textContent = currentUser.isLocal ? "Local Account: " + currentUser.email : "Cloud Active: " + currentUser.email;
-                }
-                if (syncStatusBadge) {
-                    syncStatusBadge.className = currentUser.isLocal 
-                        ? "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tealhalo-700 text-tealhalo-100 font-medium"
-                        : "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-marian-800 text-gold-300 font-medium";
-                }
-            } else {
-                if (emailDisplay) {
-                    emailDisplay.textContent = "";
-                    emailDisplay.classList.add('hidden');
-                }
-                if (authBtnText) authBtnText.textContent = "Sign In / Register";
-                if (syncStatusText) syncStatusText.textContent = "Local Storage Ready";
-                if (syncStatusBadge) {
-                    syncStatusBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-marian-800 text-gold-300 font-medium";
-                }
-            }
-        };
-
-        window.handleSignOut = async function() {
-            if (supabaseClient) await supabaseClient.auth.signOut();
-            currentUser = null;
-            window.updateAuthUI();
-            window.showNotification("Signed Out", "Logged out of cloud sync mode.");
-        };
-
-        window.updateAuthUI = function() {
-            const emailDisplay = document.getElementById('userEmailDisplay');
-            const authBtnText = document.getElementById('authButtonText');
-            const syncStatusText = document.getElementById('syncStatusText');
-
-            if (currentUser) {
-                if (emailDisplay) {
-                    emailDisplay.textContent = currentUser.email;
-                    emailDisplay.classList.remove('hidden');
-                }
-                if (authBtnText) authBtnText.textContent = "Sign Out";
-                if (syncStatusText) syncStatusText.textContent = "Cloud Active: " + currentUser.email;
-            } else {
-                if (emailDisplay) {
-                    emailDisplay.textContent = "";
-                    emailDisplay.classList.add('hidden');
-                }
-                if (authBtnText) authBtnText.textContent = "Sign In / Register";
-                if (syncStatusText) syncStatusText.textContent = "Supabase Connected";
-            }
-        };
-
-        window.switchToTab = function(tabName) {
-            const libContainer = document.getElementById('libraryContainer');
-            const libraryWrapper = document.getElementById('libraryViewWrapper');
-            const liturgicalBanner = document.getElementById('liturgicalBanner');
-            const welcomeCallout = document.getElementById('welcomeCallout');
-            const artContainer = document.getElementById('artContainer');
-            const checklistContainer = document.getElementById('checklistContainer');
-            const communityContainer = document.getElementById('communityContainer');
-            const emptyState = document.getElementById('emptyState');
-
-            const tabLib = document.getElementById('navTabLibrary');
-            const tabArt = document.getElementById('navTabArt');
-            const tabComm = document.getElementById('navTabCommunity');
-            const tabCheck = document.getElementById('navTabChecklist');
-
-            const activeClass = "px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-2 bg-marian-800 text-amber-200 border border-gold-400/30";
-            const inactiveClass = "px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center gap-2 text-slate-300 hover:text-white hover:bg-marian-800/60";
-
-            if (tabLib) tabLib.className = tabName === 'library' ? activeClass : inactiveClass;
-            if (tabArt) tabArt.className = tabName === 'art' ? activeClass : inactiveClass;
-            if (tabComm) tabComm.className = tabName === 'community' ? activeClass : inactiveClass;
-            if (tabCheck) tabCheck.className = tabName === 'checklist' ? activeClass : inactiveClass;
-
-            if (libContainer) libContainer.classList.add('hidden');
-            if (libraryWrapper) libraryWrapper.classList.add('hidden');
-            if (liturgicalBanner) liturgicalBanner.classList.add('hidden');
-            if (welcomeCallout) welcomeCallout.classList.add('hidden');
-            if (artContainer) artContainer.classList.add('hidden');
-            if (checklistContainer) checklistContainer.classList.add('hidden');
-            if (communityContainer) communityContainer.classList.add('hidden');
-            if (emptyState) emptyState.classList.add('hidden');
-
-            if (tabName === 'library') {
-                if (libraryWrapper) libraryWrapper.classList.remove('hidden');
-                if (liturgicalBanner) liturgicalBanner.classList.remove('hidden');
-                if (welcomeCallout) welcomeCallout.classList.remove('hidden');
+                localStorage.setItem(LOCAL_MY_LIBRARY_KEY, JSON.stringify(myLib));
                 window.renderLibrary();
-            } else if (tabName === 'art') {
-                if (artContainer) artContainer.classList.remove('hidden');
-            } else if (tabName === 'community') {
-                if (communityContainer) communityContainer.classList.remove('hidden');
-                window.renderCommunityThreads();
-            } else if (tabName === 'checklist') {
-                if (checklistContainer) checklistContainer.classList.remove('hidden');
-                window.renderLessonPlanner();
+            } catch(e) {}
+        };
+
+        window.openBookReader = function(bookId) {
+            const book = window.resources.find(r => r.id === bookId);
+            if (!book) return;
+
+            window.activeReaderBookId = bookId;
+            const pageData = window.getPageData(bookId);
+
+            document.getElementById('readerBookTitle').textContent = book.title;
+            document.getElementById('readerBookAuthor').textContent = 'by ' + (book.author || 'Unknown Author');
+            
+            const pageInput = document.getElementById('readerPageInput');
+            const totalInput = document.getElementById('readerTotalPagesInput');
+            if (pageInput) pageInput.value = pageData.currentPage;
+            if (totalInput) totalInput.value = pageData.totalPages;
+
+            const extBtn = document.getElementById('readerExternalLinkBtn');
+            if (extBtn) extBtn.href = book.url;
+
+            const iframe = document.getElementById('readerIframe');
+            if (iframe) iframe.src = book.url;
+
+            const resumeBanner = document.getElementById('readerResumeBanner');
+            const resumeText = document.getElementById('readerResumeBannerText');
+            if (resumeBanner && resumeText) {
+                if (pageData.currentPage > 1) {
+                    resumeText.textContent = `Welcome back! Auto-resuming from Page ${pageData.currentPage} of ${pageData.totalPages}.`;
+                    resumeBanner.classList.remove('hidden');
+                } else {
+                    resumeText.textContent = `Starting from Page 1. Page numbers will auto-save as you read!`;
+                    resumeBanner.classList.remove('hidden');
+                }
             }
+
+            document.getElementById('bookReaderModal')?.classList.remove('hidden');
         };
 
-        window.getReadingStatus = function(id) {
-            try {
-                const statuses = JSON.parse(localStorage.getItem('gentle_catholic_reading_status') || '{}');
-                return statuses[id] || 'none';
-            } catch (e) { return 'none'; }
+        window.closeBookReaderModal = function() {
+            const iframe = document.getElementById('readerIframe');
+            if (iframe) iframe.src = 'about:blank';
+            window.activeReaderBookId = null;
+            document.getElementById('bookReaderModal')?.classList.add('hidden');
+            window.renderLibrary();
         };
 
-        window.setReadingStatus = function(id, status) {
-            try {
-                const statuses = JSON.parse(localStorage.getItem('gentle_catholic_reading_status') || '{}');
-                statuses[id] = status;
-                localStorage.setItem('gentle_catholic_reading_status', JSON.stringify(statuses));
-                window.renderLibrary();
-            } catch (e) {}
+        window.adjustPage = function(delta) {
+            if (!window.activeReaderBookId) return;
+            const pageInput = document.getElementById('readerPageInput');
+            const totalInput = document.getElementById('readerTotalPagesInput');
+            if (!pageInput) return;
+
+            let current = parseInt(pageInput.value, 10) || 1;
+            current = Math.max(1, current + delta);
+            pageInput.value = current;
+
+            window.savePageData(window.activeReaderBookId, current, totalInput?.value || 100);
+            window.flashSavedNotice();
+        };
+
+        window.handlePageInputChange = function(e) {
+            if (!window.activeReaderBookId) return;
+            const val = parseInt(e.target.value, 10) || 1;
+            const totalInput = document.getElementById('readerTotalPagesInput');
+            window.savePageData(window.activeReaderBookId, val, totalInput?.value || 100);
+            window.flashSavedNotice();
+        };
+
+        window.handleTotalPagesChange = function(e) {
+            if (!window.activeReaderBookId) return;
+            const pageInput = document.getElementById('readerPageInput');
+            const totalVal = parseInt(e.target.value, 10) || 100;
+            window.savePageData(window.activeReaderBookId, pageInput?.value || 1, totalVal);
+            window.flashSavedNotice();
+        };
+
+        window.flashSavedNotice = function() {
+            const notice = document.getElementById('readerSavedNotice');
+            if (notice) {
+                notice.classList.remove('hidden');
+                setTimeout(() => notice.classList.add('hidden'), 2000);
+            }
         };
 
         window.getFilteredResources = function() {
             const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
             const gradeFilter = document.getElementById('gradeFilterSelect')?.value || 'all';
             const statusFilter = document.getElementById('statusFilterSelect')?.value || 'all';
+            const shelfFilter = document.getElementById('libraryShelfSelect')?.value || 'all';
 
             return (window.resources || []).filter(res => {
                 const matchCat = (window.currentCategory === 'all') || (res.category === window.currentCategory);
@@ -1623,36 +1296,80 @@
                 const itemStatus = window.getReadingStatus(res.id);
                 const matchStatus = (statusFilter === 'all') || (itemStatus === statusFilter);
 
+                const isPersonal = window.isInPersonalLibrary(res.id);
+                const matchShelf = (shelfFilter === 'all') || (shelfFilter === 'personal' && isPersonal);
+
                 const matchQuery = !query || 
                     (res.title && res.title.toLowerCase().includes(query)) ||
                     (res.author && res.author.toLowerCase().includes(query)) ||
                     (res.description && res.description.toLowerCase().includes(query));
 
-                return matchCat && matchGrade && matchStatus && matchQuery;
+                return matchCat && matchGrade && matchStatus && matchShelf && matchQuery;
             });
         };
 
         window.renderCardGrid = function(res) {
             const status = window.getReadingStatus(res.id);
+            const pageData = window.getPageData(res.id);
+            const isPersonal = window.isInPersonalLibrary(res.id);
+
             return `
-                <div class="bg-white rounded-2xl border border-cream-300 overflow-hidden card-shadow flex flex-col justify-between">
+                <div class="bg-white rounded-2xl border border-cream-300 overflow-hidden card-shadow flex flex-col justify-between relative group">
                     <div class="p-5 space-y-3">
                         <div class="flex items-center justify-between gap-2">
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
-                            <span class="text-[10px] text-slate-500 font-medium"><i class="fa-solid fa-child text-gold-600 mr-1"></i>${window.escapeHtml(res.grade || 'All Ages')}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] text-slate-500 font-medium"><i class="fa-solid fa-child text-gold-600 mr-1"></i>${window.escapeHtml(res.grade || 'All Ages')}</span>
+                                <button onclick="window.togglePersonalLibrary('${res.id}')" class="p-1 text-slate-300 hover:text-red-500 transition ${isPersonal ? 'text-red-500' : ''}" title="${isPersonal ? 'In Personal Library' : 'Add to Personal Library'}">
+                                    <i class="fa-solid fa-heart text-xs"></i>
+                                </button>
+                            </div>
                         </div>
                         <h3 class="font-bold text-lg heading-serif text-marian-900 leading-tight">${window.escapeHtml(res.title)}</h3>
                         <p class="text-xs text-slate-500 font-medium">by ${window.escapeHtml(res.author || 'Unknown Author')}</p>
                         <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">${window.escapeHtml(res.description || '')}</p>
+
+                        ${pageData.currentPage > 1 ? `
+                            <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-100/90 text-amber-900 border border-amber-300/60 text-[11px] font-bold">
+                                <i class="fa-solid fa-bookmark text-amber-600"></i>
+                                <span>Bookmark: Page ${pageData.currentPage} / ${pageData.totalPages}</span>
+                            </div>
+                        ` : ''}
                     </div>
+
                     <div class="p-4 bg-cream-100/60 border-t border-cream-200 flex items-center justify-between text-xs">
                         <div class="flex items-center gap-1">
                             <button onclick="window.setReadingStatus('${res.id}', 'reading')" class="p-1.5 rounded-lg ${status === 'reading' ? 'bg-amber-200 text-amber-900 font-bold' : 'text-slate-400 hover:text-amber-800'}" title="Currently Reading"><i class="fa-solid fa-book-open"></i></button>
                             <button onclick="window.setReadingStatus('${res.id}', 'completed')" class="p-1.5 rounded-lg ${status === 'completed' ? 'bg-emerald-200 text-emerald-900 font-bold' : 'text-slate-400 hover:text-emerald-800'}" title="Completed"><i class="fa-solid fa-circle-check"></i></button>
                         </div>
-                        <a href="${window.escapeHtml(res.url)}" target="_blank" class="bg-marian-800 hover:bg-marian-900 text-white font-medium px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-1.5 transition">
-                            <span>Read</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                        </a>
+                        <button onclick="window.openBookReader('${res.id}')" class="bg-marian-800 hover:bg-marian-900 text-white font-semibold px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-book-open-reader text-gold-300"></i>
+                            <span>${pageData.currentPage > 1 ? `Resume Page ${pageData.currentPage}` : 'Open & Track Page'}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.renderCardList = function(res) {
+            const pageData = window.getPageData(res.id);
+            const isPersonal = window.isInPersonalLibrary(res.id);
+            return `
+                <div class="bg-white rounded-2xl border border-cream-300 p-4 card-shadow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
+                            ${pageData.currentPage > 1 ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900"><i class="fa-solid fa-bookmark text-amber-600 mr-1"></i>Page ${pageData.currentPage}</span>` : ''}
+                        </div>
+                        <h3 class="font-bold text-base heading-serif text-marian-900 mt-1">${window.escapeHtml(res.title)}</h3>
+                        <p class="text-xs text-slate-500">by ${window.escapeHtml(res.author || 'Unknown Author')}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.togglePersonalLibrary('${res.id}')" class="p-2 text-slate-300 hover:text-red-500 ${isPersonal ? 'text-red-500' : ''}" title="Personal Library"><i class="fa-solid fa-heart"></i></button>
+                        <button onclick="window.openBookReader('${res.id}')" class="bg-marian-800 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-book-open-reader text-gold-300"></i>
+                            <span>${pageData.currentPage > 1 ? `Resume Page ${pageData.currentPage}` : 'Open Reader'}</span>
+                        </button>
                     </div>
                 </div>
             `;
