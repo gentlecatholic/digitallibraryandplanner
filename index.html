@@ -504,7 +504,7 @@
             <div class="bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white rounded-3xl p-6 border-b-4 border-gold-400 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-tealhalo-400 text-marian-950 uppercase tracking-widest">r/CatholicHomeschool</span>
+                        <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-tealhalo-400 text-marian-950 uppercase tracking-widest">Catholic Homeschool Lounge</span>
                         <span class="text-xs text-gold-300 font-medium"><i class="fa-solid fa-users text-gold-400 mr-1"></i>1,420 Sanctuary Members</span>
                     </div>
                     <h2 class="text-2xl sm:text-3xl font-bold heading-serif text-amber-100 mt-1">Community Discussion Lounge</h2>
@@ -517,12 +517,12 @@
                 </button>
             </div>
 
-            <!-- Reddit Toolbar & Channel Filters -->
+            <!-- Toolbar & Channel Filters -->
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <div class="lg:col-span-3 space-y-4">
                     <div class="bg-white rounded-2xl p-3 border border-cream-300 card-shadow flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs">
-                            <button onclick="window.setCommunityChannel('all')" class="comm-channel-btn active px-3.5 py-1.5 rounded-xl font-semibold bg-marian-800 text-white transition flex-shrink-0" data-channel="all">r/All</button>
+                            <button onclick="window.setCommunityChannel('all')" class="comm-channel-btn active px-3.5 py-1.5 rounded-xl font-semibold bg-marian-800 text-white transition flex-shrink-0" data-channel="all">All Topics</button>
                             <button onclick="window.setCommunityChannel('prayer')" class="comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0" data-channel="prayer">🙏 Prayer Intentions</button>
                             <button onclick="window.setCommunityChannel('books')" class="comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0" data-channel="books">📚 Living Books</button>
                             <button onclick="window.setCommunityChannel('morning')" class="comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0" data-channel="morning">☀️ Morning Time</button>
@@ -557,7 +557,7 @@
                                 <i class="fa-solid fa-church"></i>
                             </div>
                             <div>
-                                <h3 class="font-bold text-sm heading-serif text-marian-900">r/CatholicHomeschool</h3>
+                                <h3 class="font-bold text-sm heading-serif text-marian-900">Homeschool Sanctuary</h3>
                                 <p class="text-[10px] text-slate-400">Created March 2024</p>
                             </div>
                         </div>
@@ -927,12 +927,12 @@
 
             <form onsubmit="window.handleCreateThreadSubmit(event)" class="p-5 space-y-4 text-xs sm:text-sm">
                 <div>
-                    <label for="postChannel" class="block font-semibold text-slate-700 mb-1">Target Channel / Subreddit *</label>
+                    <label for="postChannel" class="block font-semibold text-slate-700 mb-1">Target Channel / Topic Circle *</label>
                     <select id="postChannel" required class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 font-medium text-xs">
-                        <option value="prayer">🙏 r/PrayerIntentions - Prayer Requests & Novenas</option>
-                        <option value="books">📚 r/LivingBooks - Book Reviews & Curriculum</option>
-                        <option value="morning">☀️ r/MorningTime - Picture Study & Hymns</option>
-                        <option value="sanctuary">🏠 r/SanctuaryLife - Daily Routine & Organization</option>
+                        <option value="prayer">🙏 Prayer Intentions - Prayer Requests & Novenas</option>
+                        <option value="books">📚 Living Books - Book Reviews & Curriculum</option>
+                        <option value="morning">☀️ Morning Time - Picture Study & Hymns</option>
+                        <option value="sanctuary">🏠 Sanctuary Life - Daily Routine & Organization</option>
                     </select>
                 </div>
 
@@ -972,8 +972,8 @@
         <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white rounded-t-3xl flex items-center justify-between border-b border-gold-400/40">
                 <div class="flex items-center gap-2.5">
-                    <span id="modalChannelTag" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-400 text-marian-950 uppercase">r/LivingBooks</span>
-                    <span id="modalAuthorMeta" class="text-xs text-blue-200">Posted by User</span>
+                    <span id="modalChannelTag" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-400 text-marian-950 uppercase">Living Books</span>
+                    <span id="modalAuthorMeta" class="text-xs text-blue-200">Posted by Member</span>
                 </div>
                 <button onclick="window.closeThreadDetailModal()" class="text-slate-300 hover:text-white transition p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -1266,8 +1266,7 @@
 
         window.activeAttachmentTaskId = null;
 
-        // Community State
-        window.communityThreads = [
+        const INITIAL_COMMUNITY_THREADS = [
             { 
                 id: 't1', 
                 channel: 'prayer', 
@@ -1314,6 +1313,37 @@
             }
         ];
 
+        const LOCAL_COMMUNITY_KEY = 'gentle_catholic_community_threads';
+
+        function loadStoredThreads() {
+            try {
+                const stored = localStorage.getItem(LOCAL_COMMUNITY_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch(e) {}
+            return [...INITIAL_COMMUNITY_THREADS];
+        }
+
+        function saveThreadsToStorage() {
+            try {
+                localStorage.setItem(LOCAL_COMMUNITY_KEY, JSON.stringify(window.communityThreads));
+            } catch(e) {}
+        }
+
+        function getChannelDisplayName(channel) {
+            const channelNames = {
+                'all': 'All Topics',
+                'prayer': 'Prayer Intentions',
+                'books': 'Living Books',
+                'morning': 'Morning Time',
+                'sanctuary': 'Sanctuary Life'
+            };
+            return channelNames[channel] || channel;
+        }
+
+        window.communityThreads = loadStoredThreads();
         window.currentChannel = 'all';
         window.communitySort = 'hot';
         window.userVotes = {};
@@ -2164,6 +2194,7 @@
                 thread.upvotes += (type === 'up' ? 1 : -1);
             }
 
+            saveThreadsToStorage();
             window.renderCommunityThreads();
         };
 
@@ -2203,7 +2234,7 @@
 
             container.innerHTML = filtered.map(t => {
                 const userVote = window.userVotes[t.id] || null;
-                const channelDisplay = 'r/' + t.channel.charAt(0).toUpperCase() + t.channel.slice(1);
+                const channelDisplay = getChannelDisplayName(t.channel);
 
                 return `
                     <div class="bg-white rounded-2xl border border-cream-300 p-4 sm:p-5 card-shadow flex items-start gap-3 sm:gap-4 transition hover:border-marian-200">
@@ -2222,7 +2253,7 @@
                                 <span class="px-2 py-0.5 rounded-full bg-marian-100 text-marian-800 font-bold text-[10px]">${channelDisplay}</span>
                                 <span class="px-2 py-0.5 rounded-full bg-cream-200 text-slate-700 font-semibold text-[10px]">${t.flair || 'Discussion'}</span>
                                 <span>&bull;</span>
-                                <span class="font-medium text-slate-600">u/${window.escapeHtml(t.author)}</span>
+                                <span class="font-medium text-slate-600">Member: ${window.escapeHtml(t.author)}</span>
                                 <span>&bull;</span>
                                 <span>${t.time}</span>
                             </div>
@@ -2276,6 +2307,7 @@
 
             window.communityThreads.unshift(newPost);
             window.userVotes[newPost.id] = 'up';
+            saveThreadsToStorage();
             window.closeNewThreadModal();
             
             document.getElementById('postTitle').value = '';
@@ -2291,13 +2323,13 @@
 
             window.activeModalThreadId = threadId;
 
-            document.getElementById('modalChannelTag').textContent = 'r/' + thread.channel.toUpperCase();
-            document.getElementById('modalAuthorMeta').textContent = `Posted by u/${thread.author} • ${thread.time}`;
+            document.getElementById('modalChannelTag').textContent = getChannelDisplayName(thread.channel);
+            document.getElementById('modalAuthorMeta').textContent = `Posted by ${thread.author} • ${thread.time}`;
             document.getElementById('modalThreadTitle').textContent = thread.title;
             document.getElementById('modalThreadContent').textContent = thread.body || thread.preview;
 
             const userDisplayName = currentUser ? currentUser.email.split('@')[0] : 'Gentle Parent';
-            document.getElementById('commentingAsUserText').textContent = `Commenting as u/${userDisplayName}`;
+            document.getElementById('commentingAsUserText').textContent = `Commenting as ${userDisplayName}`;
 
             window.renderModalComments();
             document.getElementById('threadDetailModal')?.classList.remove('hidden');
@@ -2327,7 +2359,7 @@
             container.innerHTML = thread.comments.map(c => `
                 <div class="bg-cream-100 rounded-xl p-3.5 border border-cream-200 space-y-1">
                     <div class="flex items-center justify-between text-[11px] text-slate-400">
-                        <span class="font-bold text-marian-900">u/${window.escapeHtml(c.author)}</span>
+                        <span class="font-bold text-marian-900">Member: ${window.escapeHtml(c.author)}</span>
                         <span>${c.time}</span>
                     </div>
                     <p class="text-xs text-slate-700 leading-relaxed">${window.escapeHtml(c.text)}</p>
@@ -2358,6 +2390,7 @@
                 });
 
                 input.value = '';
+                saveThreadsToStorage();
                 window.renderModalComments();
                 window.renderCommunityThreads();
             }
@@ -2370,6 +2403,7 @@
                 const comment = thread.comments.find(c => c.id === commentId);
                 if (comment) {
                     comment.upvotes = (comment.upvotes || 1) + 1;
+                    saveThreadsToStorage();
                     window.renderModalComments();
                 }
             }
