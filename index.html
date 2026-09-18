@@ -1188,7 +1188,26 @@
             { id: '6', title: 'Ray\'s Primary Arithmetic', author: 'Joseph Ray', category: 'Math', grade: 'Early Years / K-2', url: 'https://archive.org/details/raysprimaryarith00rayj', description: 'Classic living math approach focusing on oral story problems.' }
         ];
 
-        window.resources = [...INITIAL_RESOURCES];
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_custom_resources';
+
+        function loadStoredResources() {
+            try {
+                const stored = localStorage.getItem(LOCAL_RESOURCES_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch(e) {}
+            return [...INITIAL_RESOURCES];
+        }
+
+        function saveResourcesToStorage() {
+            try {
+                localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
+            } catch(e) {}
+        }
+
+        window.resources = loadStoredResources();
         window.currentCategory = 'all';
         window.currentViewMode = 'grid';
 
@@ -2356,8 +2375,14 @@
             }
         };
 
-        window.openAddModal = function() { document.getElementById('resourceModal')?.classList.remove('hidden'); };
-        window.closeResourceModal = function() { document.getElementById('resourceModal')?.classList.add('hidden'); };
+        window.openAddModal = function() { 
+            window.switchToTab('library');
+            document.getElementById('resourceModal')?.classList.remove('hidden'); 
+        };
+        
+        window.closeResourceModal = function() { 
+            document.getElementById('resourceModal')?.classList.add('hidden'); 
+        };
 
         window.saveResource = function(e) {
             e.preventDefault();
@@ -2368,10 +2393,16 @@
             const grade = document.getElementById('formGrade').value;
             const description = document.getElementById('formDescription').value.trim();
 
+            if (!title || !url) return;
+
             window.resources.unshift({ id: Date.now().toString(), title, author, category, url, grade, description });
+            saveResourcesToStorage();
+
+            document.getElementById('resourceForm')?.reset();
             window.closeResourceModal();
-            window.renderLibrary();
-            window.showNotification("Saved", "New resource successfully added to your digital library.");
+            window.switchToTab('library');
+            window.resetAllFilters();
+            window.showNotification("Saved", `"${title}" has been successfully added to your digital library.`);
         };
 
         window.toggleSafetyModal = function() {
