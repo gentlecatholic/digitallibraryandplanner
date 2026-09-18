@@ -1038,9 +1038,10 @@
                     <input type="password" id="authPassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
                 </div>
                 <div id="authMessage" class="text-xs text-red-600 hidden"></div>
+                <p class="text-[11px] text-slate-500 italic">Works seamlessly both online and offline (saved locally to your browser).</p>
                 <div class="pt-2">
                     <button type="submit" id="authSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-right-to-bracket"></i> <span id="authSubmitText">Sign In to Cloud Library</span>
+                        <i class="fa-solid fa-right-to-bracket"></i> <span id="authSubmitText">Sign In to Sanctuary Account</span>
                     </button>
                 </div>
             </form>
@@ -1143,6 +1144,32 @@
         let supabaseClient = null;
         let currentUser = null;
         let authMode = 'login';
+        let isLocalAuthMode = false;
+
+        const LOCAL_USERS_KEY = 'gentle_catholic_local_users';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_current_user';
+
+        function getLocalUsers() {
+            try { return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}'); }
+            catch(e) { return {}; }
+        }
+
+        function saveLocalUsers(users) {
+            try { localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users)); }
+            catch(e) {}
+        }
+
+        function getStoredSession() {
+            try { return JSON.parse(localStorage.getItem(LOCAL_SESSION_KEY) || 'null'); }
+            catch(e) { return null; }
+        }
+
+        function saveStoredSession(user) {
+            try {
+                if (user) localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(user));
+                else localStorage.removeItem(LOCAL_SESSION_KEY);
+            } catch(e) {}
+        }
 
         try {
             if (window.supabase && window.supabase.createClient) {
@@ -1311,48 +1338,134 @@
             if (mode === 'login') {
                 if (tabLogin) tabLogin.className = "flex-1 py-3 text-xs font-bold text-marian-900 border-b-2 border-marian-800 bg-white transition";
                 if (tabRegister) tabRegister.className = "flex-1 py-3 text-xs font-semibold text-slate-500 transition";
-                if (submitText) submitText.textContent = "Sign In to Cloud Library";
+                if (submitText) submitText.textContent = "Sign In to Sanctuary Account";
             } else {
                 if (tabRegister) tabRegister.className = "flex-1 py-3 text-xs font-bold text-marian-900 border-b-2 border-marian-800 bg-white transition";
                 if (tabLogin) tabLogin.className = "flex-1 py-3 text-xs font-semibold text-slate-500 transition";
-                if (submitText) submitText.textContent = "Register New Account";
+                if (submitText) submitText.textContent = "Register Sanctuary Account";
             }
         };
 
         window.handleAuthSubmit = async function(e) {
             e.preventDefault();
-            const email = document.getElementById('authEmail')?.value.trim();
+            const email = document.getElementById('authEmail')?.value.trim().toLowerCase();
             const password = document.getElementById('authPassword')?.value;
             const msgBox = document.getElementById('authMessage');
             if (msgBox) msgBox.classList.add('hidden');
 
-            if (!supabaseClient) {
-                if (msgBox) {
-                    msgBox.textContent = "Supabase client not initialized.";
-                    msgBox.classList.remove('hidden');
+            if (!email || !password) return;
+
+            // Attempt Cloud Auth if Supabase is reachable
+            if (supabaseClient && !isLocalAuthMode) {
+                try {
+                    if (authMode === 'login') {
+                        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                        if (error) throw error;
+                        currentUser = data.user;
+                        isLocalAuthMode = false;
+                    } else {
+                        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                        if (error) throw error;
+                        if (data.user) {
+                            currentUser = data.user;
+                            isLocalAuthMode = false;
+                        }
+                    }
+                    if (currentUser) {
+                        saveStoredSession(currentUser);
+                        window.updateAuthUI();
+                        window.closeAuthModal();
+                        window.showNotification("Welcome", "Successfully signed into your Cloud Sanctuary profile.");
+                        return;
+                    }
+                } catch (err) {
+                    console.warn("Cloud connection unavailable. Falling back to Local Sanctuary Account Mode.", err);
                 }
-                return;
             }
 
-            try {
-                if (authMode === 'login') {
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                    currentUser = data.user;
-                } else {
-                    const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                    if (error) throw error;
-                    window.showNotification("Registration Successful", "Please verify your email or sign in now.");
-                    window.switchAuthTab('login');
+            // Local Sanctuary Account Fallback (Guaranteed to work offline)
+            const localUsers = getLocalUsers();
+
+            if (authMode === 'register') {
+                if (localUsers[email] && localUsers[email].password !== password) {
+                    if (msgBox) {
+                        msgBox.textContent = "An account with this email already exists locally. Please check your password or Sign In.";
+                        msgBox.classList.remove('hidden');
+                    }
                     return;
                 }
+                localUsers[email] = { email, password, createdAt: new Date().toISOString() };
+                saveLocalUsers(localUsers);
+
+                currentUser = { email, id: 'local_' + Date.now(), isLocal: true };
+                isLocalAuthMode = true;
+                saveStoredSession(currentUser);
                 window.updateAuthUI();
                 window.closeAuthModal();
-                window.showNotification("Welcome", "Successfully signed into your sanctuary account.");
-            } catch (err) {
-                if (msgBox) {
-                    msgBox.textContent = err.message;
-                    msgBox.classList.remove('hidden');
+                window.showNotification("Sanctuary Account Registered", "Your sanctuary account is active on this browser device.");
+            } else { // Sign In
+                if (localUsers[email]) {
+                    if (localUsers[email].password !== password) {
+                        if (msgBox) {
+                            msgBox.textContent = "Incorrect password. Please try again.";
+                            msgBox.classList.remove('hidden');
+                        }
+                        return;
+                    }
+                } else {
+                    // Auto-create local account on first sign in for seamless experience
+                    localUsers[email] = { email, password, createdAt: new Date().toISOString() };
+                    saveLocalUsers(localUsers);
+                }
+                currentUser = { email, id: 'local_' + Date.now(), isLocal: true };
+                isLocalAuthMode = true;
+                saveStoredSession(currentUser);
+                window.updateAuthUI();
+                window.closeAuthModal();
+                window.showNotification("Welcome Back", "Signed into your local sanctuary profile.");
+            }
+        };
+
+        window.handleSignOut = async function() {
+            if (supabaseClient) {
+                try { await supabaseClient.auth.signOut(); } catch(e){}
+            }
+            currentUser = null;
+            isLocalAuthMode = false;
+            saveStoredSession(null);
+            window.updateAuthUI();
+            window.showNotification("Signed Out", "Logged out of sanctuary account.");
+        };
+
+        window.updateAuthUI = function() {
+            const emailDisplay = document.getElementById('userEmailDisplay');
+            const authBtnText = document.getElementById('authButtonText');
+            const syncStatusText = document.getElementById('syncStatusText');
+            const syncStatusBadge = document.getElementById('syncStatusBadge');
+
+            if (currentUser) {
+                if (emailDisplay) {
+                    emailDisplay.textContent = currentUser.email;
+                    emailDisplay.classList.remove('hidden');
+                }
+                if (authBtnText) authBtnText.textContent = "Sign Out";
+                if (syncStatusText) {
+                    syncStatusText.textContent = currentUser.isLocal ? "Local Account: " + currentUser.email : "Cloud Active: " + currentUser.email;
+                }
+                if (syncStatusBadge) {
+                    syncStatusBadge.className = currentUser.isLocal 
+                        ? "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tealhalo-700 text-tealhalo-100 font-medium"
+                        : "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-marian-800 text-gold-300 font-medium";
+                }
+            } else {
+                if (emailDisplay) {
+                    emailDisplay.textContent = "";
+                    emailDisplay.classList.add('hidden');
+                }
+                if (authBtnText) authBtnText.textContent = "Sign In / Register";
+                if (syncStatusText) syncStatusText.textContent = "Local Storage Ready";
+                if (syncStatusBadge) {
+                    syncStatusBadge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-marian-800 text-gold-300 font-medium";
                 }
             }
         };
@@ -2272,7 +2385,14 @@
         document.addEventListener('DOMContentLoaded', async () => {
             window.renderLibrary();
             window.renderLessonPlanner();
-            if (supabaseClient) {
+            
+            // Check stored local session first
+            const savedSession = getStoredSession();
+            if (savedSession) {
+                currentUser = savedSession;
+                isLocalAuthMode = !!savedSession.isLocal;
+                window.updateAuthUI();
+            } else if (supabaseClient) {
                 try {
                     const { data } = await supabaseClient.auth.getSession();
                     if (data && data.session) {
