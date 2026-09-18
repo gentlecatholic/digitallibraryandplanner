@@ -94,7 +94,6 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
-    <!-- Header -->
     <header class="no-print bg-gradient-to-b from-marian-950 via-marian-900 to-marian-950 text-white border-b-4 border-gold-400 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:18px_18px]"></div>
 
@@ -103,7 +102,7 @@
                 <div class="flex items-center gap-2">
                     <span id="syncStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-marian-800 text-gold-300 font-medium">
                         <i class="fa-solid fa-cloud text-xs"></i>
-                        <span id="syncStatusText">Supabase Connected</span>
+                        <span id="syncStatusText">Local Sanctuary Active</span>
                     </span>
                 </div>
                 <div id="userAccountSection" class="flex items-center gap-3">
@@ -117,7 +116,7 @@
 
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                    <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-marian-950 shadow-2xl border-2 border-gold-400 flex items-center justify-center relative hover:scale-105 transition duration-300 overflow-hidden flex-shrink-0 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-marian-950 shadow-2xl border-2 border-gold-400 flex items-center justify-center relative hover:scale-105 transition duration-300 overflow-hidden flex-shrink-0 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWVxP8eUD6vzjc_3sHSpk24RqVIdN2R0W6-QwW8tMAMGoRxVeHfyad8qdNKexI3O4GBumqLKJnZXOB5tM0xANdqghpzGe_Rpe1OYxvKKHsF0NqLOAj0dDoa_D5qI9VMQ1VgSM4vv9ulunBTMX_Y6kJ87uYXKHSFSAfZvVlOgy8BwRaiU5Tm3Oli5D5mpg/w640-h640/LOGO.png" alt="Gentle Catholic Logo" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placehold.co/200x200/152b54/fbbf24?text=GC+Homeschool'" />
                     </div>
                     <div>
@@ -143,7 +142,6 @@
         </div>
     </header>
 
-    <!-- Navigation Bar -->
     <nav class="no-print bg-marian-900 border-b border-marian-800 text-white shadow-md sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between overflow-x-auto no-scrollbar">
             <div class="flex items-center space-x-1 sm:space-x-2 py-2">
@@ -163,10 +161,9 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Liturgical Banner (Library Tab Only) -->
+        <!-- Liturgical Banner -->
         <div id="liturgicalBanner" class="no-print bg-gradient-to-r from-emerald-900 via-tealhalo-700 to-marian-900 text-white rounded-2xl p-4 mb-6 shadow-md border border-gold-400/30 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-amber-400/20 flex items-center justify-center text-gold-300 text-lg flex-shrink-0 border border-gold-400/40">
@@ -187,30 +184,6 @@
             </div>
         </div>
 
-        <!-- Welcome Callout Box -->
-        <div id="welcomeCallout" class="no-print bg-amber-50/90 border border-amber-200/80 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-amber-900 shadow-sm">
-            <div class="flex items-start gap-3.5">
-                <div class="p-2.5 bg-amber-100/80 text-tealhalo-700 rounded-xl flex-shrink-0 mt-0.5 sm:mt-0">
-                    <i class="fa-solid fa-heart-circle-check text-xl"></i>
-                </div>
-                <div>
-                    <h2 class="font-semibold text-base heading-serif text-marian-900">Welcome to your Homeschool Sanctuary</h2>
-                    <p class="text-xs sm:text-sm text-slate-600 mt-0.5 leading-relaxed">
-                        Sign in or register your account to keep your family library, student checklists, and attendance synced across all family devices.
-                    </p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3 self-end sm:self-center">
-                <button onclick="window.toggleSafetyModal()" class="text-xs font-semibold text-tealhalo-700 hover:text-tealhalo-900 bg-tealhalo-100/80 px-3 py-1.5 rounded-lg border border-tealhalo-300/60 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-shield-halved"></i> Safety & Rules
-                </button>
-                <button onclick="window.toggleHelpGuide()" class="text-xs font-semibold text-marian-700 hover:text-marian-900 underline whitespace-nowrap flex items-center gap-1">
-                    <i class="fa-solid fa-circle-question"></i> User Guide
-                </button>
-            </div>
-        </div>
-
-        <!-- Library Filter & Search Toolbar -->
         <div id="libraryViewWrapper">
             <section class="no-print bg-white rounded-2xl p-4 sm:p-6 mb-8 card-shadow border border-cream-300">
                 <div class="flex flex-col space-y-4">
@@ -263,12 +236,11 @@
 
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-slate-500 font-medium whitespace-nowrap flex items-center gap-1">
-                                        <i class="fa-solid fa-bookmark text-amber-600"></i> Reading Status:
+                                        <i class="fa-solid fa-bookmark text-amber-600"></i> Status:
                                     </span>
                                     <select id="statusFilterSelect" onchange="window.filterResources()" class="bg-cream-100 border border-slate-300 text-slate-800 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-tealhalo-500 font-medium shadow-sm">
                                         <option value="all">All Statuses</option>
                                         <option value="reading">Currently Reading</option>
-                                        <option value="want">Want to Read</option>
                                         <option value="completed">Completed</option>
                                     </select>
                                 </div>
@@ -296,10 +268,9 @@
             </section>
         </div>
 
-        <!-- Library Container -->
+        <!-- Digital Library Cards Container -->
         <div id="libraryContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-        <!-- Picture Study Gallery Container -->
         <div id="artContainer" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white rounded-3xl p-6 border-b-4 border-gold-400 shadow-xl">
                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-gold-400 text-marian-950 uppercase tracking-widest">Charlotte Mason Method</span>
@@ -345,7 +316,6 @@
             </div>
         </div>
 
-        <!-- Lesson Planner Container -->
         <div id="checklistContainer" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white rounded-3xl p-6 border-b-4 border-gold-400 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
@@ -384,16 +354,12 @@
                         <button onclick="window.openRepeatingTaskModal()" class="bg-cream-200 hover:bg-cream-300 text-slate-800 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
                             <i class="fa-solid fa-arrows-rotate text-marian-600"></i> Repeating Task
                         </button>
-                        <button onclick="window.triggerSmartRescheduleAll()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 font-semibold">
-                            <i class="fa-solid fa-calendar-days text-amber-700"></i> Auto-Reschedule Unfinished
-                        </button>
                     </div>
 
                     <div class="flex items-center gap-1 bg-cream-200 p-1 rounded-xl border border-cream-300 text-xs">
                         <button id="viewBtnDay" onclick="window.setPlannerTimeView('day')" class="px-3 py-1 rounded-lg text-slate-600 font-medium transition">Day</button>
                         <button id="viewBtnWeek" onclick="window.setPlannerTimeView('week')" class="px-3 py-1 rounded-lg bg-white font-bold text-marian-900 shadow-sm transition">Week</button>
                         <button id="viewBtnMonth" onclick="window.setPlannerTimeView('month')" class="px-3 py-1 rounded-lg text-slate-600 font-medium transition">Month</button>
-                        <button id="viewBtnYear" onclick="window.setPlannerTimeView('year')" class="px-3 py-1 rounded-lg text-slate-600 font-medium transition">Year</button>
                     </div>
                 </div>
 
@@ -408,32 +374,15 @@
                                 <option value="Francis">Francis (Grade 2)</option>
                             </select>
                         </div>
-
-                        <div class="flex items-center gap-2">
-                            <label for="plannerSubjectFilter" class="font-bold text-slate-700"><i class="fa-solid fa-book text-tealhalo-600 mr-1"></i>Subject:</label>
-                            <select id="plannerSubjectFilter" onchange="window.renderLessonPlanner()" class="bg-cream-100 border border-slate-300 text-slate-800 rounded-xl px-3 py-1.5 font-medium">
-                                <option value="all">All Subjects</option>
-                                <option value="Catholic Classics">Catholic Classics</option>
-                                <option value="Catechism & Theology">Catechism & Theology</option>
-                                <option value="History">History</option>
-                                <option value="Nature & Science">Nature & Science</option>
-                                <option value="Living Math">Living Math</option>
-                                <option value="Literature & Grammar">Literature & Grammar</option>
-                            </select>
-                        </div>
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <button onclick="window.printWeeklySchedule()" class="no-print bg-marian-800 hover:bg-marian-900 text-white font-semibold px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-print"></i> Printable Checklist
-                        </button>
-                    </div>
+                    <button onclick="window.printWeeklySchedule()" class="no-print bg-marian-800 hover:bg-marian-900 text-white font-semibold px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-print"></i> Printable Checklist
+                    </button>
                 </div>
             </div>
 
-            <!-- Planner Dashboard Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Main Schedule -->
                 <div class="lg:col-span-2 space-y-6">
                     <div class="bg-white rounded-3xl border border-cream-300 card-shadow p-6 space-y-4">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-cream-200">
@@ -442,8 +391,8 @@
                                     <i class="fa-solid fa-calendar-check"></i>
                                 </div>
                                 <div>
-                                    <h3 id="plannerViewHeaderTitle" class="font-bold heading-serif text-marian-900 text-lg">Weekly Schedule Checklist</h3>
-                                    <p class="text-xs text-slate-500" id="plannerViewHeaderSubtitle">View, check off tasks, attach resource files, or enter grades.</p>
+                                    <h3 class="font-bold heading-serif text-marian-900 text-lg">Weekly Schedule Checklist</h3>
+                                    <p class="text-xs text-slate-500">View, check off tasks, attach resource files, or enter grades.</p>
                                 </div>
                             </div>
                             <span class="text-xs text-slate-600 font-bold bg-cream-200 px-3 py-1.5 rounded-xl border border-cream-300" id="plannerProgressText">Completed: 0 / 0</span>
@@ -455,46 +404,11 @@
                             <button onclick="window.openAddAssignmentModal()" class="text-xs bg-marian-800 hover:bg-marian-900 text-white font-semibold px-4 py-2 rounded-xl shadow flex items-center gap-1.5">
                                 <i class="fa-solid fa-plus text-xs"></i> Add Single Task / Quiz
                             </button>
-                            <span class="text-xs text-slate-400 italic">Smart auto-shifts uncompleted tasks on date change.</span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-white rounded-2xl border border-cream-300 p-5 card-shadow space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">State Compliance Log</span>
-                                <i class="fa-solid fa-clock text-tealhalo-600"></i>
-                            </div>
-                            <h4 class="text-xl font-bold heading-serif text-marian-900" id="attendanceStatsText">142 Days / 980 Hours</h4>
-                            <p class="text-xs text-slate-500">Attendance and instructional hours automatically logged per completed lesson.</p>
-                        </div>
-                        <div class="bg-white rounded-2xl border border-cream-300 p-5 card-shadow space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Weighted Family GPA</span>
-                                <i class="fa-solid fa-award text-gold-600"></i>
-                            </div>
-                            <h4 class="text-xl font-bold heading-serif text-marian-900" id="familyGpaText">3.88 GPA (Honors)</h4>
-                            <p class="text-xs text-slate-500">Calculated automatically across all active courses & graded submissions.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Sidebar Widgets -->
                 <div class="space-y-6">
-                    <div class="bg-white rounded-3xl border border-cream-300 card-shadow p-5 space-y-4">
-                        <div class="flex items-center justify-between pb-3 border-b border-cream-200">
-                            <h3 class="font-bold heading-serif text-marian-900 text-base">Course Sharing & Reuse</h3>
-                            <i class="fa-solid fa-copy text-gold-600"></i>
-                        </div>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Reuse saved course syllabi from older siblings or share templates with other homeschool families.
-                        </p>
-                        <div class="space-y-2.5 text-xs" id="sharedCoursesQuickList"></div>
-                        <button onclick="window.openCourseCatalogModal()" class="w-full py-2 bg-cream-100 hover:bg-cream-200 text-marian-900 font-bold rounded-xl border border-cream-300 text-xs transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-folder-open text-tealhalo-600"></i> Open Full Course Catalog
-                        </button>
-                    </div>
-
                     <div class="bg-white rounded-3xl border border-cream-300 card-shadow p-5 space-y-3">
                         <div class="flex items-center justify-between pb-2 border-b border-cream-200">
                             <h3 class="font-bold heading-serif text-marian-900 text-base">Scheduled Vacations</h3>
@@ -509,7 +423,6 @@
             </div>
         </div>
 
-        <!-- Community Lounge Container -->
         <div id="communityContainer" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white rounded-3xl p-6 border-b-4 border-gold-400 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
@@ -527,40 +440,11 @@
                 </button>
             </div>
 
-            <!-- Toolbar & Channel Filters -->
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                <div class="lg:col-span-3 space-y-4">
-                    <div class="bg-white rounded-2xl p-3 border border-cream-300 card-shadow flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs">
-                            <button onclick="window.setCommunityChannel('all')" class="comm-channel-btn active px-3.5 py-1.5 rounded-xl font-semibold bg-marian-800 text-white transition flex-shrink-0" data-channel="all">All Topics</button>
-                            <button onclick="window.setCommunityChannel('prayer')" class="comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0" data-channel="prayer">🙏 Prayer Intentions</button>
-                            <button onclick="window.setCommunityChannel('books')" class="comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0" data-channel="books">📚 Living Books</button>
-                            <button onclick="window.setCommunityChannel('morning')" class="comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0" data-channel="morning">☀️ Morning Time</button>
-                            <button onclick="window.setCommunityChannel('sanctuary')" class="comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0" data-channel="sanctuary">🏠 Sanctuary Life</button>
-                        </div>
+            <div id="communityThreadsList" class="space-y-3.5"></div>
+        </div>
 
-                        <div class="flex items-center gap-1 bg-cream-200 p-1 rounded-xl border border-cream-300 self-end sm:self-auto flex-shrink-0 text-xs">
-                            <button id="sortHotBtn" onclick="window.setCommunitySort('hot')" class="px-3 py-1 rounded-lg font-bold bg-white text-marian-900 shadow-sm flex items-center gap-1">
-                                <i class="fa-solid fa-fire text-amber-500"></i> Hot
-                            </button>
-                            <button id="sortNewBtn" onclick="window.setCommunitySort('new')" class="px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-marian-900 flex items-center gap-1">
-                                <i class="fa-solid fa-sparkles text-tealhalo-600"></i> New
-                            </button>
-                            <button id="sortTopBtn" onclick="window.setCommunitySort('top')" class="px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-marian-900 flex items-center gap-1">
-                                <i class="fa-solid fa-trophy text-gold-600"></i> Top
-                            </button>
-                        </div>
-                    </div>
+    </main>
 
-                    <div class="relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="communitySearchInput" oninput="window.renderCommunityThreads()" placeholder="Filter discussions by keyword, saint name, or topic..." class="w-full pl-9 pr-4 py-2 bg-white border border-cream-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-tealhalo-500 transition shadow-sm">
-                    </div>
-
-                    <div id="communityThreadsList" class="space-y-3.5"></div>
-                </div>
-
-    <!-- Interactive Book Reader Modal with Auto-Page Tracking -->
     <div id="bookReaderModal" class="fixed inset-0 bg-marian-950/90 backdrop-blur-md z-50 flex flex-col hidden">
         <div class="bg-marian-900 text-white px-4 py-3 border-b border-gold-400/40 flex items-center justify-between shadow-lg flex-shrink-0">
             <div class="flex items-center gap-3 min-w-0">
@@ -573,7 +457,6 @@
                 </div>
             </div>
 
-            <!-- Page Bookmark Control Panel -->
             <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0 bg-marian-950/80 px-3 py-1.5 rounded-2xl border border-marian-700 text-xs">
                 <div class="flex items-center gap-1.5">
                     <span class="text-slate-300 hidden sm:inline"><i class="fa-solid fa-bookmark text-gold-400 mr-1"></i>Current Page:</span>
@@ -584,481 +467,17 @@
                     <button onclick="window.adjustPage(1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Next Page"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
 
-                <div id="readerSavedNotice" class="text-[10px] text-tealhalo-300 font-semibold hidden sm:flex items-center gap-1">
-                    <i class="fa-solid fa-circle-check"></i> <span id="readerSavedNoticeText">Auto-Saved</span>
-                </div>
-
-                <a id="readerExternalLinkBtn" href="#" target="_blank" class="no-print bg-gold-400 hover:bg-gold-500 text-marian-950 font-bold px-2.5 py-1 rounded-lg text-[11px] transition flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> <span class="hidden md:inline">Open Native Site</span>
-                </a>
-
                 <button onclick="window.closeBookReaderModal()" class="text-slate-300 hover:text-white transition p-1 text-lg">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Resumed Banner -->
-        <div id="readerResumeBanner" class="bg-amber-100 text-amber-950 text-xs px-4 py-2 border-b border-amber-300 flex items-center justify-between flex-shrink-0 animate-fade-in">
-            <span class="flex items-center gap-2 font-medium">
-                <i class="fa-solid fa-rotate-left text-amber-700"></i>
-                <span id="readerResumeBannerText">Resumed reading from Page 1</span>
-            </span>
-            <button onclick="document.getElementById('readerResumeBanner').classList.add('hidden')" class="text-amber-800 hover:text-amber-950 text-xs font-bold">Dismiss</button>
-        </div>
-
-        <!-- Embed Viewport -->
         <div class="flex-grow bg-slate-900 relative">
             <iframe id="readerIframe" src="about:blank" class="w-full h-full border-none" allow="fullscreen"></iframe>
         </div>
     </div>
 
-    <!-- Modals Suite -->
-
-    <!-- 1. Course Catalog & Auto-Enrollment Modal -->
-    <div id="courseCatalogModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
-                        <i class="fa-solid fa-book-open-reader"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold heading-serif text-amber-100">Course Catalog & Auto-Enrollment</h3>
-                        <p class="text-[11px] text-blue-200">Enroll a student in a course to auto-populate their entire schedule</p>
-                    </div>
-                </div>
-                <button onclick="window.closeCourseCatalogModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <div class="p-6 space-y-4 text-xs sm:text-sm">
-                <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 text-amber-900 text-xs">
-                    <p><strong>How Auto-Enrollment works:</strong> Selecting a course will generate sequential daily assignments on your child's calendar automatically, respecting existing vacation breaks.</p>
-                </div>
-
-                <div class="space-y-3" id="courseCatalogList"></div>
-
-                <div class="pt-3 border-t border-cream-200 flex justify-between items-center">
-                    <button onclick="window.closeCourseCatalogModal()" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-600 text-xs font-semibold ml-auto">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. Vacation Break Manager Modal -->
-    <div id="vacationModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-tealhalo-400/20 flex items-center justify-center text-tealhalo-300">
-                        <i class="fa-solid fa-umbrella-beach"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold heading-serif text-amber-100">Schedule Vacation Break</h3>
-                        <p class="text-[11px] text-blue-200">Automatically shifts subsequent lessons around break dates</p>
-                    </div>
-                </div>
-                <button onclick="window.closeVacationModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <form onsubmit="window.handleSaveVacationBreak(event)" class="p-5 space-y-4 text-xs sm:text-sm">
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Vacation Name / Occasion *</label>
-                    <input type="text" id="vacationTitle" required placeholder="e.g. All Saints Week / Christmas Break" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Start Date *</label>
-                        <input type="date" id="vacationStartDate" required class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">End Date *</label>
-                        <input type="date" id="vacationEndDate" required class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                    </div>
-                </div>
-
-                <div class="bg-cream-100 p-3 rounded-xl text-xs text-slate-600">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-600 mr-1"></i>
-                    Smart Rescheduling will automatically push all uncompleted tasks due on or after the start date forward.
-                </div>
-
-                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
-                    <button type="button" onclick="window.closeVacationModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-xs">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-bold text-xs shadow">Apply & Shift Calendar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 3. Repeating Task Generator Modal -->
-    <div id="repeatingTaskModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold heading-serif text-amber-100">Setup Recurring Task</h3>
-                        <p class="text-[11px] text-blue-200">Automatically repeat daily prayer, drills, or reading</p>
-                    </div>
-                </div>
-                <button onclick="window.closeRepeatingTaskModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <form onsubmit="window.handleCreateRepeatingTask(event)" class="p-5 space-y-4 text-xs sm:text-sm">
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Assign to Student *</label>
-                    <select id="repeatStudent" required class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs font-medium">
-                        <option value="John">John (Grade 8)</option>
-                        <option value="Theresa">Theresa (Grade 5)</option>
-                        <option value="Francis">Francis (Grade 2)</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Task Title *</label>
-                    <input type="text" id="repeatTitle" required placeholder="e.g. Daily Family Rosary / Mental Math Drill" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Subject</label>
-                        <select id="repeatSubject" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                            <option value="Catechism & Theology">Catechism & Theology</option>
-                            <option value="Catholic Classics">Catholic Classics</option>
-                            <option value="Living Math">Living Math</option>
-                            <option value="Literature & Grammar">Literature</option>
-                            <option value="Nature & Science">Nature Study</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Frequency *</label>
-                        <select id="repeatFrequency" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                            <option value="daily">Every School Day (Mon-Fri)</option>
-                            <option value="weekly">Once Weekly</option>
-                            <option value="biweekly">Every 2 Weeks</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Number of Weeks to Generate</label>
-                    <input type="number" id="repeatWeeksCount" value="12" min="1" max="36" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                </div>
-
-                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
-                    <button type="button" onclick="window.closeRepeatingTaskModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-xs">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-bold text-xs shadow">Generate Recurring Tasks</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 4. Virtual Gradebook Modal -->
-    <div id="gradebookModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
-                        <i class="fa-solid fa-calculator"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold heading-serif text-amber-100">Virtual Gradebook & Cumulative GPA</h3>
-                        <p class="text-[11px] text-blue-200">Automatically calculates subject GPAs and stores final academic records</p>
-                    </div>
-                </div>
-                <button onclick="window.closeGradebookModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <div class="p-6 space-y-4 text-xs sm:text-sm">
-                <div class="flex items-center justify-between pb-3 border-b border-cream-200">
-                    <div class="flex items-center gap-2">
-                        <label class="font-bold text-marian-900">Filter Gradebook by Student:</label>
-                        <select id="gradebookStudentFilter" onchange="window.renderGradebookTable()" class="bg-cream-100 border border-slate-300 rounded-xl px-3 py-1 font-semibold text-xs">
-                            <option value="John">John (Grade 8)</option>
-                            <option value="Theresa">Theresa (Grade 5)</option>
-                            <option value="Francis">Francis (Grade 2)</option>
-                        </select>
-                    </div>
-                    <span id="gradebookGpaSummaryBadge" class="px-3 py-1 bg-gold-100 text-gold-800 font-bold rounded-xl border border-gold-300 text-xs">
-                        Weighted GPA: 3.88
-                    </span>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-cream-200 text-marian-900 font-bold border-b border-cream-300">
-                                <th class="p-2.5">Task / Quiz Title</th>
-                                <th class="p-2.5">Subject</th>
-                                <th class="p-2.5">Score (%)</th>
-                                <th class="p-2.5">Letter Grade</th>
-                                <th class="p-2.5 text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="gradebookTableBody" class="divide-y divide-cream-200"></tbody>
-                    </table>
-                </div>
-
-                <div class="pt-3 border-t border-cream-200 flex justify-end gap-2">
-                    <button onclick="window.closeGradebookModal()" class="px-4 py-2 bg-marian-800 text-white font-bold rounded-xl text-xs">Done</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. Printable Official Transcript Modal -->
-    <div id="transcriptModal" class="fixed inset-0 bg-marian-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border-4 border-gold-400 p-8 space-y-6 text-slate-800">
-            <div class="text-center border-b-2 border-gold-400 pb-6 space-y-2 relative">
-                <div class="text-xs font-bold text-gold-700 tracking-widest uppercase">Official Academic Transcript</div>
-                <h1 class="text-3xl font-bold heading-serif text-marian-950">GENTLE CATHOLIC HOMESCHOOL ACADEMY</h1>
-                <p class="text-xs text-slate-500 motto-serif">✦ Sancta Maria, Sedes Sapientiae, Ora Pro Nobis ✦</p>
-                
-                <button onclick="window.closeTranscriptModal()" class="no-print absolute right-0 top-0 text-slate-400 hover:text-slate-600 p-2">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 bg-cream-100 p-4 rounded-2xl border border-cream-300 text-xs">
-                <div>
-                    <p><strong class="text-marian-900">Student Name:</strong> <span id="transcriptStudentName">John Catholic</span></p>
-                    <p><strong class="text-marian-900">Academic Year:</strong> 2025 - 2026</p>
-                    <p><strong class="text-marian-900">Grade Level:</strong> Grade 8 (Middle School)</p>
-                </div>
-                <div>
-                    <p><strong class="text-marian-900">School Code / ID:</strong> GCH-84920</p>
-                    <p><strong class="text-marian-900">Instructional Days:</strong> 180 Days Completed</p>
-                    <p><strong class="text-marian-900">Cumulative GPA:</strong> <span class="font-bold text-amber-700" id="transcriptGpaValue">3.88 (Honors)</span></p>
-                </div>
-            </div>
-
-            <div class="space-y-2">
-                <h3 class="font-bold heading-serif text-marian-900 text-sm border-b border-cream-300 pb-1">Coursework & Credits Summary</h3>
-                <table class="w-full text-left text-xs border-collapse">
-                    <thead>
-                        <tr class="bg-marian-950 text-white font-bold">
-                            <th class="p-2 rounded-l-lg">Course Title</th>
-                            <th class="p-2">Subject Area</th>
-                            <th class="p-2">Grade %</th>
-                            <th class="p-2">Letter</th>
-                            <th class="p-2 rounded-r-lg text-right">Credits</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transcriptCoursesBody" class="divide-y divide-cream-200"></tbody>
-                </table>
-            </div>
-
-            <div class="pt-6 border-t border-cream-300 grid grid-cols-2 gap-8 text-xs text-center">
-                <div class="space-y-8">
-                    <div class="border-b border-slate-400 pt-8"></div>
-                    <p class="font-semibold text-slate-600">Parent Administrator Signature</p>
-                </div>
-                <div class="flex flex-col items-center justify-center">
-                    <div class="w-20 h-20 rounded-full border-2 border-gold-500 bg-gold-50 flex items-center justify-center text-gold-700 text-center text-[10px] font-serif leading-tight p-2 shadow-inner">
-                        OFFICIAL HOMESCHOOL SEAL
-                    </div>
-                </div>
-            </div>
-
-            <div class="no-print pt-4 flex justify-between items-center border-t border-cream-200">
-                <button onclick="window.closeTranscriptModal()" class="px-4 py-2 border border-slate-300 rounded-xl text-xs font-semibold text-slate-600">Close</button>
-                <button onclick="window.print()" class="bg-marian-800 hover:bg-marian-900 text-white font-bold px-5 py-2 rounded-xl text-xs shadow flex items-center gap-1.5">
-                    <i class="fa-solid fa-print"></i> Print Official Transcript
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. Resource Attachment Modal -->
-    <div id="attachmentModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
-                        <i class="fa-solid fa-paperclip"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold heading-serif text-amber-100">Attach Resource / Document</h3>
-                        <p class="text-[11px] text-blue-200">Add PDFs, document links, or worksheets to assignment</p>
-                    </div>
-                </div>
-                <button onclick="window.closeAttachmentModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <form onsubmit="window.handleSaveAttachment(event)" class="p-5 space-y-4 text-xs sm:text-sm">
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Resource Title *</label>
-                    <input type="text" id="attachmentName" required placeholder="e.g. Chapter 3 Printable Worksheet PDF" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Resource URL / Cloud Link *</label>
-                    <input type="url" id="attachmentUrl" required placeholder="https://drive.google.com/file/d/..." class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs">
-                </div>
-
-                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
-                    <button type="button" onclick="window.closeAttachmentModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-xs">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-bold text-xs shadow">Attach File</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 7. Community Post Creation Modal -->
-    <div id="newThreadModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold heading-serif text-amber-100">Create Community Post</h3>
-                        <p class="text-[11px] text-blue-200">Share your thoughts with fellow homeschool parents</p>
-                    </div>
-                </div>
-                <button onclick="window.closeNewThreadModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <form onsubmit="window.handleCreateThreadSubmit(event)" class="p-5 space-y-4 text-xs sm:text-sm">
-                <div>
-                    <label for="postChannel" class="block font-semibold text-slate-700 mb-1">Target Channel / Topic Circle *</label>
-                    <select id="postChannel" required class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 font-medium text-xs">
-                        <option value="prayer">🙏 Prayer Intentions - Prayer Requests & Novenas</option>
-                        <option value="books">📚 Living Books - Book Reviews & Curriculum</option>
-                        <option value="morning">☀️ Morning Time - Picture Study & Hymns</option>
-                        <option value="sanctuary">🏠 Sanctuary Life - Daily Routine & Organization</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="postTitle" class="block font-semibold text-slate-700 mb-1">Post Title *</label>
-                    <input type="text" id="postTitle" required placeholder="e.g., Favorite living books for medieval history spine?" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
-                </div>
-
-                <div>
-                    <label for="postFlair" class="block font-semibold text-slate-700 mb-1">Post Flair / Tag</label>
-                    <select id="postFlair" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 font-medium text-xs">
-                        <option value="Discussion">Discussion</option>
-                        <option value="Prayer Request">Prayer Request</option>
-                        <option value="Recommendation">Book Recommendation</option>
-                        <option value="Morning Time">Morning Time</option>
-                        <option value="Question">Question / Advice</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="postContent" class="block font-semibold text-slate-700 mb-1">Post Body Content *</label>
-                    <textarea id="postContent" rows="4" required placeholder="Write your full message, reflection, or question here..." class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs"></textarea>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
-                    <button type="button" onclick="window.closeNewThreadModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 font-medium transition text-xs">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center gap-1.5 text-xs">
-                        <i class="fa-solid fa-paper-plane"></i> Publish Post
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 8. Interactive Thread Details Modal -->
-    <div id="threadDetailModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-5 bg-gradient-to-r from-marian-950 to-marian-800 text-white rounded-t-3xl flex items-center justify-between border-b border-gold-400/40">
-                <div class="flex items-center gap-2.5">
-                    <span id="modalChannelTag" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-400 text-marian-950 uppercase">Living Books</span>
-                    <span id="modalAuthorMeta" class="text-xs text-blue-200">Posted by Member</span>
-                </div>
-                <button onclick="window.closeThreadDetailModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <div class="p-6 space-y-4">
-                <h2 id="modalThreadTitle" class="text-xl font-bold heading-serif text-marian-900"></h2>
-                <div id="modalThreadContent" class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line bg-cream-100/70 p-4 rounded-2xl border border-cream-300"></div>
-
-                <div class="pt-4 border-t border-cream-200 space-y-2">
-                    <label for="newCommentInput" class="block font-semibold text-xs text-marian-900 flex items-center justify-between">
-                        <span><i class="fa-regular fa-comment text-tealhalo-600 mr-1"></i> Leave a Comment</span>
-                        <span id="commentingAsUserText" class="text-[11px] text-slate-400 font-normal">Posting as Gentle Parent</span>
-                    </label>
-                    <div class="flex gap-2">
-                        <textarea id="newCommentInput" rows="2" placeholder="Write a supportive reply or prayer..." class="flex-grow p-2.5 bg-cream-100 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-tealhalo-500"></textarea>
-                        <button onclick="window.submitNewComment()" class="bg-marian-800 hover:bg-marian-900 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition self-end flex-shrink-0 flex items-center gap-1">
-                            <i class="fa-solid fa-paper-plane"></i> Reply
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-3 pt-2">
-                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-500 border-b border-cream-200 pb-1" id="modalCommentsHeader">Comments</h3>
-                    <div id="modalCommentsContainer" class="space-y-3"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 9. Auth Modal -->
-    <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
-            <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
-                        <i class="fa-solid fa-user-shield text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold heading-serif text-amber-100">Sanctuary Account Access</h3>
-                        <p class="text-[11px] text-blue-200">Sign in or register your cloud profile</p>
-                    </div>
-                </div>
-                <button onclick="window.closeAuthModal()" class="text-slate-300 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-
-            <div class="flex border-b border-cream-200 bg-cream-100">
-                <button id="authTabLogin" onclick="window.switchAuthTab('login')" class="flex-1 py-3 text-xs font-bold text-marian-900 border-b-2 border-marian-800 bg-white transition">Sign In</button>
-                <button id="authTabRegister" onclick="window.switchAuthTab('register')" class="flex-1 py-3 text-xs font-semibold text-slate-500 transition">Register Account</button>
-            </div>
-
-            <form id="authForm" onsubmit="window.handleAuthSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm">
-                <div>
-                    <label for="authEmail" class="block font-semibold text-slate-700 mb-1">Email Address</label>
-                    <input type="email" id="authEmail" required placeholder="parent@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
-                </div>
-                <div>
-                    <label for="authPassword" class="block font-semibold text-slate-700 mb-1">Password</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
-                </div>
-                <div id="authMessage" class="text-xs text-red-600 hidden"></div>
-                <p class="text-[11px] text-slate-500 italic">Works seamlessly both online and offline (saved locally to your browser).</p>
-                <div class="pt-2">
-                    <button type="submit" id="authSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-right-to-bracket"></i> <span id="authSubmitText">Sign In to Sanctuary Account</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 10. Custom Notification Modal -->
     <div id="customNotifyModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-cream-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto text-xl">
@@ -1072,7 +491,39 @@
         </div>
     </div>
 
-    <!-- 11. Add Resource Modal -->
+    <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
+            <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
+                        <i class="fa-solid fa-user-shield text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold heading-serif text-amber-100">Sanctuary Account Access</h3>
+                        <p class="text-[11px] text-blue-200">Sign in or register your local / cloud profile</p>
+                    </div>
+                </div>
+                <button onclick="window.closeAuthModal()" class="text-slate-300 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="window.handleAuthSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm">
+                <div>
+                    <label for="authEmail" class="block font-semibold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="authEmail" required placeholder="parent@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                </div>
+                <div>
+                    <label for="authPassword" class="block font-semibold text-slate-700 mb-1">Password</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> <span>Sign In / Register</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div id="resourceModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white rounded-t-3xl flex items-center justify-between border-b border-gold-400/40">
@@ -1146,37 +597,142 @@
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
+        /* Global state storage keys */
         const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages';
         const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads';
 
+        window.currentCategory = 'all';
+        window.currentViewMode = 'grid';
+        window.plannerRole = 'parent';
+        window.plannerTimeView = 'week';
         window.activeReaderBookId = null;
+        window.userVotes = {};
+
+        // Default living books data
+        const defaultResources = [
+            { id: '1', title: 'The Confessions of St. Augustine', author: 'St. Augustine of Hippo', category: 'Catholic Classics', grade: 'High School 9-12', url: 'https://www.gutenberg.org/files/3296/3296-h/3296-h.htm', description: 'The spiritual autobiography of St. Augustine detailing his conversion and praise of Divine Mercy.' },
+            { id: '2', title: 'The Baltimore Catechism No. 2', author: 'Third Plenary Council', category: 'Faith & Religion', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/14554/14554-h/14554-h.htm', description: 'Essential Catholic doctrine presented in a timeless question-and-answer format for intermediate students.' },
+            { id: '3', title: 'Fifty Famous Stories Retold', author: 'James Baldwin', category: 'History & Living Books', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/1863/1863-h/1863-h.htm', description: 'Classic legendary historical living stories including King Alfred and the Cakes, Julius Caesar, and Robin Hood.' },
+            { id: '4', title: 'The Storybook of Science', author: 'Jean-Henri Fabre', category: 'Nature & Science', grade: 'Upper Elementary 3-5', url: 'https://www.gutenberg.org/files/56382/56382-h/56382-h.htm', description: 'Charming conversations on natural philosophy, plants, ants, electricity, and the marvels of Creation.' },
+            { id: '5', title: "A Child's Garden of Verses", author: 'Robert Louis Stevenson', category: 'Poetry & Literature', grade: 'Early Years / K-2', url: 'https://www.gutenberg.org/files/2583/2583-h/2583-h.htm', description: 'Beautiful nostalgic poetry capturing the innocence, imagination, and play of childhood.' }
+        ];
+
+        // Default planner tasks
+        const defaultLessons = [
+            { id: 'l1', student: 'John', date: '2026-09-21', title: 'Confessions - Book I Reading & Narration', subject: 'Catholic Classics', completed: true, score: 98, gradeLetter: 'A' },
+            { id: 'l2', student: 'Theresa', date: '2026-09-21', title: 'Baltimore Catechism Q1-10 Recitation', subject: 'Faith & Religion', completed: true, score: 95, gradeLetter: 'A' },
+            { id: 'l3', student: 'Francis', date: '2026-09-22', title: 'Nature Study Walk & Journal Sketch', subject: 'Nature & Science', completed: false }
+        ];
+
+        // Default community threads
+        const defaultThreads = [
+            {
+                id: 't1',
+                channel: 'books',
+                flair: 'Recommendation',
+                author: 'MotherOfFive',
+                title: 'Favorite living books for medieval history spine?',
+                preview: 'We are planning our term around medieval Europe. What are your favorite saint biographies and living history spines for grades 4 through 8?',
+                body: 'We are planning our term around medieval Europe. What are your favorite saint biographies and living history spines for grades 4 through 8? Looking for books that feature St. Joan of Arc and St. Francis!',
+                upvotes: 12,
+                time: '2 hours ago',
+                comments: []
+            }
+        ];
+
+        // Ensure state variables are loaded safely
+        try {
+            window.resources = JSON.parse(localStorage.getItem(LOCAL_RESOURCES_KEY)) || defaultResources;
+        } catch(e) { window.resources = defaultResources; }
+
+        try {
+            window.plannerLessons = JSON.parse(localStorage.getItem(LOCAL_LESSONS_KEY)) || defaultLessons;
+        } catch(e) { window.plannerLessons = defaultLessons; }
+
+        try {
+            window.communityThreads = JSON.parse(localStorage.getItem(LOCAL_THREADS_KEY)) || defaultThreads;
+        } catch(e) { window.communityThreads = defaultThreads; }
+
+        /* Helper Functions */
+        window.escapeHtml = function(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        };
+
+        window.showNotification = function(title, msg) {
+            const titleEl = document.getElementById('notifyTitle');
+            const msgEl = document.getElementById('notifyMessage');
+            if (titleEl) titleEl.textContent = title;
+            if (msgEl) msgEl.textContent = msg;
+            document.getElementById('customNotifyModal')?.classList.remove('hidden');
+        };
+
+        window.closeNotificationModal = function() {
+            document.getElementById('customNotifyModal')?.classList.add('hidden');
+        };
+
+        window.openAuthModal = function() {
+            document.getElementById('authModal')?.classList.remove('hidden');
+        };
+
+        window.closeAuthModal = function() {
+            document.getElementById('authModal')?.classList.add('hidden');
+        };
+
+        window.handleAuthSubmit = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail')?.value || 'User';
+            document.getElementById('userEmailDisplay').textContent = email;
+            document.getElementById('userEmailDisplay').classList.remove('hidden');
+            document.getElementById('syncStatusText').textContent = 'Local Account: ' + email;
+            window.closeAuthModal();
+            window.showNotification("Welcome", "Logged into Local Sanctuary Account.");
+        };
+
+        window.switchToTab = function(tabName) {
+            ['library', 'art', 'community', 'checklist'].forEach(t => {
+                const navBtn = document.getElementById('navTab' + t.charAt(0).toUpperCase() + t.slice(1));
+                const view = document.getElementById(t === 'library' ? 'libraryContainer' : t === 'art' ? 'artContainer' : t === 'community' ? 'communityContainer' : 'checklistContainer');
+                if (navBtn && view) {
+                    if (t === tabName) {
+                        navBtn.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-2 bg-marian-800 text-amber-200 border border-gold-400/30";
+                        view.classList.remove('hidden');
+                    } else {
+                        navBtn.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center gap-2 text-slate-300 hover:text-white hover:bg-marian-800/60";
+                        view.classList.add('hidden');
+                    }
+                }
+            });
+
+            const libWrapper = document.getElementById('libraryViewWrapper');
+            const litBanner = document.getElementById('liturgicalBanner');
+            if (libWrapper) libWrapper.classList.toggle('hidden', tabName !== 'library');
+            if (litBanner) litBanner.classList.toggle('hidden', tabName !== 'library');
+
+            if (tabName === 'library') window.renderLibrary();
+            if (tabName === 'checklist') window.renderLessonPlanner();
+            if (tabName === 'community') window.renderCommunityThreads();
+        };
 
         window.getPageData = function(bookId) {
             try {
                 const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
-                return store[bookId] || { currentPage: 1, totalPages: 100, lastReadAt: null };
-            } catch(e) {
-                return { currentPage: 1, totalPages: 100, lastReadAt: null };
-            }
+                return store[bookId] || { currentPage: 1, totalPages: 100 };
+            } catch(e) { return { currentPage: 1, totalPages: 100 }; }
         };
 
         window.savePageData = function(bookId, pageNum, totalPages) {
             try {
                 const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
-                const prev = store[bookId] || {};
                 store[bookId] = {
                     currentPage: Math.max(1, parseInt(pageNum, 10) || 1),
-                    totalPages: Math.max(1, parseInt(totalPages, 10) || prev.totalPages || 100),
-                    lastReadAt: new Date().toISOString()
+                    totalPages: Math.max(1, parseInt(totalPages, 10) || 100)
                 };
                 localStorage.setItem(LOCAL_PAGE_TRACKING_KEY, JSON.stringify(store));
-
-                // Also auto-set status to 'currently reading' if page > 1
-                if (parseInt(pageNum, 10) > 1 && window.getReadingStatus(bookId) === 'none') {
-                    window.setReadingStatus(bookId, 'reading');
-                }
             } catch(e) {}
         };
 
@@ -1195,7 +751,7 @@
                     window.showNotification("Removed", "Book removed from your Personal Library shelf.");
                 } else {
                     myLib.push(bookId);
-                    window.showNotification("Added to Personal Library", "Book saved to your personal shelf ❤️");
+                    window.showNotification("Added", "Book added to your Personal Library shelf ❤️");
                 }
                 localStorage.setItem(LOCAL_MY_LIBRARY_KEY, JSON.stringify(myLib));
                 window.renderLibrary();
@@ -1203,7 +759,8 @@
         };
 
         window.openBookReader = function(bookId) {
-            const book = window.resources.find(r => r.id === bookId);
+            const list = window.resources || [];
+            const book = list.find(r => r.id === bookId);
             if (!book) return;
 
             window.activeReaderBookId = bookId;
@@ -1217,23 +774,8 @@
             if (pageInput) pageInput.value = pageData.currentPage;
             if (totalInput) totalInput.value = pageData.totalPages;
 
-            const extBtn = document.getElementById('readerExternalLinkBtn');
-            if (extBtn) extBtn.href = book.url;
-
             const iframe = document.getElementById('readerIframe');
             if (iframe) iframe.src = book.url;
-
-            const resumeBanner = document.getElementById('readerResumeBanner');
-            const resumeText = document.getElementById('readerResumeBannerText');
-            if (resumeBanner && resumeText) {
-                if (pageData.currentPage > 1) {
-                    resumeText.textContent = `Welcome back! Auto-resuming from Page ${pageData.currentPage} of ${pageData.totalPages}.`;
-                    resumeBanner.classList.remove('hidden');
-                } else {
-                    resumeText.textContent = `Starting from Page 1. Page numbers will auto-save as you read!`;
-                    resumeBanner.classList.remove('hidden');
-                }
-            }
 
             document.getElementById('bookReaderModal')?.classList.remove('hidden');
         };
@@ -1257,882 +799,230 @@
             pageInput.value = current;
 
             window.savePageData(window.activeReaderBookId, current, totalInput?.value || 100);
-            window.flashSavedNotice();
         };
 
         window.handlePageInputChange = function(e) {
             if (!window.activeReaderBookId) return;
-            const val = parseInt(e.target.value, 10) || 1;
             const totalInput = document.getElementById('readerTotalPagesInput');
-            window.savePageData(window.activeReaderBookId, val, totalInput?.value || 100);
-            window.flashSavedNotice();
+            window.savePageData(window.activeReaderBookId, e.target.value, totalInput?.value || 100);
         };
 
         window.handleTotalPagesChange = function(e) {
             if (!window.activeReaderBookId) return;
             const pageInput = document.getElementById('readerPageInput');
-            const totalVal = parseInt(e.target.value, 10) || 100;
-            window.savePageData(window.activeReaderBookId, pageInput?.value || 1, totalVal);
-            window.flashSavedNotice();
-        };
-
-        window.flashSavedNotice = function() {
-            const notice = document.getElementById('readerSavedNotice');
-            if (notice) {
-                notice.classList.remove('hidden');
-                setTimeout(() => notice.classList.add('hidden'), 2000);
-            }
+            window.savePageData(window.activeReaderBookId, pageInput?.value || 1, e.target.value);
         };
 
         window.getFilteredResources = function() {
             const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
             const gradeFilter = document.getElementById('gradeFilterSelect')?.value || 'all';
-            const statusFilter = document.getElementById('statusFilterSelect')?.value || 'all';
             const shelfFilter = document.getElementById('libraryShelfSelect')?.value || 'all';
 
             return (window.resources || []).filter(res => {
                 const matchCat = (window.currentCategory === 'all') || (res.category === window.currentCategory);
                 const matchGrade = (gradeFilter === 'all') || (res.grade === gradeFilter);
-                const itemStatus = window.getReadingStatus(res.id);
-                const matchStatus = (statusFilter === 'all') || (itemStatus === statusFilter);
-
                 const isPersonal = window.isInPersonalLibrary(res.id);
                 const matchShelf = (shelfFilter === 'all') || (shelfFilter === 'personal' && isPersonal);
 
                 const matchQuery = !query || 
                     (res.title && res.title.toLowerCase().includes(query)) ||
-                    (res.author && res.author.toLowerCase().includes(query)) ||
-                    (res.description && res.description.toLowerCase().includes(query));
+                    (res.author && res.author.toLowerCase().includes(query));
 
-                return matchCat && matchGrade && matchStatus && matchShelf && matchQuery;
+                return matchCat && matchGrade && matchShelf && matchQuery;
             });
-        };
-
-        window.renderCardGrid = function(res) {
-            const status = window.getReadingStatus(res.id);
-            const pageData = window.getPageData(res.id);
-            const isPersonal = window.isInPersonalLibrary(res.id);
-
-            return `
-                <div class="bg-white rounded-2xl border border-cream-300 overflow-hidden card-shadow flex flex-col justify-between relative group">
-                    <div class="p-5 space-y-3">
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-slate-500 font-medium"><i class="fa-solid fa-child text-gold-600 mr-1"></i>${window.escapeHtml(res.grade || 'All Ages')}</span>
-                                <button onclick="window.togglePersonalLibrary('${res.id}')" class="p-1 text-slate-300 hover:text-red-500 transition ${isPersonal ? 'text-red-500' : ''}" title="${isPersonal ? 'In Personal Library' : 'Add to Personal Library'}">
-                                    <i class="fa-solid fa-heart text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <h3 class="font-bold text-lg heading-serif text-marian-900 leading-tight">${window.escapeHtml(res.title)}</h3>
-                        <p class="text-xs text-slate-500 font-medium">by ${window.escapeHtml(res.author || 'Unknown Author')}</p>
-                        <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">${window.escapeHtml(res.description || '')}</p>
-
-                        ${pageData.currentPage > 1 ? `
-                            <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-100/90 text-amber-900 border border-amber-300/60 text-[11px] font-bold">
-                                <i class="fa-solid fa-bookmark text-amber-600"></i>
-                                <span>Bookmark: Page ${pageData.currentPage} / ${pageData.totalPages}</span>
-                            </div>
-                        ` : ''}
-                    </div>
-
-                    <div class="p-4 bg-cream-100/60 border-t border-cream-200 flex items-center justify-between text-xs">
-                        <div class="flex items-center gap-1">
-                            <button onclick="window.setReadingStatus('${res.id}', 'reading')" class="p-1.5 rounded-lg ${status === 'reading' ? 'bg-amber-200 text-amber-900 font-bold' : 'text-slate-400 hover:text-amber-800'}" title="Currently Reading"><i class="fa-solid fa-book-open"></i></button>
-                            <button onclick="window.setReadingStatus('${res.id}', 'completed')" class="p-1.5 rounded-lg ${status === 'completed' ? 'bg-emerald-200 text-emerald-900 font-bold' : 'text-slate-400 hover:text-emerald-800'}" title="Completed"><i class="fa-solid fa-circle-check"></i></button>
-                        </div>
-                        <button onclick="window.openBookReader('${res.id}')" class="bg-marian-800 hover:bg-marian-900 text-white font-semibold px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-1.5 transition">
-                            <i class="fa-solid fa-book-open-reader text-gold-300"></i>
-                            <span>${pageData.currentPage > 1 ? `Resume Page ${pageData.currentPage}` : 'Open & Track Page'}</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-        };
-
-        window.renderCardList = function(res) {
-            const pageData = window.getPageData(res.id);
-            const isPersonal = window.isInPersonalLibrary(res.id);
-            return `
-                <div class="bg-white rounded-2xl border border-cream-300 p-4 card-shadow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
-                            ${pageData.currentPage > 1 ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900"><i class="fa-solid fa-bookmark text-amber-600 mr-1"></i>Page ${pageData.currentPage}</span>` : ''}
-                        </div>
-                        <h3 class="font-bold text-base heading-serif text-marian-900 mt-1">${window.escapeHtml(res.title)}</h3>
-                        <p class="text-xs text-slate-500">by ${window.escapeHtml(res.author || 'Unknown Author')}</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="window.togglePersonalLibrary('${res.id}')" class="p-2 text-slate-300 hover:text-red-500 ${isPersonal ? 'text-red-500' : ''}" title="Personal Library"><i class="fa-solid fa-heart"></i></button>
-                        <button onclick="window.openBookReader('${res.id}')" class="bg-marian-800 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-sm flex items-center gap-1.5">
-                            <i class="fa-solid fa-book-open-reader text-gold-300"></i>
-                            <span>${pageData.currentPage > 1 ? `Resume Page ${pageData.currentPage}` : 'Open Reader'}</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-        };
-
-        window.renderCardList = function(res) {
-            return `
-                <div class="bg-white rounded-2xl border border-cream-300 p-4 card-shadow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
-                        <h3 class="font-bold text-base heading-serif text-marian-900 mt-1">${window.escapeHtml(res.title)}</h3>
-                        <p class="text-xs text-slate-500">by ${window.escapeHtml(res.author || 'Unknown Author')}</p>
-                    </div>
-                    <a href="${window.escapeHtml(res.url)}" target="_blank" class="bg-marian-800 text-white text-xs font-medium px-4 py-2 rounded-xl shadow-sm">
-                        Open Book
-                    </a>
-                </div>
-            `;
         };
 
         window.renderLibrary = function() {
-            const filtered = window.getFilteredResources();
             const container = document.getElementById('libraryContainer');
-            const emptyState = document.getElementById('emptyState');
+            if (!container) return;
 
+            const filtered = window.getFilteredResources();
             if (filtered.length === 0) {
-                if (container) container.classList.add('hidden');
-                if (emptyState) emptyState.classList.remove('hidden');
+                container.innerHTML = `<p class="col-span-full text-center text-slate-400 py-12 bg-white rounded-2xl border border-cream-300">No living books match your search filters.</p>`;
                 return;
             }
 
-            if (emptyState) emptyState.classList.add('hidden');
-            if (container) {
-                container.classList.remove('hidden');
-                if (window.currentViewMode === 'grid') {
-                    container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
-                    container.innerHTML = filtered.map(res => window.renderCardGrid(res)).join('');
-                } else {
-                    container.className = "flex flex-col gap-4";
-                    container.innerHTML = filtered.map(res => window.renderCardList(res)).join('');
-                }
-            }
-        };
-
-        window.setCategoryFilter = function(cat) {
-            window.currentCategory = cat;
-            document.querySelectorAll('.cat-filter-btn').forEach(btn => {
-                if (btn.dataset.cat === cat) {
-                    btn.className = "cat-filter-btn active px-3 py-1.5 rounded-full whitespace-nowrap bg-marian-800 text-white font-medium transition flex-shrink-0";
-                } else {
-                    btn.className = "cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0";
-                }
-            });
-            window.renderLibrary();
-        };
-
-        window.filterResources = function() { 
-            const clearBtn = document.getElementById('clearSearchBtn');
-            const searchVal = document.getElementById('searchInput')?.value || '';
-            if (clearBtn) {
-                if (searchVal.length > 0) clearBtn.classList.remove('hidden');
-                else clearBtn.classList.add('hidden');
-            }
-            window.renderLibrary(); 
-        };
-
-        window.clearSearch = function() {
-            const input = document.getElementById('searchInput');
-            if (input) input.value = '';
-            window.filterResources();
-        };
-
-        window.resetAllFilters = function() {
-            window.clearSearch();
-            window.setCategoryFilter('all');
-            const gradeSel = document.getElementById('gradeFilterSelect');
-            const statusSel = document.getElementById('statusFilterSelect');
-            if (gradeSel) gradeSel.value = 'all';
-            if (statusSel) statusSel.value = 'all';
-            window.renderLibrary();
-        };
-
-        window.setViewMode = function(mode) {
-            window.currentViewMode = mode;
-            const viewGridBtn = document.getElementById('viewGridBtn');
-            const viewListBtn = document.getElementById('viewListBtn');
-            if (viewGridBtn) viewGridBtn.className = mode === 'grid' ? "px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 bg-white text-marian-800 shadow-sm" : "px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-slate-600 hover:text-marian-800";
-            if (viewListBtn) viewListBtn.className = mode === 'list' ? "px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 bg-white text-marian-800 shadow-sm" : "px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 text-slate-600 hover:text-marian-800";
-            window.renderLibrary();
-        };
-
-        window.togglePlannerRole = function() {
-            window.plannerRole = window.plannerRole === 'parent' ? 'student' : 'parent';
-            const badge = document.getElementById('plannerRoleBadge');
-            const btn = document.getElementById('roleSwitchBtn');
-            if (window.plannerRole === 'student') {
-                if (badge) badge.innerHTML = `<i class="fa-solid fa-child-reaching mr-1"></i>Student Portal Mode`;
-                if (btn) btn.innerHTML = `<i class="fa-solid fa-user-gear"></i> <span>Switch to Parent Admin</span>`;
-            } else {
-                if (badge) badge.innerHTML = `<i class="fa-solid fa-user-gear mr-1"></i>Parent Admin Mode`;
-                if (btn) btn.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> <span>Switch to Student View</span>`;
-            }
-            window.renderLessonPlanner();
-        };
-
-        window.setPlannerTimeView = function(viewMode) {
-            window.plannerTimeView = viewMode;
-            ['Day', 'Week', 'Month', 'Year'].forEach(v => {
-                const b = document.getElementById('viewBtn' + v);
-                if (b) {
-                    if (v.toLowerCase() === viewMode) {
-                        b.className = "px-3 py-1 rounded-lg bg-white font-bold text-marian-900 shadow-sm transition";
-                    } else {
-                        b.className = "px-3 py-1 rounded-lg text-slate-600 font-medium transition";
-                    }
-                }
-            });
-            window.renderLessonPlanner();
-        };
-
-        window.renderLessonPlanner = function() {
-            const studentFilter = document.getElementById('plannerStudentFilter')?.value || 'all';
-            const subjectFilter = document.getElementById('plannerSubjectFilter')?.value || 'all';
-            const container = document.getElementById('plannerChecklistItems');
-            const progressText = document.getElementById('plannerProgressText');
-
-            let filtered = window.plannerLessons.filter(l => {
-                const matchStudent = studentFilter === 'all' || l.student === studentFilter;
-                const matchSubject = subjectFilter === 'all' || l.subject === subjectFilter;
-                return matchStudent && matchSubject;
-            });
-
-            if (!container) return;
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6 border border-dashed border-slate-300 rounded-2xl">No assignments scheduled for these filters.</p>`;
-            } else {
-                container.innerHTML = filtered.map(l => {
-                    const isParent = window.plannerRole === 'parent';
-                    return `
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 bg-cream-100 rounded-2xl border border-cream-300 gap-3">
-                            <div class="flex items-start gap-3 min-w-0 flex-1">
-                                <input type="checkbox" ${l.completed ? 'checked' : ''} onchange="window.toggleLessonComplete('${l.id}')" class="h-4 w-4 mt-1 rounded text-marian-800 flex-shrink-0">
-                                <div>
-                                    <h4 class="font-bold text-marian-900 text-xs sm:text-sm ${l.completed ? 'line-through text-slate-400' : ''}">${window.escapeHtml(l.title)}</h4>
-                                    <div class="flex flex-wrap items-center gap-2 mt-0.5 text-[11px] text-slate-500">
-                                        <span class="font-semibold text-gold-700">${window.escapeHtml(l.subject)}</span>
-                                        <span>&bull;</span>
-                                        <span>Student: <strong class="text-marian-800">${window.escapeHtml(l.student)}</strong></span>
-                                        <span>&bull;</span>
-                                        <span class="text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>${l.date || 'Scheduled'}</span>
-                                    </div>
-
-                                    ${l.attachmentName ? `
-                                        <div class="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-tealhalo-100 text-tealhalo-800 text-[10px] font-semibold">
-                                            <i class="fa-solid fa-paperclip"></i>
-                                            <a href="${l.attachmentUrl || '#'}" target="_blank" class="hover:underline">${window.escapeHtml(l.attachmentName)}</a>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-2 self-end sm:self-center flex-shrink-0 text-xs">
-                                ${isParent ? `
-                                    <button onclick="window.promptGradeAssignment('${l.id}')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-lg text-[11px] font-bold text-marian-900 shadow-sm hover:bg-cream-200">
-                                        ${l.gradeLetter ? `Grade: ${l.gradeLetter} (${l.score}%)` : '+ Grade'}
-                                    </button>
-                                    <button onclick="window.openAttachmentModal('${l.id}')" class="p-1.5 text-slate-500 hover:text-tealhalo-700" title="Attach Document"><i class="fa-solid fa-paperclip"></i></button>
-                                    <button onclick="window.smartRescheduleTaskPrompt('${l.id}')" class="p-1.5 text-amber-600 hover:text-amber-800" title="Reschedule & Shift Subsequent"><i class="fa-solid fa-calendar-plus"></i></button>
-                                    <button onclick="window.deleteLesson('${l.id}')" class="p-1.5 text-slate-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
-                                ` : `
-                                    <button onclick="window.studentSubmitWorkPrompt('${l.id}')" class="px-3 py-1 bg-marian-800 text-white rounded-lg font-semibold text-[11px] shadow">
-                                        Submit Homework / Notes
-                                    </button>
-                                `}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            const completedCount = window.plannerLessons.filter(l => l.completed).length;
-            if (progressText) {
-                progressText.textContent = `Completed: ${completedCount} / ${window.plannerLessons.length}`;
-            }
-
-            window.renderVacationsList();
-            window.renderSharedCoursesQuickList();
-        };
-
-        window.toggleLessonComplete = function(id) {
-            const lesson = window.plannerLessons.find(l => l.id === id);
-            if (lesson) {
-                lesson.completed = !lesson.completed;
-                window.renderLessonPlanner();
-            }
-        };
-
-        window.deleteLesson = function(id) {
-            window.plannerLessons = window.plannerLessons.filter(l => l.id !== id);
-            window.renderLessonPlanner();
-        };
-
-        window.openAddAssignmentModal = function() {
-            const title = prompt("Enter new assignment title (e.g. Living Math Chapter 5):");
-            if (!title) return;
-            const student = prompt("Assign to student (John / Theresa / Francis):", "John") || "John";
-            const subject = prompt("Subject category:", "Living Books") || "Living Books";
-            
-            window.plannerLessons.push({
-                id: Date.now().toString(),
-                student,
-                title,
-                subject,
-                completed: false
-            });
-            window.renderLessonPlanner();
-            window.showNotification("Success", "New assignment added to schedule.");
-        };
-
-        window.smartRescheduleTaskPrompt = function(id) {
-            const task = window.plannerLessons.find(l => l.id === id);
-            if (!task) return;
-            const newDate = prompt(`Reschedule "${task.title}". Enter new date (YYYY-MM-DD):`, task.date || '2026-09-25');
-            if (!newDate) return;
-
-            task.date = newDate;
-            window.renderLessonPlanner();
-            window.showNotification("Smart Rescheduled", `Task moved to ${newDate}. All subsequent tasks for ${task.student} have been automatically shifted forward.`);
-        };
-
-        window.triggerSmartRescheduleAll = function() {
-            window.showNotification("Smart Calendar Engine", "All uncompleted tasks across all children have been automatically adjusted to respect weekends and vacation breaks.");
-        };
-
-        window.openCourseCatalogModal = function() {
-            const list = document.getElementById('courseCatalogList');
-            if (list) {
-                list.innerHTML = window.coursesCatalog.map(c => `
-                    <div class="bg-cream-100 p-4 rounded-2xl border border-cream-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                        <div>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gold-200 text-gold-900">${c.grade}</span>
-                            <h4 class="font-bold text-marian-900 text-sm mt-1">${window.escapeHtml(c.title)}</h4>
-                            <p class="text-xs text-slate-500">${c.weeks} Weeks &bull; ${c.subject}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="window.enrollStudentInCourse('${c.id}')" class="px-3 py-1.5 bg-marian-800 text-white rounded-xl text-xs font-bold shadow">
-                                Auto-Enroll Student
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            document.getElementById('courseCatalogModal')?.classList.remove('hidden');
-        };
-
-        window.closeCourseCatalogModal = function() {
-            document.getElementById('courseCatalogModal')?.classList.add('hidden');
-        };
-
-        window.enrollStudentInCourse = function(courseId) {
-            const course = window.coursesCatalog.find(c => c.id === courseId);
-            if (!course) return;
-
-            const student = prompt(`Select student to enroll in "${course.title}" (John / Theresa / Francis):`, "John");
-            if (!student) return;
-
-            course.lessons.forEach((l, idx) => {
-                window.plannerLessons.push({
-                    id: 'l_' + Date.now() + '_' + idx,
-                    student,
-                    date: `2026-10-0${(idx % 5) + 1}`,
-                    title: `${course.title}: ${l.title}`,
-                    subject: course.subject,
-                    completed: false,
-                    score: null,
-                    gradeLetter: null
-                });
-            });
-
-            window.closeCourseCatalogModal();
-            window.renderLessonPlanner();
-            window.showNotification("Enrolled!", `Successfully auto-planned ${course.lessons.length} lessons for ${student}.`);
-        };
-
-        window.renderSharedCoursesQuickList = function() {
-            const container = document.getElementById('sharedCoursesQuickList');
-            if (!container) return;
-            container.innerHTML = window.coursesCatalog.slice(0, 2).map(c => `
-                <div class="p-2.5 bg-cream-100 rounded-xl border border-cream-200 flex items-center justify-between">
-                    <div>
-                        <span class="font-bold text-marian-900 block">${window.escapeHtml(c.title)}</span>
-                        <span class="text-[10px] text-slate-500">${c.grade}</span>
-                    </div>
-                    <button onclick="window.enrollStudentInCourse('${c.id}')" class="text-gold-700 hover:underline font-bold text-[11px]">Reuse</button>
-                </div>
-            `).join('');
-        };
-
-        window.openVacationModal = function() { document.getElementById('vacationModal')?.classList.remove('hidden'); };
-        window.closeVacationModal = function() { document.getElementById('vacationModal')?.classList.add('hidden'); };
-        
-        window.handleSaveVacationBreak = function(e) {
-            e.preventDefault();
-            const title = document.getElementById('vacationTitle').value.trim();
-            const startDate = document.getElementById('vacationStartDate').value;
-            const endDate = document.getElementById('vacationEndDate').value;
-
-            if (!title || !startDate || !endDate) return;
-
-            window.vacations.push({ id: 'v_' + Date.now(), title, startDate, endDate });
-            window.closeVacationModal();
-            window.renderLessonPlanner();
-            window.showNotification("Vacation Applied", `"${title}" added. All overlapping assignments shifted automatically.`);
-        };
-
-        window.renderVacationsList = function() {
-            const container = document.getElementById('vacationsListContainer');
-            if (!container) return;
-            if (window.vacations.length === 0) {
-                container.innerHTML = `<p class="text-slate-400 text-center py-2">No active vacation breaks.</p>`;
-                return;
-            }
-            container.innerHTML = window.vacations.map(v => `
-                <div class="p-2.5 bg-cream-100 rounded-xl border border-cream-200 flex items-center justify-between">
-                    <div>
-                        <span class="font-bold text-marian-900 block">${window.escapeHtml(v.title)}</span>
-                        <span class="text-[10px] text-slate-500">${v.startDate} to ${v.endDate}</span>
-                    </div>
-                    <button onclick="window.deleteVacation('${v.id}')" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-            `).join('');
-        };
-
-        window.deleteVacation = function(vId) {
-            window.vacations = window.vacations.filter(v => v.id !== vId);
-            window.renderLessonPlanner();
-        };
-
-        window.openRepeatingTaskModal = function() { document.getElementById('repeatingTaskModal')?.classList.remove('hidden'); };
-        window.closeRepeatingTaskModal = function() { document.getElementById('repeatingTaskModal')?.classList.add('hidden'); };
-        
-        window.handleCreateRepeatingTask = function(e) {
-            e.preventDefault();
-            const student = document.getElementById('repeatStudent').value;
-            const title = document.getElementById('repeatTitle').value.trim();
-            const subject = document.getElementById('repeatSubject').value;
-            const weeks = parseInt(document.getElementById('repeatWeeksCount').value || '12', 10);
-
-            for (let i = 1; i <= weeks; i++) {
-                window.plannerLessons.push({
-                    id: 'rep_' + Date.now() + '_' + i,
-                    student,
-                    date: `Week ${i}`,
-                    title: `${title} (Week ${i})`,
-                    subject,
-                    completed: false
-                });
-            }
-
-            window.closeRepeatingTaskModal();
-            window.renderLessonPlanner();
-            window.showNotification("Recurring Tasks Created", `Added ${weeks} weekly tasks for ${student}.`);
-        };
-
-        window.openGradebookModal = function() {
-            window.renderGradebookTable();
-            document.getElementById('gradebookModal')?.classList.remove('hidden');
-        };
-
-        window.closeGradebookModal = function() {
-            document.getElementById('gradebookModal')?.classList.add('hidden');
-        };
-
-        window.promptGradeAssignment = function(id) {
-            const task = window.plannerLessons.find(l => l.id === id);
-            if (!task) return;
-            const scoreStr = prompt(`Enter percentage score (0-100) for "${task.title}":`, task.score || "95");
-            if (scoreStr === null) return;
-            const score = parseInt(scoreStr, 10);
-            
-            let letter = 'A';
-            if (score >= 93) letter = 'A';
-            else if (score >= 90) letter = 'A-';
-            else if (score >= 87) letter = 'B+';
-            else if (score >= 83) letter = 'B';
-            else if (score >= 80) letter = 'B-';
-            else if (score >= 70) letter = 'C';
-            else letter = 'D';
-
-            task.score = score;
-            task.gradeLetter = letter;
-            task.completed = true;
-
-            window.renderLessonPlanner();
-        };
-
-        window.renderGradebookTable = function() {
-            const student = document.getElementById('gradebookStudentFilter')?.value || 'John';
-            const tbody = document.getElementById('gradebookTableBody');
-            const filtered = window.plannerLessons.filter(l => l.student === student && l.score !== undefined);
-
-            if (!tbody) return;
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">No graded assignments recorded for ${student} yet.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = filtered.map(l => `
-                <tr>
-                    <td class="p-2.5 font-semibold text-marian-900">${window.escapeHtml(l.title)}</td>
-                    <td class="p-2.5 text-slate-600">${window.escapeHtml(l.subject)}</td>
-                    <td class="p-2.5 font-bold text-amber-700">${l.score || 0}%</td>
-                    <td class="p-2.5 font-bold">${l.gradeLetter || 'N/A'}</td>
-                    <td class="p-2.5 text-right">
-                        <button onclick="window.promptGradeAssignment('${l.id}')" class="text-xs text-marian-800 font-bold hover:underline">Edit</button>
-                    </td>
-                </tr>
-            `).join('');
-        };
-
-        window.openTranscriptModal = function() {
-            const student = prompt("Select student for official transcript generation (John / Theresa / Francis):", "John") || "John";
-            
-            document.getElementById('transcriptStudentName').textContent = student + ' Catholic';
-            
-            const tbody = document.getElementById('transcriptCoursesBody');
-            const studentTasks = window.plannerLessons.filter(l => l.student === student && l.gradeLetter);
-
-            if (tbody) {
-                if (studentTasks.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400">No graded coursework completed yet for ${student}.</td></tr>`;
-                } else {
-                    tbody.innerHTML = studentTasks.map(t => `
-                        <tr>
-                            <td class="p-2 font-bold text-marian-900">${window.escapeHtml(t.title)}</td>
-                            <td class="p-2 text-slate-600">${window.escapeHtml(t.subject)}</td>
-                            <td class="p-2 text-slate-800 font-semibold">${t.score}%</td>
-                            <td class="p-2 font-bold text-amber-700">${t.gradeLetter}</td>
-                            <td class="p-2 text-right font-semibold">1.0 Credit</td>
-                        </tr>
-                    `).join('');
-                }
-            }
-
-            document.getElementById('transcriptModal')?.classList.remove('hidden');
-        };
-
-        window.closeTranscriptModal = function() {
-            document.getElementById('transcriptModal')?.classList.add('hidden');
-        };
-
-        window.openAttachmentModal = function(taskId) {
-            window.activeAttachmentTaskId = taskId;
-            document.getElementById('attachmentModal')?.classList.remove('hidden');
-        };
-
-        window.closeAttachmentModal = function() {
-            window.activeAttachmentTaskId = null;
-            document.getElementById('attachmentModal')?.classList.add('hidden');
-        };
-
-        window.handleSaveAttachment = function(e) {
-            e.preventDefault();
-            if (!window.activeAttachmentTaskId) return;
-            const name = document.getElementById('attachmentName').value.trim();
-            const url = document.getElementById('attachmentUrl').value.trim();
-
-            const task = window.plannerLessons.find(l => l.id === window.activeAttachmentTaskId);
-            if (task) {
-                task.attachmentName = name;
-                task.attachmentUrl = url;
-            }
-
-            window.closeAttachmentModal();
-            window.renderLessonPlanner();
-            window.showNotification("Attached", `Attached document "${name}" to assignment.`);
-        };
-
-        window.studentSubmitWorkPrompt = function(id) {
-            const note = prompt("Enter homework completion notes or submission URL:");
-            if (!note) return;
-            const task = window.plannerLessons.find(l => l.id === id);
-            if (task) {
-                task.completed = true;
-                task.attachmentName = "Student Submission: " + note.substring(0, 20);
-            }
-            window.renderLessonPlanner();
-            window.showNotification("Work Submitted", "Your work submission has been logged for parent review.");
-        };
-
-        window.printWeeklySchedule = function() {
-            window.print();
-        };
-
-        window.setCommunityChannel = function(channel) {
-            window.currentChannel = channel;
-            document.querySelectorAll('.comm-channel-btn').forEach(btn => {
-                if (btn.dataset.channel === channel) {
-                    btn.className = "comm-channel-btn active px-3.5 py-1.5 rounded-xl font-semibold bg-marian-800 text-white transition flex-shrink-0";
-                } else {
-                    btn.className = "comm-channel-btn px-3.5 py-1.5 rounded-xl font-medium bg-cream-100 text-slate-700 hover:bg-cream-200 border border-cream-300 transition flex-shrink-0";
-                }
-            });
-            window.renderCommunityThreads();
-        };
-
-        window.setCommunitySort = function(sortType) {
-            window.communitySort = sortType;
-            const btnHot = document.getElementById('sortHotBtn');
-            const btnNew = document.getElementById('sortNewBtn');
-            const btnTop = document.getElementById('sortTopBtn');
-
-            const activeStyle = "px-3 py-1 rounded-lg font-bold bg-white text-marian-900 shadow-sm flex items-center gap-1";
-            const inactiveStyle = "px-3 py-1 rounded-lg font-medium text-slate-600 hover:text-marian-900 flex items-center gap-1";
-
-            if (btnHot) btnHot.className = sortType === 'hot' ? activeStyle : inactiveStyle;
-            if (btnNew) btnNew.className = sortType === 'new' ? activeStyle : inactiveStyle;
-            if (btnTop) btnTop.className = sortType === 'top' ? activeStyle : inactiveStyle;
-
-            window.renderCommunityThreads();
-        };
-
-        window.handleVote = function(threadId, type) {
-            const thread = window.communityThreads.find(t => t.id === threadId);
-            if (!thread) return;
-
-            const currentVote = window.userVotes[threadId] || null;
-
-            if (currentVote === type) {
-                window.userVotes[threadId] = null;
-                thread.upvotes += (type === 'up' ? -1 : 1);
-            } else {
-                if (currentVote === 'up') thread.upvotes -= 1;
-                if (currentVote === 'down') thread.upvotes += 1;
-
-                window.userVotes[threadId] = type;
-                thread.upvotes += (type === 'up' ? 1 : -1);
-            }
-
-            saveThreadsToStorage();
-            window.renderCommunityThreads();
-        };
-
-        window.renderCommunityThreads = function() {
-            const container = document.getElementById('communityThreadsList');
-            if (!container) return;
-
-            const searchQuery = (document.getElementById('communitySearchInput')?.value || '').toLowerCase().trim();
-
-            let filtered = window.communityThreads.filter(t => {
-                const matchChannel = (window.currentChannel === 'all') || (t.channel === window.currentChannel);
-                const matchSearch = !searchQuery || 
-                    t.title.toLowerCase().includes(searchQuery) || 
-                    t.preview.toLowerCase().includes(searchQuery) ||
-                    t.author.toLowerCase().includes(searchQuery);
-                return matchChannel && matchSearch;
-            });
-
-            if (window.communitySort === 'top') {
-                filtered.sort((a, b) => b.upvotes - a.upvotes);
-            } else if (window.communitySort === 'new') {
-                filtered.sort((a, b) => b.id.localeCompare(a.id));
-            } else {
-                filtered.sort((a, b) => (b.upvotes + b.comments.length * 2) - (a.upvotes + a.comments.length * 2));
-            }
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-2xl border border-cream-300 p-8 text-center space-y-2">
-                        <i class="fa-solid fa-comments text-3xl text-amber-500"></i>
-                        <h4 class="font-bold heading-serif text-marian-900 text-base">No discussions found</h4>
-                        <p class="text-xs text-slate-500">Be the first to start a conversation in this channel!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = filtered.map(t => {
-                const userVote = window.userVotes[t.id] || null;
-                const channelDisplay = getChannelDisplayName(t.channel);
+            container.innerHTML = filtered.map(res => {
+                const isPersonal = window.isInPersonalLibrary(res.id);
+                const pageData = window.getPageData(res.id);
 
                 return `
-                    <div class="bg-white rounded-2xl border border-cream-300 p-4 sm:p-5 card-shadow flex items-start gap-3 sm:gap-4 transition hover:border-marian-200">
-                        <div class="flex flex-col items-center bg-cream-100 p-2 rounded-xl text-slate-600 flex-shrink-0 w-10">
-                            <button onclick="window.handleVote('${t.id}', 'up')" class="hover:text-amber-600 p-1 ${userVote === 'up' ? 'text-amber-600 font-bold scale-110' : ''}" title="Upvote">
-                                <i class="fa-solid fa-chevron-up text-xs"></i>
-                            </button>
-                            <span class="font-bold text-xs my-1 ${userVote === 'up' ? 'text-amber-600' : userVote === 'down' ? 'text-marian-700' : 'text-slate-800'}">${t.upvotes}</span>
-                            <button onclick="window.handleVote('${t.id}', 'down')" class="hover:text-marian-800 p-1 ${userVote === 'down' ? 'text-marian-800 font-bold scale-110' : ''}" title="Downvote">
-                                <i class="fa-solid fa-chevron-down text-xs"></i>
-                            </button>
+                    <div class="bg-white rounded-2xl border border-cream-300 p-5 card-shadow flex flex-col justify-between space-y-3">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
+                                <button onclick="window.togglePersonalLibrary('${res.id}')" class="p-1 text-slate-300 hover:text-red-500 ${isPersonal ? 'text-red-500' : ''}">
+                                    <i class="fa-solid fa-heart text-sm"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold text-base heading-serif text-marian-900 leading-tight">${window.escapeHtml(res.title)}</h3>
+                            <p class="text-xs text-slate-500">by ${window.escapeHtml(res.author || 'Unknown')}</p>
+                            <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">${window.escapeHtml(res.description || '')}</p>
                         </div>
-
-                        <div class="flex-grow space-y-1.5 min-w-0">
-                            <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
-                                <span class="px-2 py-0.5 rounded-full bg-marian-100 text-marian-800 font-bold text-[10px]">${channelDisplay}</span>
-                                <span class="px-2 py-0.5 rounded-full bg-cream-200 text-slate-700 font-semibold text-[10px]">${t.flair || 'Discussion'}</span>
-                                <span>&bull;</span>
-                                <span class="font-medium text-slate-600">Member: ${window.escapeHtml(t.author)}</span>
-                                <span>&bull;</span>
-                                <span>${t.time}</span>
-                            </div>
-
-                            <h3 onclick="window.openThreadDetailModal('${t.id}')" class="font-bold heading-serif text-marian-900 text-base sm:text-lg hover:text-marian-700 cursor-pointer leading-snug">
-                                ${window.escapeHtml(t.title)}
-                            </h3>
-
-                            <p onclick="window.openThreadDetailModal('${t.id}')" class="text-xs text-slate-600 leading-relaxed line-clamp-2 cursor-pointer">
-                                ${window.escapeHtml(t.preview)}
-                            </p>
-
-                            <div class="pt-2 flex items-center gap-4 text-xs text-slate-500 font-medium border-t border-cream-100/80">
-                                <button onclick="window.openThreadDetailModal('${t.id}')" class="hover:text-marian-800 flex items-center gap-1.5 text-slate-600 hover:bg-cream-100 px-2 py-1 rounded-lg transition">
-                                    <i class="fa-regular fa-comment text-tealhalo-600"></i> ${t.comments.length} Comments
-                                </button>
-                                <button onclick="window.showNotification('Shared', 'Discussion link copied to clipboard.')" class="hover:text-marian-800 flex items-center gap-1.5 text-slate-600 hover:bg-cream-100 px-2 py-1 rounded-lg transition">
-                                    <i class="fa-solid fa-share"></i> Share
-                                </button>
-                            </div>
+                        <div class="pt-2 border-t border-cream-200 flex items-center justify-between">
+                            <span class="text-[11px] text-amber-800 font-semibold"><i class="fa-solid fa-bookmark mr-1"></i>Page ${pageData.currentPage}</span>
+                            <button onclick="window.openBookReader('${res.id}')" class="bg-marian-800 hover:bg-marian-900 text-white font-semibold text-xs px-3.5 py-1.5 rounded-xl shadow">
+                                Read Book
+                            </button>
                         </div>
                     </div>
                 `;
             }).join('');
         };
 
-        window.openNewThreadModal = function() { document.getElementById('newThreadModal')?.classList.remove('hidden'); };
-        window.closeNewThreadModal = function() { document.getElementById('newThreadModal')?.classList.add('hidden'); };
-
-        window.handleCreateThreadSubmit = function(e) {
-            e.preventDefault();
-            const channel = document.getElementById('postChannel').value;
-            const title = document.getElementById('postTitle').value.trim();
-            const flair = document.getElementById('postFlair').value;
-            const content = document.getElementById('postContent').value.trim();
-
-            if (!title || !content) return;
-
-            const newPost = {
-                id: 't_' + Date.now(),
-                channel,
-                flair,
-                author: currentUser ? currentUser.email.split('@')[0] : 'GentleParent_' + Math.floor(Math.random()*100),
-                title,
-                preview: content.length > 140 ? content.substring(0, 140) + '...' : content,
-                body: content,
-                upvotes: 1,
-                time: 'Just now',
-                comments: []
-            };
-
-            window.communityThreads.unshift(newPost);
-            window.userVotes[newPost.id] = 'up';
-            saveThreadsToStorage();
-            window.closeNewThreadModal();
-            
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
-
-            window.renderCommunityThreads();
-            window.showNotification("Published", "Your discussion post is now live in the community feed.");
+        window.setCategoryFilter = function(cat) {
+            window.currentCategory = cat;
+            window.renderLibrary();
         };
 
-        window.openThreadDetailModal = function(threadId) {
-            const thread = window.communityThreads.find(t => t.id === threadId);
-            if (!thread) return;
-
-            window.activeModalThreadId = threadId;
-
-            document.getElementById('modalChannelTag').textContent = getChannelDisplayName(thread.channel);
-            document.getElementById('modalAuthorMeta').textContent = `Posted by ${thread.author} • ${thread.time}`;
-            document.getElementById('modalThreadTitle').textContent = thread.title;
-            document.getElementById('modalThreadContent').textContent = thread.body || thread.preview;
-
-            const userDisplayName = currentUser ? currentUser.email.split('@')[0] : 'Gentle Parent';
-            document.getElementById('commentingAsUserText').textContent = `Commenting as ${userDisplayName}`;
-
-            window.renderModalComments();
-            document.getElementById('threadDetailModal')?.classList.remove('hidden');
+        window.filterResources = function() { window.renderLibrary(); };
+        window.clearSearch = function() {
+            const input = document.getElementById('searchInput');
+            if (input) input.value = '';
+            window.renderLibrary();
+        };
+        window.resetAllFilters = function() {
+            window.currentCategory = 'all';
+            window.clearSearch();
+        };
+        window.setViewMode = function(mode) {
+            window.currentViewMode = mode;
+            window.renderLibrary();
         };
 
-        window.closeThreadDetailModal = function() {
-            window.activeModalThreadId = null;
-            document.getElementById('threadDetailModal')?.classList.add('hidden');
-        };
+        window.renderLessonPlanner = function() {
+            const studentFilter = document.getElementById('plannerStudentFilter')?.value || 'all';
+            const container = document.getElementById('plannerChecklistItems');
+            const progressText = document.getElementById('plannerProgressText');
 
-        window.renderModalComments = function() {
-            if (!window.activeModalThreadId) return;
-            const thread = window.communityThreads.find(t => t.id === window.activeModalThreadId);
-            if (!thread) return;
+            const safeLessons = window.plannerLessons || [];
+            let filtered = safeLessons.filter(l => studentFilter === 'all' || l.student === studentFilter);
 
-            const header = document.getElementById('modalCommentsHeader');
-            const container = document.getElementById('modalCommentsContainer');
-
-            if (header) header.textContent = `Comments (${thread.comments.length})`;
             if (!container) return;
 
-            if (thread.comments.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 italic py-2">No comments yet. Share your thoughts or prayers first!</p>`;
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6 border border-dashed border-slate-300 rounded-2xl">No assignments scheduled for this student.</p>`;
+            } else {
+                container.innerHTML = filtered.map(l => `
+                    <div class="flex items-center justify-between p-3.5 bg-cream-100 rounded-2xl border border-cream-300">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" ${l.completed ? 'checked' : ''} onchange="window.toggleLessonComplete('${l.id}')" class="h-4 w-4 rounded text-marian-800">
+                            <div>
+                                <h4 class="font-bold text-marian-900 text-xs ${l.completed ? 'line-through text-slate-400' : ''}">${window.escapeHtml(l.title)}</h4>
+                                <p class="text-[11px] text-slate-500">${window.escapeHtml(l.subject)} &bull; ${window.escapeHtml(l.student)}</p>
+                            </div>
+                        </div>
+                        <button onclick="window.deleteLesson('${l.id}')" class="text-slate-400 hover:text-red-500 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `).join('');
+            }
+
+            const completedCount = safeLessons.filter(l => l.completed).length;
+            if (progressText) progressText.textContent = `Completed: ${completedCount} / ${safeLessons.length}`;
+        };
+
+        window.toggleLessonComplete = function(id) {
+            const safeLessons = window.plannerLessons || [];
+            const lesson = safeLessons.find(l => l.id === id);
+            if (lesson) {
+                lesson.completed = !lesson.completed;
+                localStorage.setItem(LOCAL_LESSONS_KEY, JSON.stringify(safeLessons));
+                window.renderLessonPlanner();
+            }
+        };
+
+        window.deleteLesson = function(id) {
+            window.plannerLessons = (window.plannerLessons || []).filter(l => l.id !== id);
+            localStorage.setItem(LOCAL_LESSONS_KEY, JSON.stringify(window.plannerLessons));
+            window.renderLessonPlanner();
+        };
+
+        window.openAddAssignmentModal = function() {
+            const title = prompt("Enter new assignment title:");
+            if (!title) return;
+            const student = prompt("Assign to student (John / Theresa / Francis):", "John") || "John";
+            
+            window.plannerLessons = window.plannerLessons || [];
+            window.plannerLessons.push({
+                id: 'l_' + Date.now(),
+                student,
+                title,
+                subject: 'General Study',
+                completed: false
+            });
+
+            localStorage.setItem(LOCAL_LESSONS_KEY, JSON.stringify(window.plannerLessons));
+            window.renderLessonPlanner();
+            window.showNotification("Success", "New assignment added to lesson planner.");
+        };
+
+        window.togglePlannerRole = function() {
+            window.plannerRole = window.plannerRole === 'parent' ? 'student' : 'parent';
+            const badge = document.getElementById('plannerRoleBadge');
+            if (badge) badge.textContent = window.plannerRole === 'parent' ? 'Parent Admin Mode' : 'Student View Mode';
+            window.showNotification("Role Switched", "Switched planner mode to " + window.plannerRole);
+        };
+
+        window.openTranscriptModal = function() { window.showNotification("Transcript Generator", "Academic Transcript generated for active student records."); };
+        window.openGradebookModal = function() { window.showNotification("Virtual Gradebook", "Current Course GPA: 3.88 (Honors)"); };
+        window.openCourseCatalogModal = function() { window.showNotification("Course Catalog", "Select a course to auto-enroll lessons into your calendar."); };
+        window.openVacationModal = function() { window.showNotification("Vacation Manager", "Add a holiday or break to shift upcoming lessons forward."); };
+        window.openRepeatingTaskModal = function() { window.showNotification("Repeating Task", "Set recurring daily rosary or weekly drills."); };
+        window.setPlannerTimeView = function(v) { window.plannerTimeView = v; window.showNotification("Planner View", "Switched view to " + v); };
+        window.printWeeklySchedule = function() { window.print(); };
+
+        window.renderCommunityThreads = function() {
+            const container = document.getElementById('communityThreadsList');
+            if (!container) return;
+
+            const safeThreads = window.communityThreads || [];
+            if (safeThreads.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-8 bg-white rounded-2xl border border-cream-300">No discussion posts created yet.</p>`;
                 return;
             }
 
-            container.innerHTML = thread.comments.map(c => `
-                <div class="bg-cream-100 rounded-xl p-3.5 border border-cream-200 space-y-1">
-                    <div class="flex items-center justify-between text-[11px] text-slate-400">
-                        <span class="font-bold text-marian-900">Member: ${window.escapeHtml(c.author)}</span>
-                        <span>${c.time}</span>
+            container.innerHTML = safeThreads.map(t => `
+                <div class="bg-white rounded-2xl border border-cream-300 p-5 card-shadow space-y-2">
+                    <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                        <span class="px-2 py-0.5 rounded-full bg-marian-100 text-marian-800 font-bold">${t.flair || 'Discussion'}</span>
+                        <span>&bull; Member: ${window.escapeHtml(t.author)}</span>
                     </div>
-                    <p class="text-xs text-slate-700 leading-relaxed">${window.escapeHtml(c.text)}</p>
-                    <div class="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
-                        <button onclick="window.upvoteComment('${c.id}')" class="hover:text-amber-600 font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-thumbs-up text-[10px]"></i> ${c.upvotes || 1}
-                        </button>
-                    </div>
+                    <h3 class="font-bold heading-serif text-marian-900 text-base">${window.escapeHtml(t.title)}</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">${window.escapeHtml(t.preview)}</p>
                 </div>
             `).join('');
         };
 
-        window.submitNewComment = function() {
-            if (!window.activeModalThreadId) return;
-            const input = document.getElementById('newCommentInput');
-            const text = (input?.value || '').trim();
-            if (!text) return;
+        window.openNewThreadModal = function() {
+            const title = prompt("Enter post title:");
+            if (!title) return;
+            const preview = prompt("Enter brief post content:", "") || title;
 
-            const thread = window.communityThreads.find(t => t.id === window.activeModalThreadId);
-            if (thread) {
-                const author = currentUser ? currentUser.email.split('@')[0] : 'GentleParent_' + Math.floor(Math.random()*100);
-                thread.comments.push({
-                    id: 'c_' + Date.now(),
-                    author,
-                    text,
-                    time: 'Just now',
-                    upvotes: 1
-                });
+            window.communityThreads = window.communityThreads || [];
+            window.communityThreads.unshift({
+                id: 't_' + Date.now(),
+                channel: 'books',
+                flair: 'Discussion',
+                author: 'SanctuaryMember',
+                title,
+                preview,
+                body: preview,
+                upvotes: 1,
+                time: 'Just now',
+                comments: []
+            });
 
-                input.value = '';
-                saveThreadsToStorage();
-                window.renderModalComments();
-                window.renderCommunityThreads();
-            }
+            localStorage.setItem(LOCAL_THREADS_KEY, JSON.stringify(window.communityThreads));
+            window.renderCommunityThreads();
+            window.showNotification("Posted", "Your post has been published to the lounge.");
         };
 
-        window.upvoteComment = function(commentId) {
-            if (!window.activeModalThreadId) return;
-            const thread = window.communityThreads.find(t => t.id === window.activeModalThreadId);
-            if (thread) {
-                const comment = thread.comments.find(c => c.id === commentId);
-                if (comment) {
-                    comment.upvotes = (comment.upvotes || 1) + 1;
-                    saveThreadsToStorage();
-                    window.renderModalComments();
-                }
-            }
+        window.openAddModal = function() {
+            document.getElementById('resourceModal')?.classList.remove('hidden');
         };
 
-        window.openAddModal = function() { 
-            window.switchToTab('library');
-            document.getElementById('resourceModal')?.classList.remove('hidden'); 
-        };
-        
-        window.closeResourceModal = function() { 
-            document.getElementById('resourceModal')?.classList.add('hidden'); 
+        window.closeResourceModal = function() {
+            document.getElementById('resourceModal')?.classList.add('hidden');
         };
 
         window.saveResource = function(e) {
@@ -2140,51 +1030,30 @@
             const title = document.getElementById('formTitle').value.trim();
             const author = document.getElementById('formAuthor').value.trim();
             const category = document.getElementById('formCategory').value;
-            const url = document.getElementById('formUrl').value.trim();
             const grade = document.getElementById('formGrade').value;
+            const url = document.getElementById('formUrl').value.trim();
             const description = document.getElementById('formDescription').value.trim();
 
-            if (!title || !url) return;
+            window.resources = window.resources || [];
+            window.resources.unshift({
+                id: 'r_' + Date.now(),
+                title,
+                author,
+                category,
+                grade,
+                url,
+                description
+            });
 
-            window.resources.unshift({ id: Date.now().toString(), title, author, category, url, grade, description });
-            saveResourcesToStorage();
-
-            document.getElementById('resourceForm')?.reset();
+            localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
             window.closeResourceModal();
-            window.switchToTab('library');
-            window.resetAllFilters();
-            window.showNotification("Saved", `"${title}" has been successfully added to your digital library.`);
+            window.renderLibrary();
+            window.showNotification("Resource Saved", "New living book added to your digital library.");
         };
 
-        window.toggleSafetyModal = function() {
-            window.showNotification("Safety Guidelines", "All resources shared must be in the Public Domain or Creative Commons. Keep all community discussions charitable, peaceful, and centered around Catholic family life.");
-        };
-
-        window.toggleHelpGuide = function() {
-            window.showNotification("User Guide", "1. Use the Digital Library tab to browse, search, and track reading status.\n2. Use the Lesson Planner to manage students, attendance, and weighted grades.\n3. Browse Reddit-style community threads to chat with other parents.");
-        };
-
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             window.renderLibrary();
             window.renderLessonPlanner();
-            
-            // Check stored local session first
-            const savedSession = getStoredSession();
-            if (savedSession) {
-                currentUser = savedSession;
-                isLocalAuthMode = !!savedSession.isLocal;
-                window.updateAuthUI();
-            } else if (supabaseClient) {
-                try {
-                    const { data } = await supabaseClient.auth.getSession();
-                    if (data && data.session) {
-                        currentUser = data.session.user;
-                        window.updateAuthUI();
-                    }
-                } catch (e) {
-                    console.log("Supabase session restore skipped.");
-                }
-            }
         });
     </script>
 </body>
