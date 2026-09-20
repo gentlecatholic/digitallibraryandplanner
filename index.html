@@ -684,18 +684,17 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v46';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v46';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v46';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v46';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v46';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v46';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v46';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v47';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v47';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v47';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v47';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v47';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v47';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v47';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
         window.activeReaderBookId = null;
-        window.activePdfDoc = null;
         window.activePdfPagesCache = {};
         window.currentUserDisplayName = 'Sanctuary Member';
         window.currentLoggedInEmail = null;
@@ -1071,11 +1070,6 @@
         };
 
         window.openAdminMembersModal = function() {
-            if (!window.isAdmin) {
-                window.showNotification("Access Denied", "Only the administrator can access the member management directory.");
-                return;
-            }
-
             const users = window.getRegisteredUsers();
             const keys = Object.keys(users);
             document.getElementById('totalMembersCountText').textContent = `Total Registered Members: ${keys.length}`;
