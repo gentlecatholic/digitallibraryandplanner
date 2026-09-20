@@ -451,7 +451,6 @@
         </div>
     </div>
 
-    <!-- Notification Modal -->
     <div id="customNotifyModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-cream-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto text-xl">
@@ -466,7 +465,6 @@
         </div>
     </div>
 
-    <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
@@ -553,7 +551,6 @@
         </div>
     </div>
 
-    <!-- Unsubscribe Modal -->
     <div id="unsubscribeModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-cream-300 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
@@ -679,12 +676,12 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v35';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v35';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v35';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v35';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v35';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v35';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v36';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v36';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v36';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v36';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v36';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v36';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -1201,6 +1198,19 @@
             const book = list.find(r => r.id === bookId);
             if (!book) return;
 
+            // If the book has an uploaded base64 PDF or Blob URL stored
+            if (book.pdfDataUrl) {
+                const a = document.createElement('a');
+                a.href = book.pdfDataUrl;
+                a.download = `${(book.title || 'book').replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.showNotification("Downloading PDF", `Initiated download for "${book.title}".`);
+                return;
+            }
+
+            // Otherwise, generate a clean PDF text export
             const content = `
                 ==================================================
                 GENTLE CATHOLIC DIGITAL LIBRARY & SANCTUARY
@@ -1214,7 +1224,7 @@
                 Description & Reading Text:
                 ${book.description || 'A timeless Catholic masterwork for family reading and narration.'}
                 
-                ${book.webUrl ? 'External Resource Link: ' + book.webUrl : ''}
+                ${book.pdfUrl ? 'External PDF Source: ' + book.pdfUrl : ''}
                 ==================================================
                 Published by Gentle Catholic Homeschooling Sanctuary
             `;
@@ -1269,7 +1279,6 @@
                     In examining this revered Catholic volume, the reader is invited into deep contemplation of Divine Truth. Every sentence nurtures the soul and encourages joyful family discussion and narration. As the masters of tradition have taught, wisdom is cultivated through peaceful reading and prayerful application in daily life.
                     
                     ${book.pdfUrl ? 'Direct PDF Source Linked: ' + book.pdfUrl : ''}
-                    ${book.webUrl ? 'External Reading Source: ' + book.webUrl : ''}
                 `;
 
                 const paragraphs = fullReadingText.split('\n').filter(p => p.trim().length > 0);
@@ -1451,7 +1460,6 @@
                                 <button onclick="window.downloadBookPdf('${res.id}')" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-sm transition">
                                     <i class="fa-solid fa-file-pdf"></i> Download PDF
                                 </button>
-                                ${res.webUrl ? `<a href="${window.escapeHtml(res.webUrl)}" target="_blank" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-sm transition"><i class="fa-solid fa-globe"></i> Link</a>` : ''}
                             </div>
 
                             <p class="text-[11px] text-tealhalo-700 font-semibold pt-1"><i class="fa-solid fa-user-circle mr-1"></i>Added by: <span class="text-marian-900 underline">${window.escapeHtml(uploaderName)}</span></p>
@@ -1733,13 +1741,7 @@
             const pdfLinkInput = document.getElementById('formPdfLink').value.trim();
             const pdfFileInput = document.getElementById('formPdfFile');
 
-            let finalPdfUrl = pdfLinkInput;
-
             const finishSave = (pdfDataUrl = '') => {
-                if (pdfDataUrl) {
-                    finalPdfUrl = pdfDataUrl;
-                }
-
                 window.resources = window.resources || [];
                 window.resources.unshift({
                     id: 'r_' + Date.now(),
@@ -1748,27 +1750,29 @@
                     category,
                     grade,
                     description,
-                    pdfUrl: finalPdfUrl,
+                    pdfUrl: pdfLinkInput,
+                    pdfDataUrl: pdfDataUrl,
                     uploader: window.currentUserDisplayName
                 });
 
-                localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
+                try {
+                    localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
+                } catch (storageError) {
+                    // If storage quota is exceeded, strip out huge base64 data url and keep pdfUrl link
+                    window.resources[0].pdfDataUrl = '';
+                    localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
+                }
+
                 window.closeResourceModal();
                 window.resetAllFilters();
                 window.switchToTab('library');
-                window.showNotification("Book Added", `New Catholic book successfully published to the library with PDF document by ${window.currentUserDisplayName}!`);
+                window.showNotification("Book Added", `New Catholic book "${title}" successfully published to the library!`);
             };
 
             if (pdfFileInput && pdfFileInput.files && pdfFileInput.files[0]) {
                 const file = pdfFileInput.files[0];
-                const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    finishSave(uploadEvent.target.result);
-                };
-                reader.onerror = function() {
-                    finishSave(pdfLinkInput);
-                };
-                reader.readAsDataURL(file);
+                const fileBlobUrl = URL.createObjectURL(file);
+                finishSave(fileBlobUrl);
             } else {
                 finishSave();
             }
