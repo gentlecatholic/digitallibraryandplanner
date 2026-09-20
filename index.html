@@ -79,66 +79,6 @@
 
 <body class="min-h-screen flex flex-col antialiased">
 
-    <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-cream-300 overflow-hidden flex flex-col">
-            <div class="p-6 bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white text-center border-b-4 border-gold-400 space-y-2">
-                <div class="w-16 h-16 rounded-full bg-marian-950 mx-auto border-2 border-gold-400 flex items-center justify-center shadow-lg overflow-hidden">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWVxP8eUD6vzjc_3sHSpk24RqVIdN2R0W6-QwW8tMAMGoRxVeHfyad8qdNKexI3O4GBumqLKJnZXOB5tM0xANdqghpzGe_Rpe1OYxvKKHsF0NqLOAj0dDoa_D5qI9VMQ1VgSM4vv9ulunBTMX_Y6kJ87uYXKHSFSAfZvVlOgy8BwRaiU5Tm3Oli5D5mpg/w640-h640/LOGO.png" alt="Gentle Catholic Homeschooling Logo" class="w-full h-full object-cover" />
-                </div>
-                <h2 id="gateHeaderTitle" class="text-xl sm:text-2xl font-bold heading-serif text-amber-100">Catholic Sanctuary Access</h2>
-                <p class="text-xs text-gold-300 motto-serif tracking-wider">Mater Maria, ora pro nobis!</p>
-                <p id="gateHeaderDesc" class="text-xs text-blue-100/90 pt-1">Please sign in or register your verified family account to enter the digital library and community sanctuary.</p>
-            </div>
-
-            <div class="p-6 space-y-4">
-                <div id="gateTabsContainer" class="flex bg-cream-100 p-1 rounded-xl border border-cream-300">
-                    <button type="button" id="gateTabSignin" onclick="window.switchGateMode('signin')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow">Sign In</button>
-                    <button type="button" id="gateTabRegister" onclick="window.switchGateMode('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900">Register Account</button>
-                </div>
-
-                <form id="gateForm" onsubmit="window.handleGateSubmit(event)" class="space-y-3 text-xs sm:text-sm">
-                    <div id="gateRegisterFields" class="hidden space-y-3 pb-2 border-b border-cream-200">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Mother's Full Name *</label>
-                            <input type="text" id="gateMomName" placeholder="e.g. Mary Smith" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block font-semibold text-slate-700 mb-1">Parish / Diocese *</label>
-                                <input type="text" id="gateParish" placeholder="e.g. St. Mary Parish" class="w-full p-2 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-slate-700 mb-1">State / Location *</label>
-                                <input type="text" id="gateState" placeholder="e.g. Texas, USA" class="w-full p-2 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Children & Grades *</label>
-                            <input type="text" id="gateKids" placeholder="e.g. John (8th), Theresa (5th)" class="w-full p-2 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
-                        </div>
-                    </div>
-
-                    <div id="gateEmailFieldWrapper">
-                        <label class="block font-semibold text-slate-700 mb-1">Email Address *</label>
-                        <input type="email" id="gateEmail" required placeholder="mom@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
-                    </div>
-                    <div id="gatePasswordFieldWrapper">
-                        <label class="block font-semibold text-slate-700 mb-1">Password *</label>
-                        <input type="password" id="gatePassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
-                    </div>
-
-                    <div id="gateForgotLinkRow" class="flex justify-end text-xs pt-1">
-                        <button type="button" onclick="window.switchGateMode('forgot')" class="text-marian-700 font-semibold hover:underline">Forgot Password?</button>
-                    </div>
-
-                    <button type="submit" id="gateSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2 mt-2">
-                        <i class="fa-solid fa-right-to-bracket"></i> <span id="gateSubmitBtnText">Sign In to Sanctuary</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <header class="no-print bg-gradient-to-b from-marian-950 via-marian-900 to-marian-950 text-white border-b-4 border-gold-400 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:18px_18px]"></div>
 
@@ -157,11 +97,15 @@
                     </button>
                 </div>
                 <div id="userAccountSection" class="flex items-center gap-3 flex-wrap">
-                    <span id="userEmailDisplay" class="text-blue-200 font-medium"></span>
-                    <button id="unsubscribeHeaderBtn" onclick="window.openUnsubscribeModal()" class="bg-cream-200 hover:bg-cream-300 text-slate-800 font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                    <span id="userEmailDisplay" class="text-blue-200 hidden font-medium"></span>
+                    <button id="authHeaderBtn" onclick="window.openAuthModal()" class="bg-gold-400 hover:bg-gold-500 text-marian-950 font-bold px-3.5 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-lock"></i>
+                        <span id="authButtonText">Sign In / Register</span>
+                    </button>
+                    <button id="unsubscribeHeaderBtn" onclick="window.openUnsubscribeModal()" class="hidden bg-cream-200 hover:bg-cream-300 text-slate-800 font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-user-slash text-rose-600"></i> Unsubscribe
                     </button>
-                    <button id="logoutHeaderBtn" onclick="window.handleLogout()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                    <button id="logoutHeaderBtn" onclick="window.handleLogout()" class="hidden bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-right-from-bracket"></i> Log Out
                     </button>
                 </div>
@@ -213,7 +157,7 @@
             </div>
         </div>
     </nav>
-    
+
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <div id="liturgicalBanner" class="no-print bg-gradient-to-r from-emerald-900 via-tealhalo-700 to-marian-900 text-white rounded-2xl p-4 mb-6 shadow-md border border-gold-400/30 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -522,6 +466,92 @@
         </div>
     </div>
 
+    <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
+            <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gold-400/20 flex items-center justify-center text-gold-300">
+                        <i class="fa-solid fa-user-shield text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold heading-serif text-amber-100" id="authModalTitle">Sanctuary Account Access</h3>
+                        <p class="text-[11px] text-blue-200" id="authModalSubtitle">Sign in or register your family account</p>
+                    </div>
+                </div>
+                <button onclick="window.closeAuthModal()" class="text-slate-300 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="authForm" onsubmit="window.handleAuthSubmit(event)" class="p-6 space-y-3 text-xs sm:text-sm">
+                <div id="registerExtraFields" class="hidden space-y-3 pb-2 border-b border-cream-200">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label for="regMomName" class="block font-semibold text-slate-700 mb-1">Mother's Full Name *</label>
+                            <input type="text" id="regMomName" placeholder="e.g. Mary Smith" class="w-full p-2 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
+                        </div>
+                        <div>
+                            <label for="regParish" class="block font-semibold text-slate-700 mb-1">Parish / Diocese *</label>
+                            <input type="text" id="regParish" placeholder="e.g. St. Mary Parish" class="w-full p-2 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label for="regKids" class="block font-semibold text-slate-700 mb-1">Children & Grades *</label>
+                            <input type="text" id="regKids" placeholder="e.g. John (8th), Theresa (5th)" class="w-full p-2 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
+                        </div>
+                        <div>
+                            <label for="regState" class="block font-semibold text-slate-700 mb-1">State / Location *</label>
+                            <input type="text" id="regState" placeholder="e.g. Texas, USA" class="w-full p-2 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="authEmail" class="block font-semibold text-slate-700 mb-1">Email Address *</label>
+                    <input type="email" id="authEmail" required placeholder="mom@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                </div>
+                <div>
+                    <label for="authPassword" class="block font-semibold text-slate-700 mb-1">Password *</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                </div>
+                <div class="flex items-center justify-between text-xs pt-1">
+                    <button type="button" onclick="window.toggleAuthMode()" class="text-marian-700 font-semibold hover:underline" id="authToggleBtn">Need an account? Register</button>
+                    <button type="button" onclick="window.switchToForgotPassword()" class="text-slate-500 hover:underline">Forgot password?</button>
+                </div>
+                <button type="submit" id="authSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> <span id="authSubmitBtnText">Sign In</span>
+                </button>
+            </form>
+
+            <form id="forgotPasswordForm" onsubmit="window.handleForgotPasswordSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm hidden">
+                <p class="text-slate-600">Enter your registered email address. We will send a secure password reset link from <strong>gentlecatholichomeschool@gmail.com</strong>.</p>
+                <div>
+                    <label for="forgotEmail" class="block font-semibold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="forgotEmail" required placeholder="mom@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                </div>
+                <div class="flex items-center justify-between text-xs pt-1">
+                    <button type="button" onclick="window.switchToSignIn()" class="text-marian-700 font-semibold hover:underline">← Back to Sign In</button>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gold-500 hover:bg-gold-600 text-marian-950 font-bold shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Send Password Reset Email
+                </button>
+            </form>
+
+            <form id="resetPasswordForm" onsubmit="window.handleResetPasswordSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm hidden">
+                <input type="hidden" id="resetTokenEmail">
+                <p class="text-slate-600">Enter your new secure password below:</p>
+                <div>
+                    <label for="newPassword" class="block font-semibold text-slate-700 mb-1">New Password</label>
+                    <input type="password" id="newPassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-key"></i> Update Password & Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div id="unsubscribeModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-cream-300 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
@@ -645,16 +675,16 @@
             </form>
         </div>
     </div>
-    
+
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v79';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v79';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v79';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v79';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v79';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v79';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v79';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v60';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v60';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v60';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v60';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v60';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v60';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v60';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -665,7 +695,7 @@
         window.isAdmin = false;
         window.currentFontSize = 16;
         window.isSpeakingAudio = false;
-        window.gateMode = 'signin';
+        window.isRegisterMode = false;
         window.exchangeSort = 'hot';
 
         const defaultCatholicLibrary = [
@@ -747,102 +777,87 @@
             } catch(e) {}
         };
 
-        window.switchGateMode = function(mode) {
-            window.gateMode = mode;
-            const tabSignin = document.getElementById('gateTabSignin');
-            const tabRegister = document.getElementById('gateTabRegister');
-            const registerFields = document.getElementById('gateRegisterFields');
-            const submitBtnText = document.getElementById('gateSubmitBtnText');
-            const headerTitle = document.getElementById('gateHeaderTitle');
-            const headerDesc = document.getElementById('gateHeaderDesc');
-            const tabsContainer = document.getElementById('gateTabsContainer');
-            const emailFieldWrapper = document.getElementById('gateEmailFieldWrapper');
-            const passwordFieldWrapper = document.getElementById('gatePasswordFieldWrapper');
-            const forgotLinkRow = document.getElementById('gateForgotLinkRow');
+        window.openAuthModal = function() {
+            window.switchToSignIn();
+            document.getElementById('authModal')?.classList.remove('hidden');
+        };
 
-            if (mode === 'signin') {
-                tabsContainer?.classList.remove('hidden');
-                tabSignin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow";
-                tabRegister.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900";
-                registerFields?.classList.add('hidden');
-                emailFieldWrapper?.classList.remove('hidden');
-                passwordFieldWrapper?.classList.remove('hidden');
-                forgotLinkRow?.classList.remove('hidden');
-                if (headerTitle) headerTitle.textContent = 'Catholic Sanctuary Access';
-                if (headerDesc) headerDesc.textContent = 'Please sign in or register your verified family account to enter the digital library and community sanctuary.';
-                if (submitBtnText) submitBtnText.textContent = 'Sign In to Sanctuary';
-            } else if (mode === 'register') {
-                tabsContainer?.classList.remove('hidden');
-                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow";
-                tabSignin.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900";
-                registerFields?.classList.remove('hidden');
-                emailFieldWrapper?.classList.remove('hidden');
-                passwordFieldWrapper?.classList.remove('hidden');
-                forgotLinkRow?.classList.add('hidden');
-                if (headerTitle) headerTitle.textContent = 'Register Family Account';
-                if (headerDesc) headerDesc.textContent = 'Complete all required family details and email verification to enter.';
-                if (submitBtnText) submitBtnText.textContent = 'Register Family Account & Verify Email';
-            } else if (mode === 'forgot') {
-                tabsContainer?.classList.add('hidden');
-                registerFields?.classList.add('hidden');
-                passwordFieldWrapper?.classList.add('hidden');
-                forgotLinkRow?.classList.add('hidden');
-                emailFieldWrapper?.classList.remove('hidden');
-                if (headerTitle) headerTitle.textContent = 'Password Recovery';
-                if (headerDesc) headerDesc.textContent = 'Enter your registered email address to receive password reset instructions.';
-                if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> Send Recovery Email';
+        window.closeAuthModal = function() {
+            document.getElementById('authModal')?.classList.add('hidden');
+        };
+
+        window.toggleAuthMode = function() {
+            window.isRegisterMode = !window.isRegisterMode;
+            const titleEl = document.getElementById('authModalTitle');
+            const subtitleEl = document.getElementById('authModalSubtitle');
+            const toggleBtn = document.getElementById('authToggleBtn');
+            const submitBtnText = document.getElementById('authSubmitBtnText');
+            const extraFields = document.getElementById('registerExtraFields');
+
+            if (window.isRegisterMode) {
+                if (titleEl) titleEl.textContent = 'Register Family Account';
+                if (subtitleEl) subtitleEl.textContent = 'Enter your details for Sanctuary membership';
+                if (toggleBtn) toggleBtn.textContent = 'Already have an account? Sign in';
+                if (submitBtnText) submitBtnText.textContent = 'Register & Send Confirmation';
+                if (extraFields) extraFields.classList.remove('hidden');
+            } else {
+                if (titleEl) titleEl.textContent = 'Sanctuary Sign In';
+                if (subtitleEl) subtitleEl.textContent = 'Enter your account credentials';
+                if (toggleBtn) toggleBtn.textContent = 'Need an account? Register';
+                if (submitBtnText) submitBtnText.textContent = 'Sign In';
+                if (extraFields) extraFields.classList.add('hidden');
             }
         };
 
-        window.handleGateSubmit = function(e) {
+        window.switchToSignIn = function() {
+            window.isRegisterMode = false;
+            document.getElementById('authForm')?.classList.remove('hidden');
+            document.getElementById('forgotPasswordForm')?.classList.add('hidden');
+            document.getElementById('resetPasswordForm')?.classList.add('hidden');
+            document.getElementById('registerExtraFields')?.classList.add('hidden');
+            document.getElementById('authModalTitle').textContent = 'Sanctuary Sign In';
+            document.getElementById('authModalSubtitle').textContent = 'Enter your account credentials';
+            document.getElementById('authToggleBtn').textContent = 'Need an account? Register';
+            document.getElementById('authSubmitBtnText').textContent = 'Sign In';
+        };
+
+        window.switchToForgotPassword = function() {
+            document.getElementById('authForm')?.classList.add('hidden');
+            document.getElementById('forgotPasswordForm')?.classList.remove('hidden');
+            document.getElementById('resetPasswordForm')?.classList.add('hidden');
+            document.getElementById('authModalTitle').textContent = 'Recover Password';
+            document.getElementById('authModalSubtitle').textContent = 'Retrieve access via email';
+        };
+
+        window.confirmUserEmailToken = function(email) {
+            let users = window.getRegisteredUsers();
+            if (users[email]) {
+                users[email].verified = true;
+                window.saveRegisteredUsers(users);
+                window.closeNotificationModal();
+                window.showNotification("Email Verified!", "Your email has been confirmed from gentlecatholichomeschool@gmail.com. You may now sign in.");
+                window.openAuthModal();
+            }
+        };
+
+        window.handleAuthSubmit = function(e) {
             e.preventDefault();
-            const email = (document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
-            const password = document.getElementById('gatePassword')?.value || '';
+            const email = (document.getElementById('authEmail')?.value || '').trim().toLowerCase();
+            const password = document.getElementById('authPassword')?.value || '';
+            if (!email) return;
 
             let users = window.getRegisteredUsers();
 
-            if (window.gateMode === 'forgot') {
-                if (!email) {
-                    window.showNotification("Email Required", "Please enter your email address for password recovery.");
-                    return;
-                }
-                if (email !== ADMIN_EMAIL && !users[email]) {
-                    window.showNotification("Account Not Found", "No registered account found with this email address. Please register first.");
-                    return;
-                }
-                const resetHtml = `
-                    <div class="p-3 bg-amber-50 rounded-2xl border border-amber-300 text-left space-y-2 my-2">
-                        <p class="text-xs font-bold text-amber-900"><i class="fa-solid fa-key mr-1.5"></i> Recovery Email from gentlecatholichomeschool@gmail.com</p>
-                        <p class="text-xs text-slate-700">Click below to create your new secure password:</p>
-                        <button onclick="window.openResetModal('${email}')" class="w-full py-2.5 bg-marian-800 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-lock-open"></i> Reset Password Now
-                        </button>
-                    </div>
-                `;
-                window.showNotification("Password Recovery Sent", "Recovery instructions have been dispatched to your email.", resetHtml);
-                return;
-            }
-
-            if (!email || !password) {
-                window.showNotification("Fields Required", "Please fill in both email and password.");
-                return;
-            }
-
-            if (window.gateMode === 'register') {
-                const momName = (document.getElementById('gateMomName')?.value || '').trim();
-                const parish = (document.getElementById('gateParish')?.value || '').trim();
-                const state = (document.getElementById('gateState')?.value || '').trim();
-                const kids = (document.getElementById('gateKids')?.value || '').trim();
-
-                if (!momName || !parish || !state || !kids) {
-                    window.showNotification("Required Fields Missing", "Please fill in all required family details (Mother's Full Name, Parish, Location, and Children/Grades) before registering.");
-                    return;
-                }
-
+            if (window.isRegisterMode) {
                 if (users[email]) {
-                    window.showNotification("Account Exists", "An account with this email already exists. Please sign in instead.");
+                    window.showNotification("Account Exists", "An account with this email already exists. Please sign in.");
                     return;
                 }
+
+                const momName = document.getElementById('regMomName').value.trim() || email.split('@')[0];
+                const parish = document.getElementById('regParish').value.trim() || 'St. Mary Parish';
+                const kids = document.getElementById('regKids').value.trim() || 'Not specified';
+                const state = document.getElementById('regState').value.trim() || 'USA';
 
                 users[email] = {
                     email,
@@ -852,45 +867,49 @@
                     kids,
                     state,
                     registeredDate: new Date().toLocaleDateString(),
-                    verified: false,
-                    banned: false
+                    verified: false
                 };
 
                 window.saveRegisteredUsers(users);
+                window.closeAuthModal();
 
-                const verifyNoticeHtml = `
-                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-300 text-left space-y-2 my-2">
-                        <p class="text-xs font-bold text-amber-900"><i class="fa-solid fa-envelope-circle-check mr-1.5"></i> Verification Email Sent from gentlecatholichomeschool@gmail.com</p>
-                        <p class="text-xs text-slate-700">Dearest ${escapeHtml(momName)}, to confirm your email address and activate your account, please click below:</p>
-                        <button onclick="window.confirmUserEmail('${email}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-check-circle"></i> Confirm Email & Enter Sanctuary
+                const confirmLinkHTML = `
+                    <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-left space-y-2 my-2">
+                        <p class="text-[11px] font-bold text-amber-900"><i class="fa-solid fa-envelope-circle-check mr-1"></i> From: gentlecatholichomeschool@gmail.com</p>
+                        <p class="text-[11px] text-slate-700">Dearest ${escapeHtml(momName)}, welcome! Please confirm your email address by clicking below:</p>
+                        <button onclick="window.confirmUserEmailToken('${email}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-check-circle"></i> Confirm Email & Activate Account
                         </button>
                     </div>
                 `;
-                window.showNotification("Email Verification Required", "A verification link has been dispatched to your email address.", verifyNoticeHtml);
+
+                window.showNotification("Verification Email Sent!", `A confirmation message from gentlecatholichomeschool@gmail.com was sent to ${email}.`, confirmLinkHTML);
 
             } else {
+                if (email !== ADMIN_EMAIL && !users[email]) {
+                    window.showNotification("Account Not Found", "No account registered with this email. Please register first.");
+                    return;
+                }
+
                 if (email === ADMIN_EMAIL) {
                     window.isAdmin = true;
                     if (!users[email]) {
-                        users[email] = { email, password: password || 'admin', momName: 'Sanctuary Admin', parish: 'Diocese HQ', kids: 'Admin Family', state: 'Global', registeredDate: '2026-01-01', verified: true, banned: false };
+                        users[email] = { email, password: password || 'admin', momName: 'Sanctuary Admin', parish: 'Diocese HQ', kids: 'Admin Family', state: 'Global', registeredDate: '2026-01-01', verified: true };
                         window.saveRegisteredUsers(users);
                     }
                 } else {
-                    if (!users[email]) {
-                        window.showNotification("Account Not Found", "No registered account found with this email. Please click 'Register Account' to sign up.");
-                        return;
-                    }
-                    if (users[email].banned) {
-                        window.showNotification("Account Banned", "This account has been banned by the administrator for violating sanctuary guidelines.");
+                    if (users[email].password !== password) {
+                        window.showNotification("Incorrect Password", "The password you entered is incorrect. Please try again.");
                         return;
                     }
                     if (!users[email].verified) {
-                        window.showNotification("Email Unverified", "Please check your email and click the confirmation link before signing in.");
-                        return;
-                    }
-                    if (users[email].password !== password) {
-                        window.showNotification("Incorrect Password", "The password you entered is incorrect. Please check your password and try again.");
+                        window.showNotification("Email Not Confirmed", `You must confirm your email (${email}) by opening the message from gentlecatholichomeschool@gmail.com before you can sign in.`, `
+                            <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-left space-y-2 mt-2">
+                                <button onclick="window.confirmUserEmailToken('${email}')" class="w-full py-2 bg-gold-500 hover:bg-gold-600 text-marian-950 font-bold rounded-xl text-xs shadow">
+                                    Open Email & Click Confirmation Link
+                                </button>
+                             </div>
+                        `);
                         return;
                     }
                 }
@@ -900,45 +919,10 @@
                 localStorage.setItem(LOCAL_SESSION_KEY, email);
 
                 window.applyUserSessionUI();
-                document.getElementById('authGateOverlay')?.classList.add('hidden');
-                window.showNotification("Successfully Logged In", "Welcome to the Catholic Sanctuary, " + window.currentUserDisplayName + "!");
+                window.closeAuthModal();
+                window.showNotification("Welcome Back", "Successfully signed into Catholic Sanctuary as " + window.currentUserDisplayName);
                 window.renderLibrary();
-                window.renderCommunityThreads();
-            }
-        };
-
-        window.openResetModal = function(email) {
-            window.closeNotificationModal();
-            const newPass = prompt("Enter your new secure password:");
-            if (!newPass) return;
-            let users = window.getRegisteredUsers();
-            if (email === ADMIN_EMAIL) {
-                window.showNotification("Success", "Admin password updated.");
-                return;
-            }
-            if (users[email]) {
-                users[email].password = newPass;
-                users[email].verified = true;
-                window.saveRegisteredUsers(users);
-                window.showNotification("Password Updated", "Your password has been successfully updated. You may now sign in.");
-                window.switchGateMode('signin');
-            }
-        };
-
-        window.confirmUserEmail = function(email) {
-            let users = window.getRegisteredUsers();
-            if (users[email]) {
-                users[email].verified = true;
-                window.saveRegisteredUsers(users);
-                window.closeNotificationModal();
-                window.currentLoggedInEmail = email;
-                window.currentUserDisplayName = users[email].momName;
-                localStorage.setItem(LOCAL_SESSION_KEY, email);
-                window.applyUserSessionUI();
-                document.getElementById('authGateOverlay')?.classList.add('hidden');
-                window.showNotification("Welcome to the Sanctuary!", `Email verified successfully. Welcome, ${window.currentUserDisplayName}!`);
-                window.renderLibrary();
-                window.renderCommunityThreads();
+                window.updateMemberCountBadge();
             }
         };
 
@@ -947,7 +931,7 @@
             if (!email) return;
 
             window.isAdmin = (email === ADMIN_EMAIL);
-            let users = window.getRegisteredUsers();
+            const users = window.getRegisteredUsers();
             if (users[email]) {
                 window.currentUserDisplayName = users[email].momName || email.split('@')[0];
             } else if (window.isAdmin) {
@@ -956,9 +940,13 @@
 
             const emailDisplay = document.getElementById('userEmailDisplay');
             if (emailDisplay) {
-                emailDisplay.textContent = email + ' (' + window.currentUserDisplayName + ')';
+                emailDisplay.textContent = email;
+                emailDisplay.classList.remove('hidden');
             }
-
+            document.getElementById('authHeaderBtn')?.classList.add('hidden');
+            document.getElementById('logoutHeaderBtn')?.classList.remove('hidden');
+            document.getElementById('unsubscribeHeaderBtn')?.classList.remove('hidden');
+            
             const syncText = document.getElementById('syncStatusText');
             if (syncText) syncText.textContent = window.isAdmin ? 'Admin Account Active' : 'Member Account Active';
 
@@ -969,8 +957,63 @@
             window.updateMemberCountBadge();
         };
 
+        window.handleForgotPasswordSubmit = function(e) {
+            e.preventDefault();
+            const email = (document.getElementById('forgotEmail')?.value || '').trim().toLowerCase();
+            let users = window.getRegisteredUsers();
+
+            if (email !== ADMIN_EMAIL && !users[email]) {
+                window.showNotification("Email Not Found", "No registered account found with this email address.");
+                return;
+            }
+
+            window.closeAuthModal();
+
+            const resetLinkHTML = `
+                <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-left space-y-2 my-2">
+                    <p class="text-[11px] font-bold text-amber-900"><i class="fa-solid fa-key mr-1"></i> From: gentlecatholichomeschool@gmail.com</p>
+                    <p class="text-[11px] text-slate-700">Password reset requested. Click below to enter a new password:</p>
+                    <button onclick="window.openResetPasswordModal('${email}')" class="w-full py-2.5 bg-marian-800 hover:bg-marian-900 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-lock-open"></i> Reset My Password
+                    </button>
+                </div>
+            `;
+
+            window.showNotification("Password Reset Email Sent", `An email with password recovery instructions has been sent from gentlecatholichomeschool@gmail.com to ${email}.`, resetLinkHTML);
+        };
+
+        window.openResetPasswordModal = function(email) {
+            window.closeNotificationModal();
+            document.getElementById('resetTokenEmail').value = email;
+            document.getElementById('authForm')?.classList.add('hidden');
+            document.getElementById('forgotPasswordForm')?.classList.add('hidden');
+            document.getElementById('resetPasswordForm')?.classList.remove('hidden');
+            document.getElementById('authModalTitle').textContent = 'Create New Password';
+            document.getElementById('authModalSubtitle').textContent = 'Enter your updated password';
+            document.getElementById('authModal')?.classList.remove('hidden');
+        };
+
+        window.handleResetPasswordSubmit = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetTokenEmail').value;
+            const newPassword = document.getElementById('newPassword').value;
+            
+            let users = window.getRegisteredUsers();
+            if (users[email]) {
+                users[email].password = newPassword;
+                users[email].verified = true;
+                window.saveRegisteredUsers(users);
+                window.closeAuthModal();
+                window.showNotification("Password Updated!", "Your password has been successfully changed. You may now sign in with your new password.");
+                window.openAuthModal();
+            }
+        };
+
         window.openUnsubscribeModal = function() {
-            if (!window.currentLoggedInEmail) return;
+            if (!window.currentLoggedInEmail) {
+                window.showNotification("Not Signed In", "You must be signed in to unsubscribe.");
+                return;
+            }
             document.getElementById('unsubscribeModal')?.classList.remove('hidden');
         };
 
@@ -989,6 +1032,7 @@
             window.closeUnsubscribeModal();
             window.handleLogout();
             window.showNotification("Unsubscribed", "Your account and local profile data have been successfully removed.");
+            window.updateMemberCountBadge();
         };
 
         window.handleLogout = function() {
@@ -997,13 +1041,18 @@
             window.isAdmin = false;
             localStorage.removeItem(LOCAL_SESSION_KEY);
 
-            document.getElementById('authGateOverlay')?.classList.remove('hidden');
-            document.getElementById('gateEmail').value = '';
-            document.getElementById('gatePassword').value = '';
+            document.getElementById('userEmailDisplay')?.classList.add('hidden');
+            document.getElementById('authHeaderBtn')?.classList.remove('hidden');
+            document.getElementById('logoutHeaderBtn')?.classList.add('hidden');
+            document.getElementById('unsubscribeHeaderBtn')?.classList.add('hidden');
             document.getElementById('adminBadge')?.classList.add('hidden');
             document.getElementById('adminMembersBtn')?.classList.add('hidden');
-            window.switchGateMode('signin');
+            
+            const syncText = document.getElementById('syncStatusText');
+            if (syncText) syncText.textContent = 'Catholic Sanctuary Member';
+
             window.showNotification("Signed Out", "You have successfully logged out of your Sanctuary account.");
+            window.renderLibrary();
         };
 
         window.updateMemberCountBadge = function() {
@@ -1014,10 +1063,6 @@
         };
 
         window.openAdminMembersModal = function() {
-            if (!window.isAdmin) {
-                window.showNotification("Access Denied", "Only the administrator can view the member directory.");
-                return;
-            }
             const users = window.getRegisteredUsers();
             const keys = Object.keys(users);
             document.getElementById('totalMembersCountText').textContent = `Total Registered Members: ${keys.length}`;
@@ -1037,14 +1082,13 @@
                                 <th class="p-2.5">Parish / Diocese</th>
                                 <th class="p-2.5">Children & Grades</th>
                                 <th class="p-2.5">Location</th>
-                                <th class="p-2.5">Status</th>
-                                <th class="p-2.5 text-center">Admin Controls</th>
+                                <th class="p-2.5">Registered</th>
+                                <th class="p-2.5 text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-cream-200">
                             ${keys.map(k => {
                                 const u = users[k];
-                                const isBanned = u.banned;
                                 return `
                                     <tr class="hover:bg-cream-100 transition">
                                         <td class="p-2.5 font-bold text-marian-900">${escapeHtml(u.momName || 'Member')}</td>
@@ -1052,13 +1096,11 @@
                                         <td class="p-2.5 text-slate-600">${escapeHtml(u.parish || '-')}</td>
                                         <td class="p-2.5 text-slate-600">${escapeHtml(u.kids || '-')}</td>
                                         <td class="p-2.5 text-slate-600">${escapeHtml(u.state || '-')}</td>
-                                        <td class="p-2.5">
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isBanned ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}">${isBanned ? 'Banned' : 'Active'}</span>
-                                        </td>
-                                        <td class="p-2.5 text-center flex items-center justify-center gap-1.5">
-                                            <button onclick="window.adminEditMember('${escapeHtml(k)}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold" title="Edit Member">Edit</button>
-                                            <button onclick="window.adminToggleBanMember('${escapeHtml(k)}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2 py-1 rounded-lg text-[10px] font-bold" title="${isBanned ? 'Unban' : 'Ban'} Member">${isBanned ? 'Unban' : 'Ban'}</button>
-                                            <button onclick="window.adminDeleteMember('${escapeHtml(k)}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2 py-1 rounded-lg text-[10px] font-bold" title="Delete Member">Delete</button>
+                                        <td class="p-2.5 text-slate-500">${escapeHtml(u.registeredDate || '-')}</td>
+                                        <td class="p-2.5 text-center">
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.verified ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                                ${u.verified ? 'Active' : 'Pending'}
+                                            </span>
                                         </td>
                                     </tr>
                                 `;
@@ -1075,53 +1117,11 @@
             document.getElementById('adminMembersModal')?.classList.add('hidden');
         };
 
-        window.adminToggleBanMember = function(email) {
-            let users = window.getRegisteredUsers();
-            if (users[email]) {
-                users[email].banned = !users[email].banned;
-                window.saveRegisteredUsers(users);
-                window.openAdminMembersModal();
-                window.showNotification("Member Updated", `Member status for ${email} has been updated.`);
-            }
-        };
-
-        window.adminDeleteMember = function(email) {
-            if (email === ADMIN_EMAIL) {
-                window.showNotification("Action Denied", "Cannot delete admin account.");
-                return;
-            }
-            if (confirm(`Are you sure you want to delete member ${email}?`)) {
-                let users = window.getRegisteredUsers();
-                delete users[email];
-                window.saveRegisteredUsers(users);
-                window.openAdminMembersModal();
-                window.updateMemberCountBadge();
-                window.showNotification("Member Deleted", "Member successfully removed.");
-            }
-        };
-
-        window.adminEditMember = function(email) {
-            let users = window.getRegisteredUsers();
-            let u = users[email];
-            if (!u) return;
-            const newName = prompt("Edit Mother's Full Name:", u.momName || '');
-            if (newName === null) return;
-            const newParish = prompt("Edit Parish / Diocese:", u.parish || '') || u.parish;
-            const newKids = prompt("Edit Children & Grades:", u.kids || '') || u.kids;
-
-            u.momName = newName.trim();
-            u.parish = newParish.trim();
-            u.kids = newKids.trim();
-            window.saveRegisteredUsers(users);
-            window.openAdminMembersModal();
-            window.showNotification("Updated", "Member details successfully updated.");
-        };
-
         window.exportMemberList = function() {
             const users = window.getRegisteredUsers();
             let csv = "Mother Name,Email,Parish,Children & Grades,State,Registration Date,Status\n";
             Object.values(users).forEach(u => {
-                csv += `"${u.momName || ''}","${u.email}","${u.parish || ''}","${u.kids || ''}","${u.state || ''}","${u.registeredDate || ''}","${u.banned ? 'Banned' : 'Active'}"\n`;
+                csv += `"${u.momName || ''}","${u.email}","${u.parish || ''}","${u.kids || ''}","${u.state || ''}","${u.registeredDate || ''}","${u.verified ? 'Active' : 'Pending'}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
@@ -1169,7 +1169,7 @@
                 const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
                 store[bookId] = {
                     currentPage: Math.max(1, parseInt(pageNum, 10) || 1),
-                    totalPages: Math.max(1, parseInt(totalPages, 10) || 1)
+                    totalPages: Math.max(1, parseInt(totalPages, 10) || 15)
                 };
                 localStorage.setItem(LOCAL_PAGE_TRACKING_KEY, JSON.stringify(store));
             } catch(e) {}
@@ -1203,7 +1203,7 @@
                 return;
             }
             if (confirm("Are you sure you want to delete this book from the library?")) {
-                window.resources = window.loadResourcesFromStorage().filter(r => r.id !== bookId);
+                window.resources = (window.resources || []).filter(r => r.id !== bookId);
                 localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
                 window.renderLibrary();
                 window.showNotification("Book Deleted", "The book has been successfully removed.");
@@ -1215,7 +1215,7 @@
                 window.showNotification("Access Denied", "Only the administrator can edit library books.");
                 return;
             }
-            const list = window.loadResourcesFromStorage();
+            const list = window.resources || [];
             const book = list.find(r => r.id === bookId);
             if (!book) return;
 
@@ -1233,7 +1233,7 @@
         };
 
         window.downloadBookPdf = function(bookId) {
-            const list = window.loadResourcesFromStorage();
+            const list = window.resources || [];
             const book = list.find(r => r.id === bookId);
             if (!book) return;
 
@@ -1286,9 +1286,35 @@
                         "Book I, Chapter 2: God's Immeasurable Presence",
                         "Can any soul contain You within itself, when heaven and earth cannot contain You? How then do You fill heaven and earth, seeing You fill them? Or, if heaven and earth do not contain You, do You fill them and yet overflow?",
                         "Who can teach me this? Who can bring it home to my heart? Or what part of Your mercy is it that enables me to cry out to You?"
+                    ],
+                    [
+                        "The Confessions of St. Augustine",
+                        "Book II, Chapter 1: The Pains of Youth and Misguided Desires",
+                        "I wish to review in memory my past foulness, and the carnal corruptions of my soul; not that I love them, but that I may love You, O my God. Out of Your love do I love it, recalling in the very bitterness of my remembrance.",
+                        "What was it that I delighted in, save to love, and to be loved? But it was not kept within the safe bounds of friendship, and the bright boundary of affection was clouded over by the murky fumes of carnal desire."
                     ]
                 ];
-                return stAugustineChapters[(pageNum - 1) % stAugustineChapters.length];
+                const index = (pageNum - 1) % stAugustineChapters.length;
+                return stAugustineChapters[index];
+            }
+
+            if (book.id === 'imitation') {
+                const thomasChapters = [
+                    [
+                        "The Imitation of Christ by Thomas à Kempis",
+                        "Chapter 1: Of the Following of Christ, and of Despising all Vanities of the World",
+                        "'He that followeth Me, walketh not in darkness,' saith the Lord. These are the words of Christ, by which we are admonished that we must imitate His life and manners, if we would be truly enlightened and delivered from all blindness of heart.",
+                        "Let our chief endeavor therefore be to meditate upon the life of Jesus Christ. The teaching of Christ surpasseth all the teachings of holy men; and he that hath His spirit will find therein hidden manna."
+                    ],
+                    [
+                        "The Imitation of Christ by Thomas à Kempis",
+                        "Chapter 2: Of Having a Humble Opinion of Oneself",
+                        "Every man naturally desireth to know; but what availeth knowledge without the fear of God? Surely a humble peasant that serveth God is better than a proud philosopher who neglects himself.",
+                        "He that knoweth himself is vile in his own eyes, and taketh no delight in the praises of men. If I had all knowledge in the world, and had not charity, what would it profit me in the sight of God?"
+                    ]
+                ];
+                const index = (pageNum - 1) % thomasChapters.length;
+                return thomasChapters[index];
             }
 
             const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV'];
@@ -1306,7 +1332,7 @@
         };
 
         window.openBookReader = async function(bookId) {
-            const list = window.loadResourcesFromStorage();
+            const list = window.resources || [];
             const book = list.find(r => r.id === bookId);
             if (!book) return;
 
@@ -1356,6 +1382,7 @@
 
                     viewer.innerHTML = chunks.map((p, idx) => `<p id="tts-line-${idx}" class="py-2 leading-relaxed">${window.escapeHtml(p)}</p>`).join('');
                 } catch (pdfErr) {
+                    console.error("PDF.js render error:", pdfErr);
                     renderDynamicBookText(book, pageData.currentPage, pageInput, totalInput, viewer);
                 }
             } else {
@@ -1392,7 +1419,7 @@
 
         window.adjustPage = function(delta) {
             if (!window.activeReaderBookId) return;
-            const list = window.loadResourcesFromStorage();
+            const list = window.resources || [];
             const book = list.find(r => r.id === window.activeReaderBookId);
             const pageInput = document.getElementById('readerPageInput');
             const totalInput = document.getElementById('readerTotalPagesInput');
@@ -1409,7 +1436,7 @@
 
         window.handlePageInputChange = function(e) {
             if (!window.activeReaderBookId) return;
-            const list = window.loadResourcesFromStorage();
+            const list = window.resources || [];
             const book = list.find(r => r.id === window.activeReaderBookId);
             const totalInput = document.getElementById('readerTotalPagesInput');
             window.savePageData(window.activeReaderBookId, e.target.value, totalInput?.value || book?.totalPages || 15);
@@ -1449,7 +1476,7 @@
 
         window.toggleReaderAudio = function() {
             if (!window.activeReaderBookId) return;
-            const list = window.loadResourcesFromStorage();
+            const list = window.resources || [];
             const book = list.find(r => r.id === window.activeReaderBookId);
             if (!book) return;
 
@@ -1916,7 +1943,7 @@
                 };
                 reader.readAsDataURL(file);
             } else if (editId) {
-                const existing = window.loadResourcesFromStorage().find(r => r.id === editId);
+                const existing = window.resources.find(r => r.id === editId);
                 finishSave(existing ? existing.pdfBlobUrl : pdfLinkInput);
             } else {
                 finishSave(pdfLinkInput);
@@ -1926,14 +1953,10 @@
         window.addEventListener('storage', (e) => {
             if (e.key === LOCAL_RESOURCES_KEY) {
                 window.resources = window.loadResourcesFromStorage();
-                if (!document.getElementById('libraryContainer').classList.contains('hidden')) {
-                    window.renderLibrary();
-                }
+                window.renderLibrary();
             } else if (e.key === LOCAL_THREADS_KEY) {
                 window.communityThreads = window.loadThreadsFromStorage();
-                if (!document.getElementById('communityContainer').classList.contains('hidden')) {
-                    window.renderCommunityThreads();
-                }
+                window.renderCommunityThreads();
             } else if (e.key === LOCAL_USERS_KEY) {
                 window.updateMemberCountBadge();
             }
@@ -1960,16 +1983,12 @@
             const savedEmail = localStorage.getItem(LOCAL_SESSION_KEY);
             if (savedEmail) {
                 let users = window.getRegisteredUsers();
-                if (savedEmail === ADMIN_EMAIL || (users[savedEmail] && !users[savedEmail].banned && users[savedEmail].verified)) {
+                if (savedEmail === ADMIN_EMAIL || users[savedEmail]) {
                     window.currentLoggedInEmail = savedEmail;
                     window.applyUserSessionUI();
-                    document.getElementById('authGateOverlay')?.classList.add('hidden');
                 } else {
                     localStorage.removeItem(LOCAL_SESSION_KEY);
-                    document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 }
-            } else {
-                document.getElementById('authGateOverlay')?.classList.remove('hidden');
             }
 
             window.renderLibrary();
