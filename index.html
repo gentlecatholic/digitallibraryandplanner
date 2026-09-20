@@ -648,13 +648,13 @@
     
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v69';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v69';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v69';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v69';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v69';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v69';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v69';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v70';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v70';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v70';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v70';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v70';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v70';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v70';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -902,7 +902,7 @@
 
                 window.applyUserSessionUI();
                 document.getElementById('authGateOverlay')?.classList.add('hidden');
-                window.showNotification("Welcome Back", "Successfully signed into Catholic Sanctuary as " + window.currentUserDisplayName);
+                window.showNotification("Successfully Logged In", "Welcome to the Catholic Sanctuary, " + window.currentUserDisplayName + "!");
                 window.renderLibrary();
                 window.renderCommunityThreads();
             }
