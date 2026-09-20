@@ -79,7 +79,7 @@
 <body class="min-h-screen flex flex-col antialiased">
 
     <!-- Mandatory Authentication Gate Overlay (App Protection) -->
-    <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+    <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-cream-300 overflow-hidden flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white text-center border-b-4 border-gold-400 space-y-2">
                 <div class="w-16 h-16 rounded-full bg-marian-950 mx-auto border-2 border-gold-400 flex items-center justify-center shadow-lg overflow-hidden">
@@ -87,7 +87,7 @@
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold heading-serif text-amber-100">Catholic Sanctuary Access</h2>
                 <p class="text-xs text-gold-300 motto-serif tracking-wider">Mater Maria, ora pro nobis!</p>
-                <p class="text-xs text-blue-100/90 pt-1">Please sign in or register your family account to enter the digital library and community sanctuary.</p>
+                <p class="text-xs text-blue-100/90 pt-1">Please sign in or register your verified family account to enter the digital library and community sanctuary.</p>
             </div>
 
             <div class="p-6 space-y-4">
@@ -765,7 +765,7 @@
                 tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow";
                 tabSignin.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900";
                 registerFields?.classList.remove('hidden');
-                if (submitBtnText) submitBtnText.textContent = 'Register Family Account';
+                if (submitBtnText) submitBtnText.textContent = 'Register Family Account & Verify Email';
             }
         };
 
@@ -793,6 +793,7 @@
                     return;
                 }
 
+                // Save user as unverified initially to require email confirmation
                 users[email] = {
                     email,
                     password,
@@ -801,19 +802,23 @@
                     kids,
                     state,
                     registeredDate: new Date().toLocaleDateString(),
-                    verified: true
+                    verified: false,
+                    banned: false
                 };
 
                 window.saveRegisteredUsers(users);
-                window.currentLoggedInEmail = email;
-                window.currentUserDisplayName = momName;
-                localStorage.setItem(LOCAL_SESSION_KEY, email);
 
-                window.applyUserSessionUI();
-                document.getElementById('authGateOverlay')?.classList.add('hidden');
-                window.showNotification("Welcome!", `Successfully registered and signed into Catholic Sanctuary as ${momName}.`);
-                window.renderLibrary();
-                window.renderCommunityThreads();
+                const verifyNoticeHtml = `
+                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-300 text-left space-y-2 my-2">
+                        <p class="text-xs font-bold text-amber-900"><i class="fa-solid fa-envelope-circle-check mr-1.5"></i> Verification Email Sent from gentlecatholichomeschool@gmail.com</p>
+                        <p class="text-xs text-slate-700">Dearest ${escapeHtml(momName)}, to prevent fake registrations, please confirm your email address:</p>
+                        <button onclick="window.confirmUserEmail('${email}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-check-circle"></i> Confirm Email & Enter Sanctuary
+                        </button>
+                    </div>
+                `;
+                window.showNotification("Email Verification Required", "A verification link has been dispatched to your email address.", verifyNoticeHtml);
+
             } else {
                 if (email !== ADMIN_EMAIL && !users[email]) {
                     window.showNotification("Account Not Found", "No registered account found with this email. Please register first.");
@@ -823,10 +828,18 @@
                 if (email === ADMIN_EMAIL) {
                     window.isAdmin = true;
                     if (!users[email]) {
-                        users[email] = { email, password: password || 'admin', momName: 'Sanctuary Admin', parish: 'Diocese HQ', kids: 'Admin Family', state: 'Global', registeredDate: '2026-01-01', verified: true };
+                        users[email] = { email, password: password || 'admin', momName: 'Sanctuary Admin', parish: 'Diocese HQ', kids: 'Admin Family', state: 'Global', registeredDate: '2026-01-01', verified: true, banned: false };
                         window.saveRegisteredUsers(users);
                     }
                 } else {
+                    if (users[email].banned) {
+                        window.showNotification("Account Banned", "This account has been banned by the administrator for violating sanctuary guidelines.");
+                        return;
+                    }
+                    if (!users[email].verified) {
+                        window.showNotification("Email Unverified", "Please check your email and click the confirmation link before signing in.");
+                        return;
+                    }
                     if (users[email].password !== password) {
                         window.showNotification("Incorrect Password", "The password you entered is incorrect. Please try again.");
                         return;
@@ -840,6 +853,23 @@
                 window.applyUserSessionUI();
                 document.getElementById('authGateOverlay')?.classList.add('hidden');
                 window.showNotification("Welcome Back", "Successfully signed into Catholic Sanctuary as " + window.currentUserDisplayName);
+                window.renderLibrary();
+                window.renderCommunityThreads();
+            }
+        };
+
+        window.confirmUserEmail = function(email) {
+            let users = window.getRegisteredUsers();
+            if (users[email]) {
+                users[email].verified = true;
+                window.saveRegisteredUsers(users);
+                window.closeNotificationModal();
+                window.currentLoggedInEmail = email;
+                window.currentUserDisplayName = users[email].momName;
+                localStorage.setItem(LOCAL_SESSION_KEY, email);
+                window.applyUserSessionUI();
+                document.getElementById('authGateOverlay')?.classList.add('hidden');
+                window.showNotification("Welcome to the Sanctuary!", `Email verified successfully. Welcome, ${window.currentUserDisplayName}!`);
                 window.renderLibrary();
                 window.renderCommunityThreads();
             }
@@ -903,6 +933,8 @@
             document.getElementById('authGateOverlay')?.classList.remove('hidden');
             document.getElementById('gateEmail').value = '';
             document.getElementById('gatePassword').value = '';
+            document.getElementById('adminBadge')?.classList.add('hidden');
+            document.getElementById('adminMembersBtn')?.classList.add('hidden');
             window.showNotification("Signed Out", "You have successfully logged out of your Sanctuary account.");
         };
 
@@ -914,6 +946,10 @@
         };
 
         window.openAdminMembersModal = function() {
+            if (!window.isAdmin) {
+                window.showNotification("Access Denied", "Only the administrator can view the member directory.");
+                return;
+            }
             const users = window.getRegisteredUsers();
             const keys = Object.keys(users);
             document.getElementById('totalMembersCountText').textContent = `Total Registered Members: ${keys.length}`;
@@ -933,13 +969,14 @@
                                 <th class="p-2.5">Parish / Diocese</th>
                                 <th class="p-2.5">Children & Grades</th>
                                 <th class="p-2.5">Location</th>
-                                <th class="p-2.5">Registered</th>
-                                <th class="p-2.5 text-center">Status</th>
+                                <th class="p-2.5">Status</th>
+                                <th class="p-2.5 text-center">Admin Controls</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-cream-200">
                             ${keys.map(k => {
                                 const u = users[k];
+                                const isBanned = u.banned;
                                 return `
                                     <tr class="hover:bg-cream-100 transition">
                                         <td class="p-2.5 font-bold text-marian-900">${escapeHtml(u.momName || 'Member')}</td>
@@ -947,9 +984,13 @@
                                         <td class="p-2.5 text-slate-600">${escapeHtml(u.parish || '-')}</td>
                                         <td class="p-2.5 text-slate-600">${escapeHtml(u.kids || '-')}</td>
                                         <td class="p-2.5 text-slate-600">${escapeHtml(u.state || '-')}</td>
-                                        <td class="p-2.5 text-slate-500">${escapeHtml(u.registeredDate || '-')}</td>
-                                        <td class="p-2.5 text-center">
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Active</span>
+                                        <td class="p-2.5">
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isBanned ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}">${isBanned ? 'Banned' : 'Active'}</span>
+                                        </td>
+                                        <td class="p-2.5 text-center flex items-center justify-center gap-1.5">
+                                            <button onclick="window.adminEditMember('${escapeHtml(k)}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold" title="Edit Member">Edit</button>
+                                            <button onclick="window.adminToggleBanMember('${escapeHtml(k)}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2 py-1 rounded-lg text-[10px] font-bold" title="${isBanned ? 'Unban' : 'Ban'} Member">${isBanned ? 'Unban' : 'Ban'}</button>
+                                            <button onclick="window.adminDeleteMember('${escapeHtml(k)}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2 py-1 rounded-lg text-[10px] font-bold" title="Delete Member">Delete</button>
                                         </td>
                                     </tr>
                                 `;
@@ -966,11 +1007,53 @@
             document.getElementById('adminMembersModal')?.classList.add('hidden');
         };
 
+        window.adminToggleBanMember = function(email) {
+            let users = window.getRegisteredUsers();
+            if (users[email]) {
+                users[email].banned = !users[email].banned;
+                window.saveRegisteredUsers(users);
+                window.openAdminMembersModal();
+                window.showNotification("Member Updated", `Member status for ${email} has been updated.`);
+            }
+        };
+
+        window.adminDeleteMember = function(email) {
+            if (email === ADMIN_EMAIL) {
+                window.showNotification("Action Denied", "Cannot delete admin account.");
+                return;
+            }
+            if (confirm(`Are you sure you want to delete member ${email}?`)) {
+                let users = window.getRegisteredUsers();
+                delete users[email];
+                window.saveRegisteredUsers(users);
+                window.openAdminMembersModal();
+                window.updateMemberCountBadge();
+                window.showNotification("Member Deleted", "Member successfully removed.");
+            }
+        };
+
+        window.adminEditMember = function(email) {
+            let users = window.getRegisteredUsers();
+            let u = users[email];
+            if (!u) return;
+            const newName = prompt("Edit Mother's Full Name:", u.momName || '');
+            if (newName === null) return;
+            const newParish = prompt("Edit Parish / Diocese:", u.parish || '') || u.parish;
+            const newKids = prompt("Edit Children & Grades:", u.kids || '') || u.kids;
+
+            u.momName = newName.trim();
+            u.parish = newParish.trim();
+            u.kids = newKids.trim();
+            window.saveRegisteredUsers(users);
+            window.openAdminMembersModal();
+            window.showNotification("Updated", "Member details successfully updated.");
+        };
+
         window.exportMemberList = function() {
             const users = window.getRegisteredUsers();
             let csv = "Mother Name,Email,Parish,Children & Grades,State,Registration Date,Status\n";
             Object.values(users).forEach(u => {
-                csv += `"${u.momName || ''}","${u.email}","${u.parish || ''}","${u.kids || ''}","${u.state || ''}","${u.registeredDate || ''}","Active"\n`;
+                csv += `"${u.momName || ''}","${u.email}","${u.parish || ''}","${u.kids || ''}","${u.state || ''}","${u.registeredDate || ''}","${u.banned ? 'Banned' : 'Active'}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
@@ -1809,7 +1892,7 @@
             const savedEmail = localStorage.getItem(LOCAL_SESSION_KEY);
             if (savedEmail) {
                 let users = window.getRegisteredUsers();
-                if (savedEmail === ADMIN_EMAIL || users[savedEmail]) {
+                if (savedEmail === ADMIN_EMAIL || (users[savedEmail] && !users[savedEmail].banned && users[savedEmail].verified)) {
                     window.currentLoggedInEmail = savedEmail;
                     window.applyUserSessionUI();
                     document.getElementById('authGateOverlay')?.classList.add('hidden');
