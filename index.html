@@ -784,7 +784,7 @@
                 const kids = (document.getElementById('gateKids')?.value || '').trim();
 
                 if (!momName || !parish || !state || !kids) {
-                    window.showNotification("Required Fields Missing", "Please fill in all required family details (Mother's Name, Parish, Location, and Children/Grades) before registering.");
+                    window.showNotification("Required Fields Missing", "Please fill in all required family details (Mother's Full Name, Parish, Location, and Children/Grades) before registering.");
                     return;
                 }
 
@@ -1818,7 +1818,7 @@
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 }
             } else {
-                document.getElementById('authGateOverlay')?.classList.add('hidden');
+                document.getElementById('authGateOverlay')?.classList.remove('hidden');
             }
 
             window.renderLibrary();
