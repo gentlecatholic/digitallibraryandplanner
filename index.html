@@ -684,13 +684,13 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v45';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v45';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v45';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v45';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v45';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v45';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v45';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v46';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v46';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v46';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v46';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v46';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v46';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v46';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -715,7 +715,6 @@
             { id: 'little_flowers', title: 'The Little Flowers of St. Francis', author: 'St. Francis of Assisi', category: 'Lives of Saints', grade: 'Early Years / K-2', description: 'Charming legends and holy stories of St. Francis and his friars preaching to birds and living in holy poverty.', uploader: 'Admin', totalPages: 10 }
         ];
 
-        // Safe Loaders with auto-sync fallback
         window.loadResourcesFromStorage = function() {
             try {
                 const data = localStorage.getItem(LOCAL_RESOURCES_KEY);
@@ -943,6 +942,8 @@
             const users = window.getRegisteredUsers();
             if (users[email]) {
                 window.currentUserDisplayName = users[email].momName || email.split('@')[0];
+            } else if (window.isAdmin) {
+                window.currentUserDisplayName = 'Sanctuary Admin';
             }
 
             const emailDisplay = document.getElementById('userEmailDisplay');
@@ -1961,7 +1962,6 @@
             }
         };
 
-        // Real-Time Cross-Tab & Auto-Sync Listener
         window.addEventListener('storage', (e) => {
             if (e.key === LOCAL_RESOURCES_KEY) {
                 window.resources = window.loadResourcesFromStorage();
@@ -1973,10 +1973,11 @@
                 if (!document.getElementById('communityContainer')?.closest('.hidden')) {
                     window.renderCommunityThreads();
                 }
+            } else if (e.key === LOCAL_USERS_KEY) {
+                window.updateMemberCountBadge();
             }
         });
 
-        // Periodic background poll for seamless same-browser sync across views
         setInterval(() => {
             try {
                 const latestRes = window.loadResourcesFromStorage();
