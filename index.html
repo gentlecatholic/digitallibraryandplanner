@@ -123,7 +123,12 @@
 
                     <div id="gateEmailFieldWrapper">
                         <label class="block font-semibold text-slate-700 mb-1">Email Address *</label>
-                        <input type="email" id="gateEmail" required placeholder="mom@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                        <input type="email" id="gateEmail" required placeholder="mom@example.com" autocomplete="email" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                    </div>
+                    <div id="gateConfirmEmailFieldWrapper" class="hidden">
+                        <label class="block font-semibold text-slate-700 mb-1">Confirm Email Address *</label>
+                        <input type="email" id="gateConfirmEmail" placeholder="Re-enter your email address" autocomplete="email" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                        <p class="text-[10px] text-slate-500 mt-1">Please check this carefully. Your confirmation email will be sent to this address.</p>
                     </div>
                     <div id="gatePasswordFieldWrapper">
                         <label class="block font-semibold text-slate-700 mb-1">Password *</label>
@@ -166,6 +171,9 @@
                 </div>
                 <div id="userAccountSection" class="flex items-center gap-3 flex-wrap">
                     <span id="userEmailDisplay" class="text-blue-200 font-medium"></span>
+                    <button id="accountSecurityBtn" onclick="window.openAccountSecurityModal()" class="bg-tealhalo-500 hover:bg-tealhalo-600 text-white font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-shield-halved"></i> Account & Security
+                    </button>
                     <button id="unsubscribeHeaderBtn" onclick="window.openUnsubscribeModal()" class="bg-cream-200 hover:bg-cream-300 text-slate-800 font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-user-slash text-rose-600"></i> Unsubscribe
                     </button>
@@ -516,7 +524,7 @@
         </div>
     </div>
 
-    <div id="customNotifyModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div id="customNotifyModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-[200] flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-cream-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto text-xl">
                 <i id="notifyIcon" class="fa-solid fa-circle-info"></i>
@@ -530,13 +538,35 @@
         </div>
     </div>
 
+    <div id="accountSecurityModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-[80] flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-cream-300">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h3 class="text-xl font-bold heading-serif text-marian-900">Account & Security</h3>
+                    <p class="text-xs text-slate-500 mt-1">Manage your Sanctuary account safely through Supabase.</p>
+                </div>
+                <button onclick="window.closeAccountSecurityModal()" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div class="rounded-2xl bg-cream-100 border border-cream-200 p-4">
+                    <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Signed-in email</p>
+                    <p id="securityAccountEmail" class="text-sm font-semibold text-marian-900 break-all mt-1"></p>
+                </div>
+                <button onclick="window.sendPasswordChangeEmail()" class="w-full text-left rounded-2xl border border-slate-200 hover:border-tealhalo-400 hover:bg-tealhalo-50 p-4 transition">
+                    <div class="flex items-center gap-3"><span class="w-10 h-10 rounded-full bg-tealhalo-100 text-tealhalo-700 flex items-center justify-center"><i class="fa-solid fa-key"></i></span><span><strong class="block text-sm text-slate-800">Change Password</strong><span class="block text-[11px] text-slate-500 mt-0.5">Send a secure password-change link to your email.</span></span></div>
+                </button>
+            </div>
+            <div class="mt-5 rounded-2xl bg-blue-50 border border-blue-100 p-3 text-[10px] text-blue-800 leading-relaxed">Your password is handled by Supabase Auth and is never stored in this website's local storage.</div>
+        </div>
+    </div>
+
     <div id="unsubscribeModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-cream-300 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
                 <i class="fa-solid fa-user-slash"></i>
             </div>
             <h3 class="text-lg font-bold heading-serif text-marian-900">Unsubscribe Account</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Are you sure you want to unsubscribe and remove your membership and local profile data from this device?</p>
+            <p class="text-xs text-slate-600 leading-relaxed">Are you sure you want to remove your Sanctuary profile? This removes your online profile record, but your Supabase Auth login identity cannot be permanently deleted from this browser for security reasons.</p>
             <div class="flex items-center justify-center gap-3 pt-2">
                 <button onclick="window.closeUnsubscribeModal()" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-semibold text-xs">Cancel</button>
                 <button onclick="window.confirmUnsubscribe()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs shadow">Yes, Unsubscribe</button>
@@ -757,25 +787,64 @@
         // Authentication is fully handled by Supabase Auth.
         // These legacy helpers are kept only so older UI code does not break;
         // they intentionally never read or write passwords or local accounts.
-        window.getRegisteredUsers = function() {
-            return window.remoteProfilesCache || {};
+        // ================================================================
+        // ONLINE AUTHENTICATION — SUPABASE
+        // ================================================================
+        const PENDING_CONFIRM_EMAIL_KEY = 'gentle_catholic_pending_confirmation_email_v1';
+        window.authBusy = false;
+        window.pendingConfirmationEmail = '';
+
+        window.getPendingConfirmationEmail = function() {
+            try { return localStorage.getItem(PENDING_CONFIRM_EMAIL_KEY) || ''; } catch(e) { return ''; }
+        };
+        window.setPendingConfirmationEmail = function(email) {
+            window.pendingConfirmationEmail = (email || '').toLowerCase();
+            try { if (email) localStorage.setItem(PENDING_CONFIRM_EMAIL_KEY, window.pendingConfirmationEmail); else localStorage.removeItem(PENDING_CONFIRM_EMAIL_KEY); } catch(e) {}
         };
 
-        window.saveRegisteredUsers = function() {
-            console.warn('Local account storage is disabled. Supabase Auth is the source of truth.');
+        // Production URL for this app on GitHub Pages.
+        // This exact URL should also be added to Supabase Authentication > URL Configuration.
+        const PRODUCTION_APP_URL = 'https://gentlecatholic.github.io/digitallibraryandplanner/';
+
+        window.getAuthRedirectUrl = function() {
+            return PRODUCTION_APP_URL;
         };
 
-        // ================================================================
-        // REAL ONLINE AUTHENTICATION — SUPABASE
-        // Passwords are handled by Supabase Auth and are never stored in
-        // this HTML, localStorage, or the member profile table.
-        // ================================================================
+        window.cleanAuthUrl = function() {
+            try { window.history.replaceState({}, document.title, window.location.pathname + window.location.search); } catch(e) {}
+        };
+
+        window.friendlyAuthError = function(error) {
+            const msg = String(error?.message || error || '');
+            if (/rate limit|too many/i.test(msg)) return 'Too many requests were made. Please wait a few minutes and try again.';
+            if (/redirect.*not.*allowed|invalid.*redirect/i.test(msg)) return 'The authentication redirect URL is not yet allowed in Supabase. Add this website address under Authentication → URL Configuration → Redirect URLs.';
+            if (/network|fetch|failed to fetch/i.test(msg)) return 'The internet connection could not complete the request. Please check your connection and try again.';
+            return msg || 'The request could not be completed. Please try again.';
+        };
+
         window.authReady = async function() {
             if (!SUPABASE_CONFIGURED || !window.supabaseClient) {
-                window.showNotification('Online Login Not Connected', 'This copy of the app still needs your Supabase Project URL and anon/publishable key.');
+                window.showNotification('Online Login Not Connected', 'This copy of the app is not connected to Supabase yet. Please check the Supabase Project URL and anon/publishable key in the HTML.');
                 return false;
             }
             return true;
+        };
+
+        window.setAuthBusy = function(busy, label) {
+            window.authBusy = !!busy;
+            const btn = document.getElementById('gateSubmitBtn');
+            const text = document.getElementById('gateSubmitBtnText');
+            if (!btn) return;
+            btn.disabled = !!busy;
+            btn.classList.toggle('opacity-60', !!busy);
+            btn.classList.toggle('cursor-not-allowed', !!busy);
+            if (busy) {
+                btn.dataset.originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>' + (label || 'Please wait…') + '</span>';
+            } else if (btn.dataset.originalHtml) {
+                btn.innerHTML = btn.dataset.originalHtml;
+                delete btn.dataset.originalHtml;
+            }
         };
 
         window.profileFromUser = function(user) {
@@ -788,15 +857,29 @@
                 state: md.state || '',
                 kids: md.kids || '',
                 banned: !!md.banned,
-                is_admin: !!md.is_admin,
+                is_admin: false,
                 registeredDate: user?.created_at ? new Date(user.created_at).toLocaleDateString() : ''
             };
         };
 
         window.refreshOwnProfile = async function(user) {
             if (!user || !window.supabaseClient) return null;
-            const { data, error } = await window.supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
+            let { data, error } = await window.supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
             if (!error && data) {
+                // Keep the profile table synchronized with metadata for older accounts
+                // whose profile was created before the registration fields existed.
+                const md = user.user_metadata || {};
+                const patch = {};
+                if (!data.email && user.email) patch.email = user.email.toLowerCase();
+                if (!data.momName && md.momName) patch.momName = md.momName;
+                if (!data.parish && md.parish) patch.parish = md.parish;
+                if (!data.state && md.state) patch.state = md.state;
+                if (!data.kids && md.kids) patch.kids = md.kids;
+                if (Object.keys(patch).length) {
+                    patch.updated_at = new Date().toISOString();
+                    const updated = await window.supabaseClient.from('profiles').update(patch).eq('id', user.id).select('*').maybeSingle();
+                    if (!updated.error && updated.data) data = updated.data;
+                }
                 window.currentProfile = data;
                 window.remoteProfilesCache[(data.email || user.email || '').toLowerCase()] = data;
                 return data;
@@ -811,8 +894,8 @@
             const { data, error } = await window.supabaseClient.from('profiles').select('*').order('created_at', { ascending: false });
             if (error) {
                 console.error('Profile directory error:', error);
-                window.showNotification('Member Directory Error', 'The online member directory could not be loaded. Check that the Supabase profiles table and RLS policies have been installed.');
-                return {};
+                window.showNotification('Member Directory Error', 'The online member directory could not be loaded. ' + error.message);
+                return window.remoteProfilesCache;
             }
             window.remoteProfilesCache = {};
             (data || []).forEach(u => { window.remoteProfilesCache[(u.email || '').toLowerCase()] = u; });
@@ -820,11 +903,10 @@
         };
 
         window.updateMemberCountBadge = async function() {
-            const badge = document.getElementById('memberCountBadge');
-            if (!badge) return;
-            if (!window.supabaseClient || !window.isAdmin) { badge.textContent = '0'; return; }
+            if (!window.supabaseClient) return;
             const { count, error } = await window.supabaseClient.from('profiles').select('id', { count: 'exact', head: true });
-            if (!error) badge.textContent = String(count || 0);
+            const badge = document.getElementById('memberCountBadge');
+            if (!error && badge) badge.textContent = String(count || 0);
         };
 
         window.switchGateMode = function(mode) {
@@ -837,74 +919,60 @@
             const headerDesc = document.getElementById('gateHeaderDesc');
             const tabsContainer = document.getElementById('gateTabsContainer');
             const emailFieldWrapper = document.getElementById('gateEmailFieldWrapper');
+            const confirmEmailWrapper = document.getElementById('gateConfirmEmailFieldWrapper');
             const passwordFieldWrapper = document.getElementById('gatePasswordFieldWrapper');
             const confirmPasswordWrapper = document.getElementById('gateConfirmPasswordFieldWrapper');
             const forgotLinkRow = document.getElementById('gateForgotLinkRow');
             const email = document.getElementById('gateEmail');
+            const confirmEmail = document.getElementById('gateConfirmEmail');
             const password = document.getElementById('gatePassword');
             const confirm = document.getElementById('gateConfirmPassword');
             const accountHint = document.getElementById('gateAccountHint');
-
-            // Reset values/validation when changing modes.
             if (confirm) confirm.value = '';
+            if (confirmEmail && mode !== 'register') confirmEmail.value = '';
             if (password) password.value = '';
 
             if (mode === 'signin') {
-                if (accountHint) accountHint.textContent = 'Not sure if you registered? Enter your email and we’ll check.';
+                if (accountHint) accountHint.textContent = 'Enter the email and password you used to register.';
                 tabsContainer?.classList.remove('hidden');
                 tabSignin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow";
                 tabRegister.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900";
-                registerFields?.classList.add('hidden');
-                emailFieldWrapper?.classList.remove('hidden');
-                passwordFieldWrapper?.classList.remove('hidden');
-                confirmPasswordWrapper?.classList.add('hidden');
-                forgotLinkRow?.classList.remove('hidden');
-                if (email) email.autocomplete = 'email';
-                if (password) password.autocomplete = 'current-password';
-                if (password) password.required = true;
-                if (confirm) confirm.required = false;
+                registerFields?.classList.add('hidden'); confirmEmailWrapper?.classList.add('hidden');
+                emailFieldWrapper?.classList.remove('hidden'); passwordFieldWrapper?.classList.remove('hidden');
+                confirmPasswordWrapper?.classList.add('hidden'); forgotLinkRow?.classList.remove('hidden');
+                if (email) { email.autocomplete = 'email'; email.required = true; }
+                if (password) { password.autocomplete = 'current-password'; password.required = true; }
+                if (confirm) confirm.required = false; if (confirmEmail) confirmEmail.required = false;
                 if (headerTitle) headerTitle.textContent = 'Catholic Sanctuary Access';
                 if (headerDesc) headerDesc.textContent = 'Sign in with your registered family account to enter the digital library and community sanctuary.';
                 if (submitBtnText) submitBtnText.textContent = 'Sign In to Sanctuary';
             } else if (mode === 'register') {
-                if (accountHint) accountHint.textContent = 'Already have an account? Choose Sign In above.';
+                if (accountHint) accountHint.textContent = 'Please check your email address carefully before creating your account.';
                 tabsContainer?.classList.remove('hidden');
                 tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow";
                 tabSignin.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900";
-                registerFields?.classList.remove('hidden');
-                emailFieldWrapper?.classList.remove('hidden');
-                passwordFieldWrapper?.classList.remove('hidden');
-                confirmPasswordWrapper?.classList.remove('hidden');
-                forgotLinkRow?.classList.add('hidden');
-                if (email) email.autocomplete = 'email';
-                if (password) password.autocomplete = 'new-password';
-                if (password) password.required = true;
-                if (confirm) confirm.required = true;
+                registerFields?.classList.remove('hidden'); emailFieldWrapper?.classList.remove('hidden'); confirmEmailWrapper?.classList.remove('hidden');
+                passwordFieldWrapper?.classList.remove('hidden'); confirmPasswordWrapper?.classList.remove('hidden'); forgotLinkRow?.classList.add('hidden');
+                if (email) { email.autocomplete = 'email'; email.required = true; }
+                if (confirmEmail) { confirmEmail.autocomplete = 'email'; confirmEmail.required = true; }
+                if (password) { password.autocomplete = 'new-password'; password.required = true; }
+                if (confirm) { confirm.autocomplete = 'new-password'; confirm.required = true; }
                 if (headerTitle) headerTitle.textContent = 'Register Family Account';
-                if (headerDesc) headerDesc.textContent = 'Create your family account. Your account is securely stored online so you can sign in from any device.';
+                if (headerDesc) headerDesc.textContent = 'Create your family account. We will send a confirmation email to the address you enter below.';
                 if (submitBtnText) submitBtnText.textContent = 'Create Family Account';
             } else if (mode === 'forgot') {
-                if (accountHint) accountHint.textContent = 'Enter the email you used for your online Sanctuary account.';
-                tabsContainer?.classList.add('hidden');
-                registerFields?.classList.add('hidden');
-                passwordFieldWrapper?.classList.add('hidden');
-                confirmPasswordWrapper?.classList.add('hidden');
-                forgotLinkRow?.classList.add('hidden');
-                emailFieldWrapper?.classList.remove('hidden');
-                if (email) email.autocomplete = 'email';
-                if (password) password.required = false;
-                if (confirm) confirm.required = false;
+                if (accountHint) accountHint.textContent = 'Enter the email you used for your Sanctuary account.';
+                tabsContainer?.classList.add('hidden'); registerFields?.classList.add('hidden'); confirmEmailWrapper?.classList.add('hidden');
+                passwordFieldWrapper?.classList.add('hidden'); confirmPasswordWrapper?.classList.add('hidden'); forgotLinkRow?.classList.add('hidden');
+                emailFieldWrapper?.classList.remove('hidden'); if (email) { email.autocomplete = 'email'; email.required = true; }
+                if (password) password.required = false; if (confirm) confirm.required = false; if (confirmEmail) confirmEmail.required = false;
                 if (headerTitle) headerTitle.textContent = 'Password Recovery';
-                if (headerDesc) headerDesc.textContent = 'Enter your registered email address to reset your password on this device.';
+                if (headerDesc) headerDesc.textContent = 'We will send a password-reset link to your registered email address.';
                 if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-key mr-1"></i> Send Reset Email';
             } else if (mode === 'reset') {
                 if (accountHint) accountHint.textContent = 'Choose a new password for your Sanctuary account.';
-                tabsContainer?.classList.add('hidden');
-                registerFields?.classList.add('hidden');
-                emailFieldWrapper?.classList.add('hidden');
-                passwordFieldWrapper?.classList.remove('hidden');
-                confirmPasswordWrapper?.classList.remove('hidden');
-                forgotLinkRow?.classList.add('hidden');
+                tabsContainer?.classList.add('hidden'); registerFields?.classList.add('hidden'); emailFieldWrapper?.classList.add('hidden'); confirmEmailWrapper?.classList.add('hidden');
+                passwordFieldWrapper?.classList.remove('hidden'); confirmPasswordWrapper?.classList.remove('hidden'); forgotLinkRow?.classList.add('hidden');
                 if (password) { password.autocomplete = 'new-password'; password.required = true; }
                 if (confirm) { confirm.autocomplete = 'new-password'; confirm.required = true; }
                 if (headerTitle) headerTitle.textContent = 'Choose a New Password';
@@ -915,143 +983,221 @@
 
         window.completeLogin = async function(user) {
             const email = (user?.email || '').toLowerCase();
-            if (!user || !email) return;
+            if (!user || !email) return false;
             const profile = await window.refreshOwnProfile(user);
             if (profile?.banned) {
                 await window.supabaseClient.auth.signOut();
-                window.showNotification('Account Restricted', 'This account has been restricted by the administrator.');
-                return;
+                window.showNotification('Account Restricted', 'This account has been restricted by the administrator. Please contact the administrator if you believe this is an error.');
+                return false;
             }
             window.currentLoggedInEmail = email;
             window.currentUserDisplayName = profile?.momName || email.split('@')[0];
             window.isAdmin = !!(profile?.is_admin || email === ADMIN_EMAIL.toLowerCase());
             window.applyUserSessionUI();
             document.getElementById('authGateOverlay')?.classList.add('hidden');
+            window.setPendingConfirmationEmail('');
             window.renderLibrary();
             window.renderCommunityThreads();
+            return true;
         };
 
         window.openRegistrationForEmail = function(email) {
             window.switchGateMode('register');
             const emailEl = document.getElementById('gateEmail');
+            const confirmEmailEl = document.getElementById('gateConfirmEmail');
             if (emailEl) emailEl.value = email || '';
-            const mom = document.getElementById('gateMomName');
-            if (mom) mom.focus();
+            if (confirmEmailEl) confirmEmailEl.value = email || '';
+            document.getElementById('gateMomName')?.focus();
         };
 
         window.openForgotForEmail = function(email) {
             window.switchGateMode('forgot');
             const emailEl = document.getElementById('gateEmail');
             if (emailEl) emailEl.value = email || '';
-            const pw = document.getElementById('gatePassword');
-            if (pw) pw.focus();
+            emailEl?.focus();
+        };
+
+        window.resendConfirmationEmail = async function(email) {
+            email = (email || window.getPendingConfirmationEmail() || document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                window.showNotification('Email Needed', 'Please enter the email address you used when registering.');
+                window.switchGateMode('signin');
+                document.getElementById('gateEmail')?.focus();
+                return;
+            }
+            if (!(await window.authReady())) return;
+            window.setAuthBusy(true, 'Sending confirmation…');
+            try {
+                const { error } = await window.supabaseClient.auth.resend({ type: 'signup', email });
+                if (error) {
+                    const msg = String(error.message || '');
+                    if (/rate limit|too many/i.test(msg)) {
+                        window.showNotification('Please Wait', 'Supabase has temporarily limited confirmation emails. Please wait a little while before requesting another email.');
+                    } else {
+                        window.showNotification('Confirmation Email Not Sent', window.friendlyAuthError(error));
+                    }
+                    return;
+                }
+                window.setPendingConfirmationEmail(email);
+                window.showNotification('Confirmation Email Sent', `A new confirmation email was requested for ${email}. Please check your inbox and spam/junk folder. If the address itself is incorrect, register again using the correct email address.`);
+            } finally { window.setAuthBusy(false); }
         };
 
         window.handleGateSubmit = async function(e) {
             e.preventDefault();
+            if (window.authBusy) return;
             if (!(await window.authReady())) return;
-
             const emailEl = document.getElementById('gateEmail');
+            const confirmEmailEl = document.getElementById('gateConfirmEmail');
             const passwordEl = document.getElementById('gatePassword');
             const confirmEl = document.getElementById('gateConfirmPassword');
             const email = (emailEl?.value || '').trim().toLowerCase();
+            const confirmEmail = (confirmEmailEl?.value || '').trim().toLowerCase();
             const password = passwordEl?.value || '';
             const confirmPassword = confirmEl?.value || '';
 
-            if (!email) { window.showNotification('Email Required', 'Please enter your email address.'); emailEl?.focus(); return; }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { window.showNotification('Invalid Email', 'Please enter a valid email address.'); emailEl?.focus(); return; }
-
-            if (window.gateMode === 'reset') {
-                if (password.length < 8) { window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return; }
-                if (password !== confirmPassword) { window.showNotification('Passwords Do Not Match', 'Please make sure both password fields match.'); return; }
-                const { error } = await window.supabaseClient.auth.updateUser({ password });
-                if (error) { window.showNotification('Password Update Failed', error.message); return; }
-                window.switchGateMode('signin');
-                document.getElementById('gatePassword').value = '';
-                window.showNotification('Password Updated', 'Your new password has been saved. You can now sign in normally from any device.');
-                return;
+            // Password recovery does not need the email field; the secure recovery
+            // session supplied by Supabase identifies the account.
+            if (window.gateMode !== 'reset') {
+                if (!email) { window.showNotification('Email Required', 'Please enter your email address.'); emailEl?.focus(); return; }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { window.showNotification('Invalid Email Address', 'Please enter a valid email address, such as mom@example.com.'); emailEl?.focus(); return; }
             }
 
-            if (window.gateMode === 'forgot') {
-                const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href.split('#')[0] });
-                if (error) {
-                    window.showNotification('Password Reset', 'If an account exists for this email, Supabase will send a password-reset email. Please check your inbox and spam folder.');
-                    console.error(error);
-                    return;
-                }
-                window.showNotification('Check Your Email', 'If an account exists for this email, a password-reset link has been sent.');
-                return;
-            }
-
-            if (window.gateMode === 'register') {
-                const momName = (document.getElementById('gateMomName')?.value || '').trim();
-                const parish = (document.getElementById('gateParish')?.value || '').trim();
-                const state = (document.getElementById('gateState')?.value || '').trim();
-                const kids = (document.getElementById('gateKids')?.value || '').trim();
-                if (!momName || !parish || !state || !kids) {
-                    window.showNotification('Required Fields Missing', 'Please complete all required family details.'); return;
-                }
-                if (password.length < 8) {
-                    window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return;
-                }
-                if (password !== confirmPassword) {
-                    window.showNotification('Passwords Do Not Match', 'Please make sure both password fields are exactly the same.'); return;
-                }
-
-                const { data, error } = await window.supabaseClient.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        emailRedirectTo: window.location.href.split('#')[0],
-                        data: { momName, parish, state, kids, banned: false }
+            window.setAuthBusy(true, 'Please wait…');
+            try {
+                if (window.gateMode === 'reset') {
+                    if (password.length < 8) { window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return; }
+                    if (password !== confirmPassword) { window.showNotification('Passwords Do Not Match', 'The new password and confirmation password are different. Please type them again.'); return; }
+                    const { data: recoverySession } = await window.supabaseClient.auth.getSession();
+                    if (!recoverySession?.session) {
+                        window.cleanAuthUrl();
+                        window.switchGateMode('forgot');
+                        window.showNotification('Reset Link Expired', 'This password-reset session is no longer active. Please request a new password-reset email.');
+                        return;
                     }
-                });
-                if (error) {
-                    if (/already registered|already exists/i.test(error.message)) {
-                        window.showNotification('Account Already Exists', 'This email is already registered. Please use Sign In, or choose Forgot Password if you do not remember the password.');
-                        window.switchGateMode('signin');
-                        if (emailEl) emailEl.value = email;
-                    } else {
-                        window.showNotification('Registration Failed', error.message);
-                    }
-                    return;
-                }
-                if (data.session && data.user) {
-                    await window.completeLogin(data.user);
-                    window.showNotification('Account Created', `Welcome to the Catholic Sanctuary, ${momName}! Your online family account is ready.`);
-                } else {
+                    const { error } = await window.supabaseClient.auth.updateUser({ password });
+                    if (error) { window.showNotification('Password Update Failed', window.friendlyAuthError(error)); return; }
+                    await window.supabaseClient.auth.signOut();
+                    window.cleanAuthUrl();
                     window.switchGateMode('signin');
-                    if (emailEl) emailEl.value = email;
-                    window.showNotification('Check Your Email', 'Your account was created. Please open the confirmation email from Supabase, confirm your email address, then return here and sign in.');
+                    if (emailEl) emailEl.value = '';
+                    if (passwordEl) passwordEl.value = '';
+                    if (confirmEl) confirmEl.value = '';
+                    window.showNotification('Password Changed Successfully', 'Your password has been updated securely. Please sign in with your new password.');
+                    return;
                 }
-                return;
-            }
 
-            // SIGN IN
-            const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
-            if (error || !data?.user) {
-                window.showNotification(
-                    'We Couldn’t Sign You In',
-                    'We could not sign you in with those details. If you have used this email before, try Forgot Password. If you are new, choose Register Account. We do not reveal whether an email exists for security reasons.',
-                    `<div class="flex flex-col sm:flex-row gap-2">
-                        <button type="button" onclick="window.closeNotificationModal(); window.openForgotForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Reset Password</button>
-                        <button type="button" onclick="window.closeNotificationModal(); window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">Create Account</button>
-                    </div>`
-                );
-                return;
-            }
-            await window.completeLogin(data.user);
-            window.showNotification('Successfully Logged In', `Welcome back, ${window.currentUserDisplayName}!`);
+                if (window.gateMode === 'forgot') {
+                    const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.getAuthRedirectUrl() });
+                    if (error) { window.showNotification('Reset Email Could Not Be Sent', window.friendlyAuthError(error)); return; }
+                    window.setPendingConfirmationEmail(email);
+                    window.showNotification('Password Reset Email Sent', `If ${email} is registered, Supabase has sent a password-reset link. Check your inbox and spam/junk folder.`);
+                    return;
+                }
+
+                if (window.gateMode === 'register') {
+                    if (!confirmEmail) { window.showNotification('Confirm Your Email', 'Please enter your email address again so we can make sure there is no typing mistake.'); confirmEmailEl?.focus(); return; }
+                    if (email !== confirmEmail) { window.showNotification('Email Addresses Do Not Match', 'The two email addresses are different. Please check both fields carefully. Your confirmation email will only go to the first address.'); confirmEmailEl?.focus(); return; }
+                    const momName = (document.getElementById('gateMomName')?.value || '').trim();
+                    const parish = (document.getElementById('gateParish')?.value || '').trim();
+                    const state = (document.getElementById('gateState')?.value || '').trim();
+                    const kids = (document.getElementById('gateKids')?.value || '').trim();
+                    if (!momName || !parish || !state || !kids) { window.showNotification('Required Fields Missing', 'Please complete your name, parish/diocese, location, and children/grades.'); return; }
+                    if (password.length < 8) { window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return; }
+                    if (password !== confirmPassword) { window.showNotification('Passwords Do Not Match', 'The password and confirmation password are different. Please type them again.'); return; }
+                    const { data, error } = await window.supabaseClient.auth.signUp({
+                        email, password,
+                        options: { emailRedirectTo: window.getAuthRedirectUrl(), data: { momName, parish, state, kids, banned: false } }
+                    });
+                    if (error) {
+                        const msg = String(error.message || '');
+                        if (/already registered|already exists|user already/i.test(msg)) {
+                            window.switchGateMode('signin'); if (emailEl) emailEl.value = email;
+                            window.showNotification('Email Already Registered', `${email} is already associated with a Sanctuary account. Please sign in, or use Forgot Password if you do not remember the password.`);
+                        } else if (/invalid.*email|email.*invalid/i.test(msg)) {
+                            window.showNotification('Email Address Not Accepted', 'Supabase could not accept this email address. Please check the spelling and try again.');
+                        } else if (/rate limit|too many/i.test(msg)) {
+                            window.showNotification('Please Wait', 'Too many registration emails have been requested. Please wait before trying again.');
+                        } else {
+                            window.showNotification('Registration Failed', window.friendlyAuthError(error));
+                        }
+                        return;
+                    }
+                    window.setPendingConfirmationEmail(email);
+                    if (data?.session && data?.user) {
+                        const ok = await window.completeLogin(data.user);
+                        if (ok) window.showNotification('Registration Successful', `Welcome, ${momName}! Your Catholic Sanctuary account has been created and you are now signed in.`);
+                    } else {
+                        window.switchGateMode('signin'); if (emailEl) emailEl.value = email;
+                        window.showNotification('Registration Successful — Check Your Email', `Your account for ${email} was created successfully. We sent a confirmation email to this address. Please click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.closeNotificationModal(); window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Resend Confirmation Email</button><button type="button" onclick="window.closeNotificationModal(); window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">I Entered the Wrong Email</button></div>`);
+                    }
+                    return;
+                }
+
+                const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
+                if (error || !data?.user) {
+                    const code = error?.code || '';
+                    const msg = String(error?.message || '');
+                    if (code === 'email_not_confirmed' || /email not confirmed/i.test(msg)) {
+                        window.setPendingConfirmationEmail(email);
+                        window.showNotification('Email Not Confirmed Yet', `Please open the confirmation email sent to ${email} and click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.closeNotificationModal(); window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Resend Confirmation Email</button><button type="button" onclick="window.closeNotificationModal(); window.switchGateMode('register'); document.getElementById('gateEmail').value=${JSON.stringify(email)}; document.getElementById('gateConfirmEmail').value=${JSON.stringify(email)}" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">Check Email Address</button></div>`);
+                    } else if (code === 'invalid_credentials' || /invalid login credentials|invalid credentials/i.test(msg)) {
+                        window.showNotification('Incorrect Email or Password', 'The email and password combination did not match. Please check your password carefully. If you forgot it, use Forgot Password to create a new one.');
+                    } else if (/too many|rate limit/i.test(msg)) {
+                        window.showNotification('Too Many Attempts', 'Please wait a few minutes before trying to sign in again.');
+                    } else {
+                        window.showNotification('Sign-In Failed', window.friendlyAuthError(error));
+                    }
+                    return;
+                }
+                const ok = await window.completeLogin(data.user);
+                if (ok) window.showNotification('Successfully Logged In', `Welcome back, ${window.currentUserDisplayName}!`);
+            } catch (err) {
+                console.error('Authentication error:', err);
+                window.showNotification('Something Went Wrong', 'We could not complete that request. Please check your internet connection and try again.');
+            } finally { window.setAuthBusy(false); }
         };
 
-        // Password reset is handled by Supabase email links.
         window.openResetModal = function(email) { window.openForgotForEmail(email); };
+
+        window.closeAccountSecurityModal = function() { document.getElementById('accountSecurityModal')?.classList.add('hidden'); };
+
+        window.openAccountSecurityModal = function() {
+            if (!window.currentLoggedInEmail) { window.showNotification('Sign In Required', 'Please sign in to manage your account security.'); return; }
+            const el = document.getElementById('securityAccountEmail');
+            if (el) el.textContent = window.currentLoggedInEmail;
+            document.getElementById('accountSecurityModal')?.classList.remove('hidden');
+        };
+
+        window.sendPasswordChangeEmail = async function() {
+            const email = (window.currentLoggedInEmail || '').trim().toLowerCase();
+            if (!email || !(await window.authReady())) return;
+            window.setAuthBusy(false);
+            try {
+                const redirectTo = window.getAuthRedirectUrl();
+                const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+                if (error) { window.showNotification('Password Change Email Not Sent', window.friendlyAuthError(error)); return; }
+                window.closeAccountSecurityModal();
+                window.showNotification('Password Change Email Sent', `A secure password-change link was sent to ${email}. Open the newest email and follow the link to choose your new password.`);
+            } catch (err) {
+                console.error(err);
+                window.showNotification('Password Change Failed', 'We could not send the password-change email. Please check your connection and try again.');
+            }
+        };
+
+        window.resendConfirmationForCurrentAccount = async function() {
+            const email = (window.currentLoggedInEmail || '').trim().toLowerCase();
+            if (!email || !(await window.authReady())) return;
+            window.setAuthBusy(false);
+            const { error } = await window.supabaseClient.auth.resend({ type: 'signup', email });
+            if (error) { window.showNotification('Confirmation Email Not Sent', window.friendlyAuthError(error)); return; }
+            window.showNotification('Confirmation Email Sent', `A new confirmation email was requested for ${email}. Please check your inbox and spam/junk folder.`);
+        };
 
         window.confirmUserEmail = function(email) {
             window.switchGateMode('signin');
-            const emailEl = document.getElementById('gateEmail');
-            if (emailEl) emailEl.value = email || '';
-            window.showNotification('Email Confirmation', 'Please use the confirmation link sent to your email, then sign in here.');
+            const emailEl = document.getElementById('gateEmail'); if (emailEl) emailEl.value = email || '';
+            window.showNotification('Email Confirmation Needed', 'Please use the confirmation link sent to your email address before signing in.');
         };
 
         window.applyUserSessionUI = function() {
@@ -1060,16 +1206,13 @@
             const profile = window.currentProfile || {};
             window.isAdmin = !!(profile.is_admin || email === ADMIN_EMAIL.toLowerCase());
             window.currentUserDisplayName = profile.momName || email.split('@')[0];
-
             const emailDisplay = document.getElementById('userEmailDisplay');
             if (emailDisplay) emailDisplay.textContent = email + ' (' + window.currentUserDisplayName + ')';
             const syncText = document.getElementById('syncStatusText');
             if (syncText) syncText.textContent = window.isAdmin ? 'Admin Account Active' : 'Online Member Account Active';
-
-            const adminBadge = document.getElementById('adminBadge');
-            const adminBtn = document.getElementById('adminMembersBtn');
-            adminBadge?.classList.toggle('hidden', !window.isAdmin);
-            adminBtn?.classList.toggle('hidden', !window.isAdmin);
+            document.getElementById('adminBadge')?.classList.toggle('hidden', !window.isAdmin);
+            document.getElementById('adminMembersBtn')?.classList.toggle('hidden', !window.isAdmin);
+            document.getElementById('accountSecurityBtn')?.classList.remove('hidden');
             window.updateMemberCountBadge();
         };
 
@@ -1089,7 +1232,7 @@
             if (error) { window.showNotification('Unable to Unsubscribe', error.message); return; }
             await window.handleLogout(false);
             window.closeUnsubscribeModal();
-            window.showNotification('Profile Removed', 'Your Sanctuary profile has been removed. The Supabase login identity may still exist until an administrator deletes it from Supabase Auth.');
+            window.showNotification('Profile Removed', 'Your Sanctuary profile has been removed. Your login identity remains in Supabase Auth; permanent account deletion requires an administrator or Supabase account-management process.');
         };
 
         window.handleLogout = async function(showMessage = true) {
@@ -1102,6 +1245,7 @@
             ['gateEmail','gatePassword','gateConfirmPassword','gateMomName','gateParish','gateState','gateKids'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             document.getElementById('adminBadge')?.classList.add('hidden');
             document.getElementById('adminMembersBtn')?.classList.add('hidden');
+            document.getElementById('accountSecurityBtn')?.classList.add('hidden');
             window.switchGateMode('signin');
             if (showMessage) window.showNotification('Signed Out', 'You have successfully logged out of your Sanctuary account.');
         };
@@ -1982,29 +2126,47 @@
             }
         }, 1500);
 
-        window.finishPasswordRecoveryIfNeeded = async function() {
-            if (!window.supabaseClient) return false;
-            const { data } = await window.supabaseClient.auth.getSession();
+        window.handleAuthRedirectMessage = function() {
             const hash = window.location.hash || '';
-            const hasRecoveryHash = /type=recovery/i.test(hash);
-            if (hasRecoveryHash) {
-                window.switchGateMode('reset');
-                window.showNotification('Password Recovery', 'Your password-reset link has been accepted. Choose your new password below.');
+            const query = window.location.search || '';
+            const combined = hash + '&' + query;
+            const params = new URLSearchParams(combined.replace(/^#/, '').replace(/^\?/, ''));
+            const error = params.get('error');
+            const errorCode = params.get('error_code');
+            const description = params.get('error_description');
+            if (error || errorCode) {
+                const decoded = decodeURIComponent(description || '').replace(/\+/g, ' ');
+                if (/expired|invalid|otp/i.test((errorCode || '') + ' ' + (decoded || ''))) {
+                    window.showNotification('Email Confirmation Link Invalid or Expired', 'This email link is no longer valid. Please request a new confirmation email and use the newest link sent to you.');
+                } else {
+                    window.showNotification('Email Confirmation Problem', decoded || 'The email confirmation link could not be completed. Please request a new confirmation email.');
+                }
                 return true;
             }
-            return !!data?.session && window.gateMode === 'reset';
+            return false;
         };
 
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.closeNotificationModal?.();
+                window.closeAccountSecurityModal?.();
+                window.closeUnsubscribeModal?.();
+                window.closeAdminMembersModal?.();
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('accountSecurityBtn')?.classList.add('hidden');
             window.switchGateMode('signin');
+            window.pendingConfirmationEmail = window.getPendingConfirmationEmail();
             if (!SUPABASE_CONFIGURED) {
                 document.getElementById('syncStatusText').textContent = 'Online Login Setup Required';
                 document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 window.showNotification('One-Time Setup Needed', 'This app is not connected to Supabase. Add the Project URL and anon/publishable key, then reload the page.');
             } else {
+                const redirectHadError = window.handleAuthRedirectMessage();
                 const { data: { session }, error } = await window.supabaseClient.auth.getSession();
                 if (error) console.error('Supabase session error:', error);
-
                 const recovering = /type=recovery/i.test(window.location.hash || '');
                 if (recovering) {
                     window.switchGateMode('reset');
@@ -2014,24 +2176,17 @@
                     await window.completeLogin(session.user);
                 } else {
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                    if (!redirectHadError) window.switchGateMode('signin');
                 }
-
                 window.supabaseClient.auth.onAuthStateChange(async (event, nextSession) => {
-                    if (event === 'SIGNED_IN' && nextSession?.user && !recovering) {
-                        await window.completeLogin(nextSession.user);
-                    }
+                    if (event === 'SIGNED_IN' && nextSession?.user && !/type=recovery/i.test(window.location.hash || '')) await window.completeLogin(nextSession.user);
                     if (event === 'SIGNED_OUT') {
-                        window.currentLoggedInEmail = null;
-                        window.currentProfile = null;
-                        window.currentUserDisplayName = 'Sanctuary Member';
-                        window.isAdmin = false;
-                        document.getElementById('adminBadge')?.classList.add('hidden');
-                        document.getElementById('adminMembersBtn')?.classList.add('hidden');
+                        window.currentLoggedInEmail = null; window.currentProfile = null; window.currentUserDisplayName = 'Sanctuary Member'; window.isAdmin = false;
+                        document.getElementById('adminBadge')?.classList.add('hidden'); document.getElementById('adminMembersBtn')?.classList.add('hidden');
                         document.getElementById('authGateOverlay')?.classList.remove('hidden');
                     }
                     if (event === 'PASSWORD_RECOVERY') {
-                        window.switchGateMode('reset');
-                        document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                        window.switchGateMode('reset'); document.getElementById('authGateOverlay')?.classList.remove('hidden');
                     }
                 });
             }
