@@ -79,20 +79,19 @@
 
 <body class="min-h-screen flex flex-col antialiased">
 
-    <!-- Mandatory Authentication Gate Overlay (Strictly appears on load until user logs in) -->
     <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-cream-300 overflow-hidden flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white text-center border-b-4 border-gold-400 space-y-2">
                 <div class="w-16 h-16 rounded-full bg-marian-950 mx-auto border-2 border-gold-400 flex items-center justify-center shadow-lg overflow-hidden">
                     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWVxP8eUD6vzjc_3sHSpk24RqVIdN2R0W6-QwW8tMAMGoRxVeHfyad8qdNKexI3O4GBumqLKJnZXOB5tM0xANdqghpzGe_Rpe1OYxvKKHsF0NqLOAj0dDoa_D5qI9VMQ1VgSM4vv9ulunBTMX_Y6kJ87uYXKHSFSAfZvVlOgy8BwRaiU5Tm3Oli5D5mpg/w640-h640/LOGO.png" alt="Gentle Catholic Homeschooling Logo" class="w-full h-full object-cover" />
                 </div>
-                <h2 class="text-xl sm:text-2xl font-bold heading-serif text-amber-100">Catholic Sanctuary Access</h2>
+                <h2 id="gateHeaderTitle" class="text-xl sm:text-2xl font-bold heading-serif text-amber-100">Catholic Sanctuary Access</h2>
                 <p class="text-xs text-gold-300 motto-serif tracking-wider">Mater Maria, ora pro nobis!</p>
-                <p class="text-xs text-blue-100/90 pt-1">Please sign in or register your verified family account to enter the digital library and community sanctuary.</p>
+                <p id="gateHeaderDesc" class="text-xs text-blue-100/90 pt-1">Please sign in or register your verified family account to enter the digital library and community sanctuary.</p>
             </div>
 
             <div class="p-6 space-y-4">
-                <div class="flex bg-cream-100 p-1 rounded-xl border border-cream-300">
+                <div id="gateTabsContainer" class="flex bg-cream-100 p-1 rounded-xl border border-cream-300">
                     <button type="button" id="gateTabSignin" onclick="window.switchGateMode('signin')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow">Sign In</button>
                     <button type="button" id="gateTabRegister" onclick="window.switchGateMode('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900">Register Account</button>
                 </div>
@@ -119,13 +118,17 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div id="gateEmailFieldWrapper">
                         <label class="block font-semibold text-slate-700 mb-1">Email Address *</label>
                         <input type="email" id="gateEmail" required placeholder="mom@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
                     </div>
-                    <div>
+                    <div id="gatePasswordFieldWrapper">
                         <label class="block font-semibold text-slate-700 mb-1">Password *</label>
                         <input type="password" id="gatePassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                    </div>
+
+                    <div id="gateForgotLinkRow" class="flex justify-end text-xs pt-1">
+                        <button type="button" onclick="window.switchGateMode('forgot')" class="text-marian-700 font-semibold hover:underline">Forgot Password?</button>
                     </div>
 
                     <button type="submit" id="gateSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2 mt-2">
@@ -750,17 +753,44 @@
             const tabRegister = document.getElementById('gateTabRegister');
             const registerFields = document.getElementById('gateRegisterFields');
             const submitBtnText = document.getElementById('gateSubmitBtnText');
+            const headerTitle = document.getElementById('gateHeaderTitle');
+            const headerDesc = document.getElementById('gateHeaderDesc');
+            const tabsContainer = document.getElementById('gateTabsContainer');
+            const emailFieldWrapper = document.getElementById('gateEmailFieldWrapper');
+            const passwordFieldWrapper = document.getElementById('gatePasswordFieldWrapper');
+            const forgotLinkRow = document.getElementById('gateForgotLinkRow');
 
             if (mode === 'signin') {
+                tabsContainer?.classList.remove('hidden');
                 tabSignin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow";
                 tabRegister.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900";
                 registerFields?.classList.add('hidden');
+                emailFieldWrapper?.classList.remove('hidden');
+                passwordFieldWrapper?.classList.remove('hidden');
+                forgotLinkRow?.classList.remove('hidden');
+                if (headerTitle) headerTitle.textContent = 'Catholic Sanctuary Access';
+                if (headerDesc) headerDesc.textContent = 'Please sign in or register your verified family account to enter the digital library and community sanctuary.';
                 if (submitBtnText) submitBtnText.textContent = 'Sign In to Sanctuary';
-            } else {
+            } else if (mode === 'register') {
+                tabsContainer?.classList.remove('hidden');
                 tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow";
                 tabSignin.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900";
                 registerFields?.classList.remove('hidden');
+                emailFieldWrapper?.classList.remove('hidden');
+                passwordFieldWrapper?.classList.remove('hidden');
+                forgotLinkRow?.classList.add('hidden');
+                if (headerTitle) headerTitle.textContent = 'Register Family Account';
+                if (headerDesc) headerDesc.textContent = 'Complete all required family details and email verification to enter.';
                 if (submitBtnText) submitBtnText.textContent = 'Register Family Account & Verify Email';
+            } else if (mode === 'forgot') {
+                tabsContainer?.classList.add('hidden');
+                registerFields?.classList.add('hidden');
+                passwordFieldWrapper?.classList.add('hidden');
+                forgotLinkRow?.classList.add('hidden');
+                emailFieldWrapper?.classList.remove('hidden');
+                if (headerTitle) headerTitle.textContent = 'Password Recovery';
+                if (headerDesc) headerDesc.textContent = 'Enter your registered email address to receive password reset instructions.';
+                if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> Send Recovery Email';
             }
         };
 
@@ -768,7 +798,34 @@
             e.preventDefault();
             const email = (document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
             const password = document.getElementById('gatePassword')?.value || '';
-            if (!email || !password) return;
+
+            if (window.gateMode === 'forgot') {
+                if (!email) {
+                    window.showNotification("Email Required", "Please enter your email address for password recovery.");
+                    return;
+                }
+                let users = window.getRegisteredUsers();
+                if (email !== ADMIN_EMAIL && !users[email]) {
+                    window.showNotification("Account Not Found", "No registered account found with this email address.");
+                    return;
+                }
+                const resetHtml = `
+                    <div class="p-3 bg-amber-50 rounded-2xl border border-amber-300 text-left space-y-2 my-2">
+                        <p class="text-xs font-bold text-amber-900"><i class="fa-solid fa-key mr-1.5"></i> Recovery Email from gentlecatholichomeschool@gmail.com</p>
+                        <p class="text-xs text-slate-700">Click below to create your new secure password:</p>
+                        <button onclick="window.openResetModal('${email}')" class="w-full py-2.5 bg-marian-800 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-lock-open"></i> Reset Password Now
+                        </button>
+                    </div>
+                `;
+                window.showNotification("Password Recovery Sent", "Recovery instructions have been dispatched to your email.", resetHtml);
+                return;
+            }
+
+            if (!email || !password) {
+                window.showNotification("Fields Required", "Please fill in both email and password.");
+                return;
+            }
 
             let users = window.getRegisteredUsers();
 
@@ -852,6 +909,24 @@
             }
         };
 
+        window.openResetModal = function(email) {
+            window.closeNotificationModal();
+            const newPass = prompt("Enter your new secure password:");
+            if (!newPass) return;
+            let users = window.getRegisteredUsers();
+            if (email === ADMIN_EMAIL) {
+                window.showNotification("Success", "Admin password updated.");
+                return;
+            }
+            if (users[email]) {
+                users[email].password = newPass;
+                users[email].verified = true;
+                window.saveRegisteredUsers(users);
+                window.showNotification("Password Updated", "Your password has been successfully updated. You may now sign in.");
+                window.switchGateMode('signin');
+            }
+        };
+
         window.confirmUserEmail = function(email) {
             let users = window.getRegisteredUsers();
             if (users[email]) {
@@ -929,6 +1004,7 @@
             document.getElementById('gatePassword').value = '';
             document.getElementById('adminBadge')?.classList.add('hidden');
             document.getElementById('adminMembersBtn')?.classList.add('hidden');
+            window.switchGateMode('signin');
             window.showNotification("Signed Out", "You have successfully logged out of your Sanctuary account.");
         };
 
@@ -1895,6 +1971,7 @@
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 }
             } else {
+                document.getElementById('authGateOverlay')?.classList.add('hidden'); // fallback safety
                 document.getElementById('authGateOverlay')?.classList.remove('hidden');
             }
 
