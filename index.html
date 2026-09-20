@@ -472,13 +472,14 @@
             </div>
             <h3 id="notifyTitle" class="text-lg font-bold heading-serif text-marian-900">Notification</h3>
             <p id="notifyMessage" class="text-xs text-slate-600 leading-relaxed"></p>
+            <div id="notifyActionArea" class="pt-2"></div>
             <div class="flex items-center justify-center gap-3 pt-2">
                 <button onclick="window.closeNotificationModal()" class="px-6 py-2 rounded-xl bg-marian-800 text-white font-semibold text-xs shadow">OK</button>
             </div>
         </div>
     </div>
 
-    <!-- Auth Modal -->
+    <!-- Auth Modal with Registration / Sign In & Mode Toggle -->
     <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
@@ -487,8 +488,8 @@
                         <i class="fa-solid fa-user-shield text-lg"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold heading-serif text-amber-100">Sanctuary Account Access</h3>
-                        <p class="text-[11px] text-blue-200">Sign in or register your local / cloud profile</p>
+                        <h3 class="text-lg font-bold heading-serif text-amber-100" id="authModalTitle">Sanctuary Sign In</h3>
+                        <p class="text-[11px] text-blue-200" id="authModalSubtitle">Enter your account credentials</p>
                     </div>
                 </div>
                 <button onclick="window.closeAuthModal()" class="text-slate-300 hover:text-white transition p-1">
@@ -505,8 +506,11 @@
                     <label for="authPassword" class="block font-semibold text-slate-700 mb-1">Password</label>
                     <input type="password" id="authPassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
                 </div>
-                <button type="submit" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> <span>Sign In / Register</span>
+                <div class="flex items-center justify-between text-xs pt-1">
+                    <button type="button" onclick="window.toggleAuthMode()" class="text-marian-700 font-semibold hover:underline" id="authToggleBtn">Need an account? Register</button>
+                </div>
+                <button type="submit" id="authSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> <span id="authSubmitBtnText">Sign In</span>
                 </button>
             </form>
         </div>
@@ -582,11 +586,12 @@
     </div>
 
     <script>
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v4';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v4';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v4';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v4';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v4';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v5';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v5';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v5';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v5';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v5';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v5';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -596,7 +601,7 @@
         window.currentFontFamily = 'sans';
         window.currentTheme = 'white';
         window.isSpeakingAudio = false;
-        window.speechUtteranceInstance = null;
+        window.isRegistering = false; // Auth mode toggle state
 
         // Expanded comprehensive 300+ library across all subjects
         const baseLibrary = [
@@ -684,11 +689,13 @@
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         };
 
-        window.showNotification = function(title, msg) {
+        window.showNotification = function(title, msg, actionHTML = '') {
             const titleEl = document.getElementById('notifyTitle');
             const msgEl = document.getElementById('notifyMessage');
+            const actionArea = document.getElementById('notifyActionArea');
             if (titleEl) titleEl.textContent = title;
             if (msgEl) msgEl.textContent = msg;
+            if (actionArea) actionArea.innerHTML = actionHTML;
             document.getElementById('customNotifyModal')?.classList.remove('hidden');
         };
 
@@ -699,15 +706,116 @@
         window.openAuthModal = function() { document.getElementById('authModal')?.classList.remove('hidden'); };
         window.closeAuthModal = function() { document.getElementById('authModal')?.classList.add('hidden'); };
 
+        window.toggleAuthMode = function() {
+            window.isRegistering = !window.isRegistering;
+            const titleEl = document.getElementById('authModalTitle');
+            const subtitleEl = document.getElementById('authModalSubtitle');
+            const toggleBtn = document.getElementById('authToggleBtn');
+            const submitBtnText = document.getElementById('authSubmitBtnText');
+
+            if (window.isRegistering) {
+                if (titleEl) titleEl.textContent = 'Register New Account';
+                if (subtitleEl) subtitleEl.textContent = 'Email confirmation is required to activate';
+                if (toggleBtn) toggleBtn.textContent = 'Already have an account? Sign in';
+                if (submitBtnText) submitBtnText.textContent = 'Register & Send Confirmation Email';
+            } else {
+                if (titleEl) titleEl.textContent = 'Sanctuary Sign In';
+                if (subtitleEl) subtitleEl.textContent = 'Enter your account credentials';
+                if (toggleBtn) toggleBtn.textContent = 'Need an account? Register';
+                if (submitBtnText) submitBtnText.textContent = 'Sign In';
+            }
+        };
+
+        // Simulated Email Confirmation Database Store
+        window.getRegisteredUsers = function() {
+            try {
+                return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}');
+            } catch(e) { return {}; }
+        };
+
+        window.saveRegisteredUsers = function(users) {
+            try {
+                localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
+            } catch(e) {}
+        };
+
+        window.confirmUserEmailToken = function(email) {
+            let users = window.getRegisteredUsers();
+            if (users[email]) {
+                users[email].verified = true;
+                window.saveRegisteredUsers(users);
+                window.closeNotificationModal();
+                window.showNotification("Email Verified!", "Your email has been successfully confirmed. You may now sign in to your Sanctuary account.");
+                window.openAuthModal();
+            }
+        };
+
         window.handleAuthSubmit = function(e) {
             e.preventDefault();
-            const email = document.getElementById('authEmail')?.value || 'User';
-            window.currentUserDisplayName = email.split('@')[0];
-            document.getElementById('userEmailDisplay').textContent = email;
-            document.getElementById('userEmailDisplay').classList.remove('hidden');
-            document.getElementById('syncStatusText').textContent = 'Local Account: ' + email;
-            window.closeAuthModal();
-            window.showNotification("Welcome", "Logged into Sanctuary Account as " + email);
+            const email = (document.getElementById('authEmail')?.value || '').trim().toLowerCase();
+            const password = document.getElementById('authPassword')?.value || '';
+            if (!email) return;
+
+            let users = window.getRegisteredUsers();
+
+            if (window.isRegistering) {
+                // Register Mode: create account as unverified and simulate sending email
+                if (users[email]) {
+                    window.showNotification("Account Exists", "An account with this email already exists. Please sign in.");
+                    return;
+                }
+
+                users[email] = { password, verified: false };
+                window.saveRegisteredUsers(users);
+
+                window.closeAuthModal();
+
+                // Simulate incoming email verification link modal
+                const confirmLinkHTML = `
+                    <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-left space-y-2 my-2">
+                        <p class="text-[11px] font-bold text-amber-900"><i class="fa-solid fa-envelope-circle-check mr-1"></i> Simulated Email Inbox for: ${window.escapeHtml(email)}</p>
+                        <p class="text-[11px] text-slate-700">Dear Homeschool Mom, please confirm your registration by clicking the secure link below:</p>
+                        <button onclick="window.confirmUserEmailToken('${email}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition">
+                            <i class="fa-solid fa-check-circle mr-1"></i> Confirm My Email Address Now
+                        </button>
+                    </div>
+                `;
+
+                window.showNotification(
+                    "Verification Email Sent!", 
+                    `We have sent a confirmation email to ${email}. Please click the confirmation link below to activate your account before logging in.`,
+                    confirmLinkHTML
+                );
+
+            } else {
+                // Sign In Mode: Check if account exists and is verified
+                if (!users[email]) {
+                    window.showNotification("Account Not Found", "No account registered with this email. Please register first.");
+                    return;
+                }
+
+                if (users[email].password !== password) {
+                    window.showNotification("Incorrect Password", "The password you entered is incorrect. Please try again.");
+                    return;
+                }
+
+                if (!users[email].verified) {
+                    window.showNotification(
+                        "Email Not Confirmed", 
+                        `You must confirm your email (${email}) before you can sign in. Please check your inbox for the confirmation link.`,
+                        `<button onclick="window.confirmUserEmailToken('${email}')" class="mt-2 px-4 py-1.5 bg-gold-500 text-marian-950 font-bold rounded-xl text-xs">Simulate Clicking Confirmation Link</button>`
+                    );
+                    return;
+                }
+
+                // Successful login
+                window.currentUserDisplayName = email.split('@')[0];
+                document.getElementById('userEmailDisplay').textContent = email;
+                document.getElementById('userEmailDisplay').classList.remove('hidden');
+                document.getElementById('syncStatusText').textContent = 'Account: ' + email;
+                window.closeAuthModal();
+                window.showNotification("Welcome Back", "Successfully signed into Sanctuary Account as " + email);
+            }
         };
 
         window.switchToTab = function(tabName) {
@@ -838,7 +946,7 @@
             pageInput.value = current;
 
             window.savePageData(window.activeReaderBookId, current, totalInput?.value || 100);
-            window.openBookReader(window.activeReaderBookId); // Refresh text for new page
+            window.openBookReader(window.activeReaderBookId);
         };
 
         window.handlePageInputChange = function(e) {
@@ -904,7 +1012,6 @@
                 window.isSpeakingAudio = false;
                 if(ttsBtnText) ttsBtnText.textContent = 'Listen Aloud';
                 if(ttsIcon) ttsIcon.className = 'fa-solid fa-volume-high';
-                // Clear highlights
                 document.querySelectorAll('[id^="tts-line-"]').forEach(el => el.className = 'py-2 leading-relaxed');
                 window.showNotification("Audio Stopped", "Text-to-speech audio reader paused.");
             } else {
@@ -922,7 +1029,6 @@
 
                 utterance.onboundary = (event) => {
                     if (highlightMode === 'none') return;
-                    // Find which line element corresponds to character index
                     let charCount = 0;
                     for (let i = 0; i < lineElements.length; i++) {
                         const lineEl = lineElements[i];
