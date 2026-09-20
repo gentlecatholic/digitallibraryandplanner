@@ -13,6 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
+    <!-- Supabase Auth for real online user accounts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- PDF.js for parsing uploaded PDFs in-browser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
@@ -652,7 +655,20 @@
     </div>
     
     <script>
+        // ================================================================
+        // SUPABASE CONFIGURATION
+        // Replace these two values with the Project URL and anon/publishable
+        // key from your Supabase project. These values are safe to expose in
+        // a browser app; NEVER put a Supabase service_role key here.
+        // ================================================================
+         const SUPABASE_URL = 'https://tcssbexhuesuodaahwon.supabase.co/rest/v1/';
+   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjc3NiZXhodWVzdW9kYWFod29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3MTYzNjYsImV4cCI6MjEwNTI5MjM2Nn0.j9xH2uq7MNdU3Pk4QJBPUFcfGaNqcFI5QpUgvTvoWkA';
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
+        const SUPABASE_CONFIGURED = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
+        window.supabaseClient = SUPABASE_CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+        window.remoteProfilesCache = {};
+        window.currentProfile = null;
+
         const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v71';
         const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v71';
         const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v71';
@@ -753,12 +769,64 @@
         };
 
         // ================================================================
-        // LOCAL AUTHENTICATION
-        // NOTE: This is a static HTML app. Accounts are stored only in
-        // this browser's localStorage. Real email verification/reset emails
-        // require a backend such as Firebase, Supabase, or your own server.
+        // REAL ONLINE AUTHENTICATION — SUPABASE
+        // Passwords are handled by Supabase Auth and are never stored in
+        // this HTML, localStorage, or the member profile table.
         // ================================================================
-        const ADMIN_PASSWORD = 'CHANGE_THIS_ADMIN_PASSWORD';
+        window.authReady = async function() {
+            if (!SUPABASE_CONFIGURED || !window.supabaseClient) {
+                window.showNotification('Online Login Not Connected', 'This copy of the app still needs your Supabase Project URL and anon/publishable key.');
+                return false;
+            }
+            return true;
+        };
+
+        window.profileFromUser = function(user) {
+            const md = user?.user_metadata || {};
+            return {
+                id: user?.id,
+                email: user?.email || '',
+                momName: md.momName || md.full_name || (user?.email || '').split('@')[0],
+                parish: md.parish || '',
+                state: md.state || '',
+                kids: md.kids || '',
+                banned: !!md.banned,
+                registeredDate: user?.created_at ? new Date(user.created_at).toLocaleDateString() : ''
+            };
+        };
+
+        window.refreshOwnProfile = async function(user) {
+            if (!user || !window.supabaseClient) return null;
+            const { data, error } = await window.supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle();
+            if (!error && data) {
+                window.currentProfile = data;
+                window.remoteProfilesCache[(data.email || user.email || '').toLowerCase()] = data;
+                return data;
+            }
+            window.currentProfile = window.profileFromUser(user);
+            window.remoteProfilesCache[(user.email || '').toLowerCase()] = window.currentProfile;
+            return window.currentProfile;
+        };
+
+        window.refreshRemoteProfiles = async function() {
+            if (!window.supabaseClient || !window.isAdmin) return {};
+            const { data, error } = await window.supabaseClient.from('profiles').select('*').order('created_at', { ascending: false });
+            if (error) {
+                console.error('Profile directory error:', error);
+                window.showNotification('Member Directory Error', error.message);
+                return window.remoteProfilesCache;
+            }
+            window.remoteProfilesCache = {};
+            (data || []).forEach(u => { window.remoteProfilesCache[(u.email || '').toLowerCase()] = u; });
+            return window.remoteProfilesCache;
+        };
+
+        window.updateMemberCountBadge = async function() {
+            if (!window.supabaseClient) return;
+            const { count, error } = await window.supabaseClient.from('profiles').select('id', { count: 'exact', head: true });
+            const badge = document.getElementById('memberCountBadge');
+            if (!error && badge) badge.textContent = String(count || 0);
+        };
 
         window.switchGateMode = function(mode) {
             window.gateMode = mode;
@@ -814,10 +882,10 @@
                 if (password) password.required = true;
                 if (confirm) confirm.required = true;
                 if (headerTitle) headerTitle.textContent = 'Register Family Account';
-                if (headerDesc) headerDesc.textContent = 'Create your family account. Your account is saved securely in this browser.';
+                if (headerDesc) headerDesc.textContent = 'Create your family account. Your account is securely stored online so you can sign in from any device.';
                 if (submitBtnText) submitBtnText.textContent = 'Create Family Account';
             } else if (mode === 'forgot') {
-                if (accountHint) accountHint.textContent = 'Enter the email you used to register on this device.';
+                if (accountHint) accountHint.textContent = 'Enter the email you used for your online Sanctuary account.';
                 tabsContainer?.classList.add('hidden');
                 registerFields?.classList.add('hidden');
                 passwordFieldWrapper?.classList.add('hidden');
@@ -829,15 +897,35 @@
                 if (confirm) confirm.required = false;
                 if (headerTitle) headerTitle.textContent = 'Password Recovery';
                 if (headerDesc) headerDesc.textContent = 'Enter your registered email address to reset your password on this device.';
-                if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-key mr-1"></i> Reset Password';
+                if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-key mr-1"></i> Send Reset Email';
+            } else if (mode === 'reset') {
+                if (accountHint) accountHint.textContent = 'Choose a new password for your Sanctuary account.';
+                tabsContainer?.classList.add('hidden');
+                registerFields?.classList.add('hidden');
+                emailFieldWrapper?.classList.add('hidden');
+                passwordFieldWrapper?.classList.remove('hidden');
+                confirmPasswordWrapper?.classList.remove('hidden');
+                forgotLinkRow?.classList.add('hidden');
+                if (password) { password.autocomplete = 'new-password'; password.required = true; }
+                if (confirm) { confirm.autocomplete = 'new-password'; confirm.required = true; }
+                if (headerTitle) headerTitle.textContent = 'Choose a New Password';
+                if (headerDesc) headerDesc.textContent = 'Set a new password for your online Sanctuary account.';
+                if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-lock mr-1"></i> Save New Password';
             }
         };
 
-        window.completeLogin = function(email, user) {
+        window.completeLogin = async function(user) {
+            const email = (user?.email || '').toLowerCase();
+            if (!user || !email) return;
+            const profile = await window.refreshOwnProfile(user);
+            if (profile?.banned) {
+                await window.supabaseClient.auth.signOut();
+                window.showNotification('Account Restricted', 'This account has been restricted by the administrator.');
+                return;
+            }
             window.currentLoggedInEmail = email;
-            window.currentUserDisplayName = user?.momName || (email === ADMIN_EMAIL ? 'Sanctuary Admin' : email.split('@')[0]);
-            window.isAdmin = email === ADMIN_EMAIL;
-            localStorage.setItem(LOCAL_SESSION_KEY, email);
+            window.currentUserDisplayName = profile?.momName || email.split('@')[0];
+            window.isAdmin = email === ADMIN_EMAIL.toLowerCase();
             window.applyUserSessionUI();
             document.getElementById('authGateOverlay')?.classList.add('hidden');
             window.renderLibrary();
@@ -860,8 +948,9 @@
             if (pw) pw.focus();
         };
 
-        window.handleGateSubmit = function(e) {
+        window.handleGateSubmit = async function(e) {
             e.preventDefault();
+            if (!(await window.authReady())) return;
 
             const emailEl = document.getElementById('gateEmail');
             const passwordEl = document.getElementById('gatePassword');
@@ -869,40 +958,28 @@
             const email = (emailEl?.value || '').trim().toLowerCase();
             const password = passwordEl?.value || '';
             const confirmPassword = confirmEl?.value || '';
-            let users = window.getRegisteredUsers();
 
-            if (!email) {
-                window.showNotification('Email Required', 'Please enter your email address.');
-                emailEl?.focus();
+            if (!email) { window.showNotification('Email Required', 'Please enter your email address.'); emailEl?.focus(); return; }
+
+            if (window.gateMode === 'reset') {
+                if (password.length < 8) { window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return; }
+                if (password !== confirmPassword) { window.showNotification('Passwords Do Not Match', 'Please make sure both password fields match.'); return; }
+                const { error } = await window.supabaseClient.auth.updateUser({ password });
+                if (error) { window.showNotification('Password Update Failed', error.message); return; }
+                window.switchGateMode('signin');
+                document.getElementById('gatePassword').value = '';
+                window.showNotification('Password Updated', 'Your new password has been saved. You can now sign in normally from any device.');
                 return;
             }
 
             if (window.gateMode === 'forgot') {
-                if (email === ADMIN_EMAIL) {
-                    window.showNotification('Admin Account', 'For the administrator account, update ADMIN_PASSWORD in the HTML source instead of using member password recovery.');
+                const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href.split('#')[0] });
+                if (error) {
+                    window.showNotification('Password Reset', 'If an account exists for this email, Supabase will send a password-reset email. Please check your inbox and spam folder.');
+                    console.error(error);
                     return;
                 }
-                if (!users[email]) {
-                    window.showNotification('Account Not Found', 'No account is registered with this email address. Please register first.');
-                    return;
-                }
-                const newPassword = prompt('Enter a new password (at least 8 characters):');
-                if (!newPassword) return;
-                if (newPassword.length < 8) {
-                    window.showNotification('Password Too Short', 'Your new password must contain at least 8 characters.');
-                    return;
-                }
-                const confirmNew = prompt('Re-enter the new password:');
-                if (newPassword !== confirmNew) {
-                    window.showNotification('Passwords Do Not Match', 'The two new passwords do not match.');
-                    return;
-                }
-                users[email].password = newPassword;
-                users[email].verified = true;
-                window.saveRegisteredUsers(users);
-                window.switchGateMode('signin');
-                document.getElementById('gateEmail').value = email;
-                window.showNotification('Password Updated', 'Your password has been reset on this device. You may now sign in.');
+                window.showNotification('Check Your Email', 'If an account exists for this email, a password-reset link has been sent.');
                 return;
             }
 
@@ -911,141 +988,82 @@
                 const parish = (document.getElementById('gateParish')?.value || '').trim();
                 const state = (document.getElementById('gateState')?.value || '').trim();
                 const kids = (document.getElementById('gateKids')?.value || '').trim();
-
-                if (!momName || !parish || !state || !kids || !password || !confirmPassword) {
-                    window.showNotification('Required Fields Missing', 'Please complete all required family details and both password fields.');
-                    return;
+                if (!momName || !parish || !state || !kids) {
+                    window.showNotification('Required Fields Missing', 'Please complete all required family details.'); return;
                 }
                 if (password.length < 8) {
-                    window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.');
-                    return;
+                    window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return;
                 }
                 if (password !== confirmPassword) {
-                    window.showNotification('Passwords Do Not Match', 'Please make sure both password fields are exactly the same.');
-                    return;
-                }
-                if (users[email]) {
-                    window.showNotification('Account Already Exists', 'An account with this email already exists. Please sign in instead.');
-                    return;
+                    window.showNotification('Passwords Do Not Match', 'Please make sure both password fields are exactly the same.'); return;
                 }
 
-                users[email] = {
+                const { data, error } = await window.supabaseClient.auth.signUp({
                     email,
                     password,
-                    momName,
-                    parish,
-                    kids,
-                    state,
-                    registeredDate: new Date().toLocaleDateString(),
-                    verified: true,
-                    banned: false
-                };
-                window.saveRegisteredUsers(users);
-                window.completeLogin(email, users[email]);
-                window.showNotification('Account Created', `Welcome to the Catholic Sanctuary, ${momName}! Your family account is ready on this device.`);
+                    options: {
+                        emailRedirectTo: window.location.href.split('#')[0],
+                        data: { momName, parish, state, kids, banned: false }
+                    }
+                });
+                if (error) {
+                    if (/already registered|already exists/i.test(error.message)) {
+                        window.showNotification('Account Already Exists', 'This email is already registered. Please use Sign In, or choose Forgot Password if you do not remember the password.');
+                        window.switchGateMode('signin');
+                        if (emailEl) emailEl.value = email;
+                    } else {
+                        window.showNotification('Registration Failed', error.message);
+                    }
+                    return;
+                }
+                if (data.session && data.user) {
+                    await window.completeLogin(data.user);
+                    window.showNotification('Account Created', `Welcome to the Catholic Sanctuary, ${momName}! Your online family account is ready.`);
+                } else {
+                    window.switchGateMode('signin');
+                    if (emailEl) emailEl.value = email;
+                    window.showNotification('Check Your Email', 'Your account was created. Please open the confirmation email from Supabase, confirm your email address, then return here and sign in.');
+                }
                 return;
             }
 
             // SIGN IN
-            if (email === ADMIN_EMAIL) {
-                if (password !== ADMIN_PASSWORD) {
-                    window.showNotification('Incorrect Admin Password', 'The administrator password is incorrect.');
-                    return;
-                }
-                if (!users[email]) {
-                    users[email] = {
-                        email,
-                        password: ADMIN_PASSWORD,
-                        momName: 'Sanctuary Admin',
-                        parish: 'Diocese HQ',
-                        kids: 'Admin Family',
-                        state: 'Global',
-                        registeredDate: new Date().toLocaleDateString(),
-                        verified: true,
-                        banned: false
-                    };
-                    window.saveRegisteredUsers(users);
-                }
-                window.completeLogin(email, users[email]);
-                window.showNotification('Successfully Logged In', 'Welcome, Sanctuary Admin!');
-                return;
-            }
-
-            const user = users[email];
-            if (!user) {
+            const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
+            if (error || !data?.user) {
                 window.showNotification(
-                    'We Couldn’t Find an Account',
-                    'This email is not registered on this device. If this is your first time here, you can create your family account now.',
-                    `<div class="flex flex-col sm:flex-row gap-2">
-                        <button type="button" onclick="window.closeNotificationModal(); window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Create My Account</button>
-                        <button type="button" onclick="window.closeNotificationModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">Try Another Email</button>
-                    </div>`
-                );
-                return;
-            }
-            if (user.banned) {
-                window.showNotification('Account Banned', 'This account has been restricted by the administrator.');
-                return;
-            }
-            if (user.password !== password) {
-                window.showNotification(
-                    'Password Didn’t Match',
-                    'The email is registered, but the password did not match. If you do not remember your password, you can reset it on this device.',
+                    'We Couldn’t Sign You In',
+                    'We could not sign you in with those details. If you have used this email before, try Forgot Password. If you are new, choose Register Account. We do not reveal whether an email exists for security reasons.',
                     `<div class="flex flex-col sm:flex-row gap-2">
                         <button type="button" onclick="window.closeNotificationModal(); window.openForgotForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Reset Password</button>
-                        <button type="button" onclick="window.closeNotificationModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">Try Again</button>
+                        <button type="button" onclick="window.closeNotificationModal(); window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">Create Account</button>
                     </div>`
                 );
                 return;
             }
-
-            window.completeLogin(email, user);
+            await window.completeLogin(data.user);
             window.showNotification('Successfully Logged In', `Welcome back, ${window.currentUserDisplayName}!`);
         };
 
-        // Kept for compatibility with any older stored UI callbacks.
-        window.openResetModal = function(email) {
-            window.switchGateMode('forgot');
+        // Password reset is handled by Supabase email links.
+        window.openResetModal = function(email) { window.openForgotForEmail(email); };
+
+        window.confirmUserEmail = function(email) {
+            window.switchGateMode('signin');
             const emailEl = document.getElementById('gateEmail');
             if (emailEl) emailEl.value = email || '';
-            window.closeNotificationModal();
-        };
-
-        // Compatibility for older stored verification buttons. In a static app
-        // there is no real email server, so registration is already verified.
-        window.confirmUserEmail = function(email) {
-            const users = window.getRegisteredUsers();
-            if (!users[email]) {
-                window.showNotification('Account Not Found', 'This registration is no longer available on this device.');
-                return;
-            }
-            users[email].verified = true;
-            window.saveRegisteredUsers(users);
-            window.closeNotificationModal();
-            window.completeLogin(email, users[email]);
-            window.showNotification('Welcome to the Sanctuary!', `Welcome, ${users[email].momName}!`);
+            window.showNotification('Email Confirmation', 'Please use the confirmation link sent to your email, then sign in here.');
         };
 
         window.applyUserSessionUI = function() {
             const email = window.currentLoggedInEmail;
             if (!email) return;
-
-            window.isAdmin = (email === ADMIN_EMAIL);
-            let users = window.getRegisteredUsers();
-            if (users[email]) {
-                window.currentUserDisplayName = users[email].momName || email.split('@')[0];
-            } else if (window.isAdmin) {
-                window.currentUserDisplayName = 'Sanctuary Admin';
-            }
-
+            window.isAdmin = email === ADMIN_EMAIL.toLowerCase();
+            const profile = window.currentProfile || {};
+            window.currentUserDisplayName = profile.momName || email.split('@')[0];
             const emailDisplay = document.getElementById('userEmailDisplay');
-            if (emailDisplay) {
-                emailDisplay.textContent = email + ' (' + window.currentUserDisplayName + ')';
-            }
-
+            if (emailDisplay) emailDisplay.textContent = email + ' (' + window.currentUserDisplayName + ')';
             const syncText = document.getElementById('syncStatusText');
-            if (syncText) syncText.textContent = window.isAdmin ? 'Admin Account Active' : 'Member Account Active';
-
+            if (syncText) syncText.textContent = window.isAdmin ? 'Admin Account Active' : 'Online Member Account Active';
             if (window.isAdmin) {
                 document.getElementById('adminBadge')?.classList.remove('hidden');
                 document.getElementById('adminMembersBtn')?.classList.remove('hidden');
@@ -1062,163 +1080,82 @@
             document.getElementById('unsubscribeModal')?.classList.add('hidden');
         };
 
-        window.confirmUnsubscribe = function() {
+        window.confirmUnsubscribe = async function() {
             const email = window.currentLoggedInEmail;
-            if (!email) return;
-
-            let users = window.getRegisteredUsers();
-            delete users[email];
-            window.saveRegisteredUsers(users);
-
+            if (!email || !window.currentProfile?.id) return;
+            const { error } = await window.supabaseClient.from('profiles').delete().eq('id', window.currentProfile.id);
+            if (error) { window.showNotification('Unable to Unsubscribe', error.message); return; }
+            await window.handleLogout(false);
             window.closeUnsubscribeModal();
-            window.handleLogout();
-            window.showNotification("Unsubscribed", "Your account and local profile data have been successfully removed.");
+            window.showNotification('Profile Removed', 'Your Sanctuary profile has been removed. The Supabase login identity may still exist until an administrator deletes it from Supabase Auth.');
         };
 
-        window.handleLogout = function() {
+        window.handleLogout = async function(showMessage = true) {
+            if (window.supabaseClient) await window.supabaseClient.auth.signOut();
             window.currentLoggedInEmail = null;
+            window.currentProfile = null;
             window.currentUserDisplayName = 'Sanctuary Member';
             window.isAdmin = false;
-            localStorage.removeItem(LOCAL_SESSION_KEY);
-
             document.getElementById('authGateOverlay')?.classList.remove('hidden');
-            document.getElementById('gateEmail').value = '';
-            document.getElementById('gatePassword').value = '';
-            document.getElementById('gateConfirmPassword').value = '';
-            document.getElementById('gateMomName').value = '';
-            document.getElementById('gateParish').value = '';
-            document.getElementById('gateState').value = '';
-            document.getElementById('gateKids').value = '';
+            ['gateEmail','gatePassword','gateConfirmPassword','gateMomName','gateParish','gateState','gateKids'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             document.getElementById('adminBadge')?.classList.add('hidden');
             document.getElementById('adminMembersBtn')?.classList.add('hidden');
             window.switchGateMode('signin');
-            window.showNotification("Signed Out", "You have successfully logged out of your Sanctuary account.");
+            if (showMessage) window.showNotification('Signed Out', 'You have successfully logged out of your Sanctuary account.');
         };
 
-        window.updateMemberCountBadge = function() {
-            const users = window.getRegisteredUsers();
-            const count = Object.keys(users).length;
-            const badge = document.getElementById('memberCountBadge');
-            if (badge) badge.textContent = count;
-        };
-
-        window.openAdminMembersModal = function() {
-            if (!window.isAdmin) {
-                window.showNotification("Access Denied", "Only the administrator can view the member directory.");
-                return;
-            }
-            const users = window.getRegisteredUsers();
-            const keys = Object.keys(users);
+        window.openAdminMembersModal = async function() {
+            if (!window.isAdmin) { window.showNotification('Access Denied', 'Only the administrator can view the member directory.'); return; }
+            const users = await window.refreshRemoteProfiles();
+            const keys = Object.keys(users).filter(k => k !== ADMIN_EMAIL.toLowerCase());
             document.getElementById('totalMembersCountText').textContent = `Total Registered Members: ${keys.length}`;
-
             const container = document.getElementById('adminMembersTableContainer');
             if (!container) return;
-
-            if (keys.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No registered members found.</p>`;
-            } else {
-                container.innerHTML = `
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-marian-900 text-amber-100 border-b border-marian-800">
-                                <th class="p-2.5">Mother's Name</th>
-                                <th class="p-2.5">Email Address</th>
-                                <th class="p-2.5">Parish / Diocese</th>
-                                <th class="p-2.5">Children & Grades</th>
-                                <th class="p-2.5">Location</th>
-                                <th class="p-2.5">Status</th>
-                                <th class="p-2.5 text-center">Admin Controls</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-cream-200">
-                            ${keys.map(k => {
-                                const u = users[k];
-                                const isBanned = u.banned;
-                                return `
-                                    <tr class="hover:bg-cream-100 transition">
-                                        <td class="p-2.5 font-bold text-marian-900">${escapeHtml(u.momName || 'Member')}</td>
-                                        <td class="p-2.5 font-mono text-slate-700">${escapeHtml(u.email)}</td>
-                                        <td class="p-2.5 text-slate-600">${escapeHtml(u.parish || '-')}</td>
-                                        <td class="p-2.5 text-slate-600">${escapeHtml(u.kids || '-')}</td>
-                                        <td class="p-2.5 text-slate-600">${escapeHtml(u.state || '-')}</td>
-                                        <td class="p-2.5">
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isBanned ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}">${isBanned ? 'Banned' : 'Active'}</span>
-                                        </td>
-                                        <td class="p-2.5 text-center flex items-center justify-center gap-1.5">
-                                            <button onclick="window.adminEditMember('${escapeHtml(k)}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold" title="Edit Member">Edit</button>
-                                            <button onclick="window.adminToggleBanMember('${escapeHtml(k)}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2 py-1 rounded-lg text-[10px] font-bold" title="${isBanned ? 'Unban' : 'Ban'} Member">${isBanned ? 'Unban' : 'Ban'}</button>
-                                            <button onclick="window.adminDeleteMember('${escapeHtml(k)}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2 py-1 rounded-lg text-[10px] font-bold" title="Delete Member">Delete</button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                `;
-            }
-
+            if (!keys.length) { container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No registered members found.</p>`; }
+            else { container.innerHTML = `<table class="w-full text-left text-xs border-collapse"><thead><tr class="bg-marian-900 text-amber-100 border-b border-marian-800"><th class="p-2.5">Mother's Name</th><th class="p-2.5">Email Address</th><th class="p-2.5">Parish / Diocese</th><th class="p-2.5">Children & Grades</th><th class="p-2.5">Location</th><th class="p-2.5">Status</th><th class="p-2.5 text-center">Admin Controls</th></tr></thead><tbody class="divide-y divide-cream-200">${keys.map(k => { const u=users[k]; const banned=!!u.banned; return `<tr class="hover:bg-cream-100 transition"><td class="p-2.5 font-bold text-marian-900">${escapeHtml(u.momName||'Member')}</td><td class="p-2.5 font-mono text-slate-700">${escapeHtml(u.email||k)}</td><td class="p-2.5 text-slate-600">${escapeHtml(u.parish||'-')}</td><td class="p-2.5 text-slate-600">${escapeHtml(u.kids||'-')}</td><td class="p-2.5 text-slate-600">${escapeHtml(u.state||'-')}</td><td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${banned?'bg-rose-100 text-rose-800':'bg-emerald-100 text-emerald-800'}">${banned?'Banned':'Active'}</span></td><td class="p-2.5 text-center flex items-center justify-center gap-1.5"><button onclick="window.adminEditMember('${escapeHtml(k)}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold">Edit</button><button onclick="window.adminToggleBanMember('${escapeHtml(k)}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2 py-1 rounded-lg text-[10px] font-bold">${banned?'Unban':'Ban'}</button><button onclick="window.adminDeleteMember('${escapeHtml(k)}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2 py-1 rounded-lg text-[10px] font-bold">Delete Profile</button></td></tr>`; }).join('')}</tbody></table>`; }
             document.getElementById('adminMembersModal')?.classList.remove('hidden');
         };
 
-        window.closeAdminMembersModal = function() {
-            document.getElementById('adminMembersModal')?.classList.add('hidden');
+        window.closeAdminMembersModal = function() { document.getElementById('adminMembersModal')?.classList.add('hidden'); };
+
+        window.adminToggleBanMember = async function(email) {
+            if (!window.isAdmin || email === ADMIN_EMAIL.toLowerCase()) return;
+            const u = window.remoteProfilesCache[email]; if (!u) return;
+            const { error } = await window.supabaseClient.from('profiles').update({ banned: !u.banned, updated_at: new Date().toISOString() }).eq('id', u.id);
+            if (error) { window.showNotification('Update Failed', error.message); return; }
+            await window.openAdminMembersModal();
+            window.showNotification('Member Updated', `Member status for ${email} has been updated.`);
         };
 
-        window.adminToggleBanMember = function(email) {
-            let users = window.getRegisteredUsers();
-            if (users[email]) {
-                users[email].banned = !users[email].banned;
-                window.saveRegisteredUsers(users);
-                window.openAdminMembersModal();
-                window.showNotification("Member Updated", `Member status for ${email} has been updated.`);
-            }
+        window.adminDeleteMember = async function(email) {
+            if (!window.isAdmin || email === ADMIN_EMAIL.toLowerCase()) return;
+            const u = window.remoteProfilesCache[email]; if (!u) return;
+            if (!confirm(`Remove the Sanctuary profile for ${email}?`)) return;
+            const { error } = await window.supabaseClient.from('profiles').delete().eq('id', u.id);
+            if (error) { window.showNotification('Delete Failed', error.message); return; }
+            await window.openAdminMembersModal();
+            window.updateMemberCountBadge();
+            window.showNotification('Profile Removed', 'The member profile has been removed. The underlying Auth identity remains unless deleted in Supabase Auth.');
         };
 
-        window.adminDeleteMember = function(email) {
-            if (email === ADMIN_EMAIL) {
-                window.showNotification("Action Denied", "Cannot delete admin account.");
-                return;
-            }
-            if (confirm(`Are you sure you want to delete member ${email}?`)) {
-                let users = window.getRegisteredUsers();
-                delete users[email];
-                window.saveRegisteredUsers(users);
-                window.openAdminMembersModal();
-                window.updateMemberCountBadge();
-                window.showNotification("Member Deleted", "Member successfully removed.");
-            }
+        window.adminEditMember = async function(email) {
+            if (!window.isAdmin) return;
+            const u = window.remoteProfilesCache[email]; if (!u) return;
+            const newName = prompt("Edit Mother's Full Name:", u.momName || ''); if (newName === null) return;
+            const newParish = prompt("Edit Parish / Diocese:", u.parish || ''); if (newParish === null) return;
+            const newKids = prompt("Edit Children & Grades:", u.kids || ''); if (newKids === null) return;
+            const { error } = await window.supabaseClient.from('profiles').update({ momName:newName.trim(), parish:newParish.trim(), kids:newKids.trim(), updated_at:new Date().toISOString() }).eq('id', u.id);
+            if (error) { window.showNotification('Update Failed', error.message); return; }
+            await window.openAdminMembersModal();
+            window.showNotification('Updated', 'Member details successfully updated online.');
         };
 
-        window.adminEditMember = function(email) {
-            let users = window.getRegisteredUsers();
-            let u = users[email];
-            if (!u) return;
-            const newName = prompt("Edit Mother's Full Name:", u.momName || '');
-            if (newName === null) return;
-            const newParish = prompt("Edit Parish / Diocese:", u.parish || '') || u.parish;
-            const newKids = prompt("Edit Children & Grades:", u.kids || '') || u.kids;
-
-            u.momName = newName.trim();
-            u.parish = newParish.trim();
-            u.kids = newKids.trim();
-            window.saveRegisteredUsers(users);
-            window.openAdminMembersModal();
-            window.showNotification("Updated", "Member details successfully updated.");
-        };
-
-        window.exportMemberList = function() {
-            const users = window.getRegisteredUsers();
+        window.exportMemberList = async function() {
+            const users = await window.refreshRemoteProfiles();
             let csv = "Mother Name,Email,Parish,Children & Grades,State,Registration Date,Status\n";
-            Object.values(users).forEach(u => {
-                csv += `"${u.momName || ''}","${u.email}","${u.parish || ''}","${u.kids || ''}","${u.state || ''}","${u.registeredDate || ''}","${u.banned ? 'Banned' : 'Active'}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'catholic_sanctuary_members_directory.csv';
-            a.click();
-            window.showNotification("Exported", "Member directory successfully exported to CSV.");
+            Object.values(users).filter(u => (u.email||'').toLowerCase() !== ADMIN_EMAIL.toLowerCase()).forEach(u => { csv += `"${u.momName||''}","${u.email||''}","${u.parish||''}","${u.kids||''}","${u.state||''}","${u.created_at||u.registeredDate||''}","${u.banned?'Banned':'Active'}"\n`; });
+            const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='catholic_sanctuary_members_directory.csv'; a.click(); URL.revokeObjectURL(url);
+            window.showNotification('Exported', 'The online member directory was exported to CSV.');
         };
 
         window.switchToTab = function(tabName) {
@@ -1814,7 +1751,7 @@
                 safeThreads.sort((a, b) => b.id.localeCompare(a.id));
             }
 
-            const totalMembers = Object.keys(window.getRegisteredUsers()).length + 1420;
+            const totalMembers = (Object.keys(window.remoteProfilesCache || {}).length || 0) + 1420;
             const countText = document.getElementById('exchangeMemberCountText');
             if (countText) countText.innerHTML = `<i class="fa-solid fa-users text-gold-400 mr-1"></i>${totalMembers} Sanctuary Members`;
 
@@ -2045,26 +1982,33 @@
             }
         }, 1500);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedEmail = localStorage.getItem(LOCAL_SESSION_KEY);
-            if (savedEmail) {
-                let users = window.getRegisteredUsers();
-                if (savedEmail === ADMIN_EMAIL || (users[savedEmail] && !users[savedEmail].banned)) {
-                    if (users[savedEmail] && !users[savedEmail].verified) {
-                        users[savedEmail].verified = true;
-                        window.saveRegisteredUsers(users);
-                    }
-                    window.currentLoggedInEmail = savedEmail;
-                    window.applyUserSessionUI();
-                    document.getElementById('authGateOverlay')?.classList.add('hidden');
+        document.addEventListener('DOMContentLoaded', async () => {
+            window.switchGateMode('signin');
+            if (!SUPABASE_CONFIGURED) {
+                document.getElementById('syncStatusText').textContent = 'Online Login Setup Required';
+                document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                window.showNotification('One-Time Setup Needed', 'Open this HTML after adding your Supabase Project URL and anon/publishable key. The instructions file included with this app explains the setup.');
+            } else {
+                const { data: { session } } = await window.supabaseClient.auth.getSession();
+                if (session?.user) {
+                    await window.completeLogin(session.user);
                 } else {
-                    localStorage.removeItem(LOCAL_SESSION_KEY);
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 }
-            } else {
-                document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                    if (event === 'SIGNED_IN' && session?.user) await window.completeLogin(session.user);
+                    if (event === 'SIGNED_OUT') {
+                        window.currentLoggedInEmail = null;
+                        window.currentProfile = null;
+                        window.isAdmin = false;
+                        document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                    }
+                    if (event === 'PASSWORD_RECOVERY') {
+                        window.switchGateMode('reset');
+                        window.showNotification('Password Recovery', 'Your password-reset link has been accepted. Choose your new password below.');
+                    }
+                });
             }
-
             window.renderLibrary();
             window.renderLessonPlanner();
             window.updateMemberCountBadge();
