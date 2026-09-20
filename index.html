@@ -799,14 +799,15 @@
             const email = (document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
             const password = document.getElementById('gatePassword')?.value || '';
 
+            let users = window.getRegisteredUsers();
+
             if (window.gateMode === 'forgot') {
                 if (!email) {
                     window.showNotification("Email Required", "Please enter your email address for password recovery.");
                     return;
                 }
-                let users = window.getRegisteredUsers();
                 if (email !== ADMIN_EMAIL && !users[email]) {
-                    window.showNotification("Account Not Found", "No registered account found with this email address.");
+                    window.showNotification("Account Not Found", "No registered account found with this email address. Please register first.");
                     return;
                 }
                 const resetHtml = `
@@ -827,8 +828,6 @@
                 return;
             }
 
-            let users = window.getRegisteredUsers();
-
             if (window.gateMode === 'register') {
                 const momName = (document.getElementById('gateMomName')?.value || '').trim();
                 const parish = (document.getElementById('gateParish')?.value || '').trim();
@@ -841,7 +840,7 @@
                 }
 
                 if (users[email]) {
-                    window.showNotification("Account Exists", "An account with this email already exists. Please sign in.");
+                    window.showNotification("Account Exists", "An account with this email already exists. Please sign in instead.");
                     return;
                 }
 
@@ -862,7 +861,7 @@
                 const verifyNoticeHtml = `
                     <div class="p-4 bg-amber-50 rounded-2xl border border-amber-300 text-left space-y-2 my-2">
                         <p class="text-xs font-bold text-amber-900"><i class="fa-solid fa-envelope-circle-check mr-1.5"></i> Verification Email Sent from gentlecatholichomeschool@gmail.com</p>
-                        <p class="text-xs text-slate-700">Dearest ${escapeHtml(momName)}, to prevent fake registrations, please confirm your email address:</p>
+                        <p class="text-xs text-slate-700">Dearest ${escapeHtml(momName)}, to confirm your email address, please click below:</p>
                         <button onclick="window.confirmUserEmail('${email}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-check-circle"></i> Confirm Email & Enter Sanctuary
                         </button>
@@ -872,7 +871,7 @@
 
             } else {
                 if (email !== ADMIN_EMAIL && !users[email]) {
-                    window.showNotification("Account Not Found", "No registered account found with this email. Please register first.");
+                    window.showNotification("Account Not Found", "No registered account found with this email. Please click 'Register Account' to sign up.");
                     return;
                 }
 
@@ -892,7 +891,7 @@
                         return;
                     }
                     if (users[email].password !== password) {
-                        window.showNotification("Incorrect Password", "The password you entered is incorrect. Please try again.");
+                        window.showNotification("Incorrect Password", "The password you entered is incorrect. Please check your password and try again.");
                         return;
                     }
                 }
@@ -1971,7 +1970,6 @@
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 }
             } else {
-                document.getElementById('authGateOverlay')?.classList.add('hidden'); // fallback safety
                 document.getElementById('authGateOverlay')?.classList.remove('hidden');
             }
 
