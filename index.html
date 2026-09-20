@@ -678,13 +678,13 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v50';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v50';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v50';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v50';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v50';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v50';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v50';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v60';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v60';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v60';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v60';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v60';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v60';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v60';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -1553,6 +1553,7 @@
         };
 
         window.renderLibrary = function() {
+            window.resources = window.loadResourcesFromStorage();
             const container = document.getElementById('libraryContainer');
             if (!container) return;
 
@@ -1960,6 +1961,23 @@
                 window.updateMemberCountBadge();
             }
         });
+
+        setInterval(() => {
+            const currentRes = window.loadResourcesFromStorage();
+            if (JSON.stringify(currentRes) !== JSON.stringify(window.resources)) {
+                window.resources = currentRes;
+                if (!document.getElementById('libraryContainer').classList.contains('hidden')) {
+                    window.renderLibrary();
+                }
+            }
+            const currentThreads = window.loadThreadsFromStorage();
+            if (JSON.stringify(currentThreads) !== JSON.stringify(window.communityThreads)) {
+                window.communityThreads = currentThreads;
+                if (!document.getElementById('communityContainer').classList.contains('hidden')) {
+                    window.renderCommunityThreads();
+                }
+            }
+        }, 1500);
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem(LOCAL_SESSION_KEY);
