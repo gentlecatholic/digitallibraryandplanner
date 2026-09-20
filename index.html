@@ -76,14 +76,15 @@
         .tts-highlight-line { background-color: #e0f2fe !important; border-left: 4px solid #0284c7; padding-left: 8px; }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col antialiased">
 
-    <!-- Mandatory Authentication Gate Overlay (App Protection) -->
+    <!-- Mandatory Authentication Gate Overlay (Strictly appears on load until user logs in) -->
     <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-cream-300 overflow-hidden flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white text-center border-b-4 border-gold-400 space-y-2">
                 <div class="w-16 h-16 rounded-full bg-marian-950 mx-auto border-2 border-gold-400 flex items-center justify-center shadow-lg overflow-hidden">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWVxP8eUD6vzjc_3sHSpk24RqVIdN2R0W6-QwW8tMAMGoRxVeHfyad8qdNKexI3O4GBumqLKJnZXOB5tM0xANdqghpzGe_Rpe1OYxvKKHsF0NqLOAj0dDoa_D5qI9VMQ1VgSM4vv9ulunBTMX_Y6kJ87uYXKHSFSAfZvVlOgy8BwRaiU5Tm3Oli5D5mpg/w640-h640/LOGO.png" alt="Gentle Catholic Logo" class="w-full h-full object-cover" />
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWVxP8eUD6vzjc_3sHSpk24RqVIdN2R0W6-QwW8tMAMGoRxVeHfyad8qdNKexI3O4GBumqLKJnZXOB5tM0xANdqghpzGe_Rpe1OYxvKKHsF0NqLOAj0dDoa_D5qI9VMQ1VgSM4vv9ulunBTMX_Y6kJ87uYXKHSFSAfZvVlOgy8BwRaiU5Tm3Oli5D5mpg/w640-h640/LOGO.png" alt="Gentle Catholic Homeschooling Logo" class="w-full h-full object-cover" />
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold heading-serif text-amber-100">Catholic Sanctuary Access</h2>
                 <p class="text-xs text-gold-300 motto-serif tracking-wider">Mater Maria, ora pro nobis!</p>
@@ -135,7 +136,6 @@
         </div>
     </div>
 
-    <!-- Main Application Header -->
     <header class="no-print bg-gradient-to-b from-marian-950 via-marian-900 to-marian-950 text-white border-b-4 border-gold-400 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:18px_18px]"></div>
 
@@ -192,7 +192,6 @@
         </div>
     </header>
 
-    <!-- Navigation Tabs -->
     <nav class="no-print bg-marian-900 border-b border-marian-800 text-white shadow-md sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between overflow-x-auto no-scrollbar">
             <div class="flex items-center space-x-1 sm:space-x-2 py-2">
@@ -211,6 +210,7 @@
             </div>
         </div>
     </nav>
+    
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <div id="liturgicalBanner" class="no-print bg-gradient-to-r from-emerald-900 via-tealhalo-700 to-marian-900 text-white rounded-2xl p-4 mb-6 shadow-md border border-gold-400/30 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -450,7 +450,6 @@
 
     </main>
 
-    <!-- Book Reader Modal -->
     <div id="bookReaderModal" class="fixed inset-0 bg-marian-950/90 backdrop-blur-md z-50 flex flex-col hidden">
         <div class="bg-marian-900 text-white px-4 py-3 border-b border-gold-400/40 flex flex-wrap items-center justify-between gap-2 shadow-lg flex-shrink-0">
             <div class="flex items-center gap-3 min-w-0">
@@ -506,7 +505,6 @@
         </div>
     </div>
 
-    <!-- Notification Modal -->
     <div id="customNotifyModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-cream-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto text-xl">
@@ -521,7 +519,6 @@
         </div>
     </div>
 
-    <!-- Unsubscribe Modal -->
     <div id="unsubscribeModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-cream-300 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
@@ -536,7 +533,6 @@
         </div>
     </div>
 
-    <!-- Admin Member Directory Modal -->
     <div id="adminMembersModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white rounded-t-3xl flex items-center justify-between border-b border-gold-400/40">
@@ -565,7 +561,6 @@
         </div>
     </div>
 
-    <!-- Add/Edit Resource Modal -->
     <div id="resourceModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white rounded-t-3xl flex items-center justify-between border-b border-gold-400/40">
@@ -650,13 +645,13 @@
     
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v68';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v68';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v68';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v68';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v68';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v68';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v68';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v69';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v69';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v69';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v69';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v69';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v69';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v69';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -1900,7 +1895,7 @@
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 }
             } else {
-                document.getElementById('authGateOverlay')?.classList.add('hidden');
+                document.getElementById('authGateOverlay')?.classList.remove('hidden');
             }
 
             window.renderLibrary();
