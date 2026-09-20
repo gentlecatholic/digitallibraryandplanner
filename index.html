@@ -90,11 +90,14 @@
                         <i class="fa-solid fa-users-gear"></i> Manage Members (<span id="memberCountBadge">0</span>)
                     </button>
                 </div>
-                <div id="userAccountSection" class="flex items-center gap-3">
+                <div id="userAccountSection" class="flex items-center gap-3 flex-wrap">
                     <span id="userEmailDisplay" class="text-blue-200 hidden font-medium"></span>
                     <button id="authHeaderBtn" onclick="window.openAuthModal()" class="bg-gold-400 hover:bg-gold-500 text-marian-950 font-bold px-3.5 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-user-lock"></i>
                         <span id="authButtonText">Sign In / Register</span>
+                    </button>
+                    <button id="unsubscribeHeaderBtn" onclick="window.openUnsubscribeModal()" class="hidden bg-cream-200 hover:bg-cream-300 text-slate-800 font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-slash text-rose-600"></i> Unsubscribe
                     </button>
                     <button id="logoutHeaderBtn" onclick="window.handleLogout()" class="hidden bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-right-from-bracket"></i> Log Out
@@ -162,7 +165,7 @@
                         <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-emerald-950">Ordinary Time</span>
                         <span class="text-xs text-gold-300 font-serif motto-serif">Catholic Tradition & Spiritual Reading</span>
                     </div>
-                    <p class="text-xs text-slate-200 mt-0.5">Explore authentic Catholic masterworks, catechisms, lives of saints, and downloadable PDF books.</p>
+                    <p class="text-xs text-slate-200 mt-0.5">Explore authentic Catholic masterworks, catechisms, lives of saints, and downloadable PDF books with full PDF file uploads.</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
@@ -463,6 +466,7 @@
         </div>
     </div>
 
+    <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
@@ -521,7 +525,6 @@
                 </button>
             </form>
 
-            <!-- Forgot Password Form -->
             <form id="forgotPasswordForm" onsubmit="window.handleForgotPasswordSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm hidden">
                 <p class="text-slate-600">Enter your registered email address. We will send a secure password reset link from <strong>gentlecatholichomeschool@gmail.com</strong>.</p>
                 <div>
@@ -536,7 +539,6 @@
                 </button>
             </form>
 
-            <!-- Reset Password Form -->
             <form id="resetPasswordForm" onsubmit="window.handleResetPasswordSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm hidden">
                 <input type="hidden" id="resetTokenEmail">
                 <p class="text-slate-600">Enter your new secure password below:</p>
@@ -548,6 +550,21 @@
                     <i class="fa-solid fa-key"></i> Update Password & Sign In
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- Unsubscribe Modal -->
+    <div id="unsubscribeModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-cream-300 text-center space-y-4">
+            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-user-slash"></i>
+            </div>
+            <h3 class="text-lg font-bold heading-serif text-marian-900">Unsubscribe Account</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">Are you sure you want to unsubscribe and remove your membership and local profile data from this device?</p>
+            <div class="flex items-center justify-center gap-3 pt-2">
+                <button onclick="window.closeUnsubscribeModal()" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-semibold text-xs">Cancel</button>
+                <button onclick="window.confirmUnsubscribe()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs shadow">Yes, Unsubscribe</button>
+            </div>
         </div>
     </div>
 
@@ -587,8 +604,8 @@
                         <i class="fa-solid fa-book-bookmark text-lg"></i>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold heading-serif text-amber-100">Add New Book to Library</h3>
-                        <p class="text-xs text-blue-200">Contribute a Catholic book, PDF, or resource</p>
+                        <h3 class="text-xl font-bold heading-serif text-amber-100">Add New Book & Upload PDF</h3>
+                        <p class="text-xs text-blue-200">Upload a PDF file or link a digital resource for the sanctuary</p>
                     </div>
                 </div>
                 <button onclick="window.closeResourceModal()" class="text-slate-300 hover:text-white transition p-1">
@@ -631,14 +648,17 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="formPdfLink" class="block font-semibold text-slate-700 mb-1"><i class="fa-solid fa-file-pdf text-red-500 mr-1"></i> Direct PDF Link for Download</label>
-                        <input type="url" id="formPdfLink" placeholder="https://example.com/book.pdf" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
-                    </div>
-                    <div>
-                        <label for="formWebLink" class="block font-semibold text-slate-700 mb-1"><i class="fa-solid fa-globe text-blue-500 mr-1"></i> External Reading Link (Optional)</label>
-                        <input type="url" id="formWebLink" placeholder="https://archive.org/details/book" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                <div class="p-4 bg-cream-100 rounded-2xl border border-cream-300 space-y-3">
+                    <label class="block font-bold text-marian-900"><i class="fa-solid fa-file-pdf text-red-600 mr-1.5"></i> PDF Document Upload or URL</label>
+                    <div class="space-y-2">
+                        <div>
+                            <span class="text-[11px] text-slate-600 block mb-1">Option A: Upload PDF file from your device</span>
+                            <input type="file" id="formPdfFile" accept=".pdf" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-marian-800 file:text-white hover:file:bg-marian-900 cursor-pointer">
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-slate-600 block mb-1">Option B: Or paste direct PDF link / URL</span>
+                            <input type="url" id="formPdfLink" placeholder="https://example.com/book.pdf" class="w-full p-2 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500 text-xs">
+                        </div>
                     </div>
                 </div>
 
@@ -659,12 +679,12 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v30';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v30';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v30';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v30';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v30';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v30';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v35';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v35';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v35';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v35';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v35';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v35';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -908,6 +928,7 @@
                 document.getElementById('userEmailDisplay').classList.remove('hidden');
                 document.getElementById('authHeaderBtn').classList.add('hidden');
                 document.getElementById('logoutHeaderBtn').classList.remove('hidden');
+                document.getElementById('unsubscribeHeaderBtn').classList.remove('hidden');
                 document.getElementById('syncStatusText').textContent = email === ADMIN_EMAIL ? 'Admin Account Active' : 'Member Account Active';
                 
                 if (email === ADMIN_EMAIL) {
@@ -974,6 +995,32 @@
             }
         };
 
+        window.openUnsubscribeModal = function() {
+            if (!window.currentLoggedInEmail) {
+                window.showNotification("Not Signed In", "You must be signed in to unsubscribe.");
+                return;
+            }
+            document.getElementById('unsubscribeModal')?.classList.remove('hidden');
+        };
+
+        window.closeUnsubscribeModal = function() {
+            document.getElementById('unsubscribeModal')?.classList.add('hidden');
+        };
+
+        window.confirmUnsubscribe = function() {
+            const email = window.currentLoggedInEmail;
+            if (!email) return;
+
+            let users = window.getRegisteredUsers();
+            delete users[email];
+            window.saveRegisteredUsers(users);
+
+            window.closeUnsubscribeModal();
+            window.handleLogout();
+            window.showNotification("Unsubscribed", "Your account and local profile data have been successfully removed.");
+            window.updateMemberCountBadge();
+        };
+
         window.handleLogout = function() {
             window.currentLoggedInEmail = null;
             window.currentUserDisplayName = 'Sanctuary Member';
@@ -981,6 +1028,7 @@
             document.getElementById('userEmailDisplay').classList.add('hidden');
             document.getElementById('authHeaderBtn').classList.remove('hidden');
             document.getElementById('logoutHeaderBtn').classList.add('hidden');
+            document.getElementById('unsubscribeHeaderBtn').classList.add('hidden');
             document.getElementById('adminBadge').classList.add('hidden');
             document.getElementById('adminMembersBtn').classList.add('hidden');
             document.getElementById('syncStatusText').textContent = 'Catholic Sanctuary Member';
@@ -1682,27 +1730,48 @@
             const category = document.getElementById('formCategory').value;
             const grade = document.getElementById('formGrade').value;
             const description = document.getElementById('formDescription').value.trim();
-            const pdfUrl = document.getElementById('formPdfLink').value.trim();
-            const webUrl = document.getElementById('formWebLink').value.trim();
+            const pdfLinkInput = document.getElementById('formPdfLink').value.trim();
+            const pdfFileInput = document.getElementById('formPdfFile');
 
-            window.resources = window.resources || [];
-            window.resources.unshift({
-                id: 'r_' + Date.now(),
-                title,
-                author,
-                category,
-                grade,
-                description,
-                pdfUrl,
-                webUrl,
-                uploader: window.currentUserDisplayName
-            });
+            let finalPdfUrl = pdfLinkInput;
 
-            localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
-            window.closeResourceModal();
-            window.resetAllFilters();
-            window.switchToTab('library');
-            window.showNotification("Book Added", `New Catholic book successfully published to the library by ${window.currentUserDisplayName}!`);
+            const finishSave = (pdfDataUrl = '') => {
+                if (pdfDataUrl) {
+                    finalPdfUrl = pdfDataUrl;
+                }
+
+                window.resources = window.resources || [];
+                window.resources.unshift({
+                    id: 'r_' + Date.now(),
+                    title,
+                    author,
+                    category,
+                    grade,
+                    description,
+                    pdfUrl: finalPdfUrl,
+                    uploader: window.currentUserDisplayName
+                });
+
+                localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
+                window.closeResourceModal();
+                window.resetAllFilters();
+                window.switchToTab('library');
+                window.showNotification("Book Added", `New Catholic book successfully published to the library with PDF document by ${window.currentUserDisplayName}!`);
+            };
+
+            if (pdfFileInput && pdfFileInput.files && pdfFileInput.files[0]) {
+                const file = pdfFileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    finishSave(uploadEvent.target.result);
+                };
+                reader.onerror = function() {
+                    finishSave(pdfLinkInput);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                finishSave();
+            }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
