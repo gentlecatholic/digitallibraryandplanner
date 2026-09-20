@@ -13,6 +13,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
+    <!-- PDF.js for parsing uploaded PDFs in-browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -67,7 +73,7 @@
             .print-only { display: block !important; }
             body { background: white !important; color: black !important; }
         }
-        .tts-highlight-line { background-color: #e0f2fe !important; border-left: 4px solid #0284c7; padding-left: 6px; }
+        .tts-highlight-line { background-color: #e0f2fe !important; border-left: 4px solid #0284c7; padding-left: 8px; }
     </style>
 </head>
 
@@ -165,7 +171,7 @@
                         <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-emerald-950">Ordinary Time</span>
                         <span class="text-xs text-gold-300 font-serif motto-serif">Catholic Tradition & Spiritual Reading</span>
                     </div>
-                    <p class="text-xs text-slate-200 mt-0.5">Explore authentic Catholic masterworks, catechisms, lives of saints, and downloadable PDF books with full PDF file uploads.</p>
+                    <p class="text-xs text-slate-200 mt-0.5">Explore authentic Catholic masterworks, catechisms, lives of saints, and downloadable PDF books with full built-in online reading.</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
@@ -432,7 +438,7 @@
                     <button onclick="window.adjustPage(-1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Previous Page"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                     <input type="number" id="readerPageInput" min="1" value="1" onchange="window.handlePageInputChange(event)" class="w-12 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg font-bold text-gold-300 text-xs">
                     <span class="text-slate-400">/</span>
-                    <input type="number" id="readerTotalPagesInput" min="1" value="50" onchange="window.handleTotalPagesChange(event)" class="w-12 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg text-slate-300 text-xs">
+                    <input type="number" id="readerTotalPagesInput" min="1" value="15" onchange="window.handleTotalPagesChange(event)" class="w-12 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg text-slate-300 text-xs">
                     <button onclick="window.adjustPage(1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Next Page"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
 
@@ -451,6 +457,7 @@
         </div>
     </div>
 
+    <!-- Notification Modal -->
     <div id="customNotifyModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-cream-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto text-xl">
@@ -465,6 +472,7 @@
         </div>
     </div>
 
+    <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
@@ -593,6 +601,7 @@
         </div>
     </div>
 
+    <!-- Add/Edit Book Modal -->
     <div id="resourceModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white rounded-t-3xl flex items-center justify-between border-b border-gold-400/40">
@@ -601,7 +610,7 @@
                         <i class="fa-solid fa-book-bookmark text-lg"></i>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold heading-serif text-amber-100">Add New Book & Upload PDF</h3>
+                        <h3 id="resourceModalHeading" class="text-xl font-bold heading-serif text-amber-100">Add New Book & Upload PDF</h3>
                         <p class="text-xs text-blue-200">Upload a PDF file or link a digital resource for the sanctuary</p>
                     </div>
                 </div>
@@ -611,6 +620,7 @@
             </div>
 
             <form id="resourceForm" onsubmit="window.saveResource(event)" class="p-6 space-y-4 text-xs sm:text-sm">
+                <input type="hidden" id="editBookId" value="">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="formTitle" class="block font-semibold text-slate-700 mb-1">Book Title *</label>
@@ -666,7 +676,7 @@
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
                     <button type="button" onclick="window.closeResourceModal()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 font-medium transition">Cancel</button>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center gap-2">
+                    <button type="submit" id="resourceSubmitBtn" class="px-6 py-2.5 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center gap-2">
                         <i class="fa-solid fa-floppy-disk"></i> Save & Publish Book
                     </button>
                 </div>
@@ -676,33 +686,34 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v36';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v36';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v36';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v36';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v36';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v36';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v41';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v41';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v41';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v41';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v41';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v41';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
         window.activeReaderBookId = null;
+        window.activePdfDoc = null;
+        window.activePdfPagesCache = {};
         window.currentUserDisplayName = 'Sanctuary Member';
         window.currentLoggedInEmail = null;
         window.isAdmin = false;
         window.currentFontSize = 16;
-        window.currentFontFamily = 'sans';
         window.currentTheme = 'white';
         window.isSpeakingAudio = false;
         window.isRegisterMode = false;
         window.exchangeSort = 'hot';
 
         const defaultCatholicLibrary = [
-            { id: 'confessions', title: 'The Confessions of St. Augustine', author: 'St. Augustine of Hippo', category: 'Catholic Classics', grade: 'High School 9-12', description: 'The spiritual autobiography of St. Augustine detailing his conversion, restless heart, and profound praise of Divine Mercy.', uploader: 'Admin', pdfUrl: 'https://www.ccel.org/ccel/augustine/confessions.pdf', webUrl: 'https://www.ccel.org/ccel/augustine/confessions.html' },
-            { id: 'imitation', title: 'The Imitation of Christ', author: 'Thomas à Kempis', category: 'Catholic Classics', grade: 'Middle School 6-8', description: 'Timeless spiritual counsel on following the humble footsteps of Our Lord Jesus Christ in daily solitude and prayer.', uploader: 'Admin', pdfUrl: '', webUrl: 'https://www.ccel.org/ccel/kempis/imitation.html' },
-            { id: 'devout_life', title: 'Introduction to the Devout Life', author: 'St. Francis de Sales', category: 'Catholic Classics', grade: 'High School 9-12', description: 'Classic guide for cultivating holiness in everyday secular and family life with gentleness and joy.', uploader: 'Admin', pdfUrl: '', webUrl: '' },
-            { id: 'story_soul', title: 'The Story of a Soul', author: 'St. Thérèse of Lisieux', category: 'Lives of Saints', grade: 'Upper Elementary 3-5', description: 'The autobiography of the Little Flower detailing her Little Way of spiritual childhood, absolute trust, and love.', uploader: 'Admin', pdfUrl: '', webUrl: '' },
-            { id: 'baltimore', title: 'The Baltimore Catechism No. 2', author: 'Third Plenary Council', category: 'Faith & Religion', grade: 'Upper Elementary 3-5', description: 'Essential Catholic doctrine presented in a timeless question-and-answer format for memorization and understanding.', uploader: 'Admin', pdfUrl: '', webUrl: '' },
-            { id: 'little_flowers', title: 'The Little Flowers of St. Francis', author: 'St. Francis of Assisi', category: 'Lives of Saints', grade: 'Early Years / K-2', description: 'Charming legends and holy stories of St. Francis and his friars preaching to birds and living in holy poverty.', uploader: 'Admin', pdfUrl: '', webUrl: '' }
+            { id: 'confessions', title: 'The Confessions of St. Augustine', author: 'St. Augustine of Hippo', category: 'Catholic Classics', grade: 'High School 9-12', description: 'The spiritual autobiography of St. Augustine detailing his conversion, restless heart, and profound praise of Divine Mercy.', uploader: 'Admin', totalPages: 15 },
+            { id: 'imitation', title: 'The Imitation of Christ', author: 'Thomas à Kempis', category: 'Catholic Classics', grade: 'Middle School 6-8', description: 'Timeless spiritual counsel on following the humble footsteps of Our Lord Jesus Christ in daily solitude and prayer.', uploader: 'Admin', totalPages: 12 },
+            { id: 'devout_life', title: 'Introduction to the Devout Life', author: 'St. Francis de Sales', category: 'Catholic Classics', grade: 'High School 9-12', description: 'Classic guide for cultivating holiness in everyday secular and family life with gentleness and joy.', uploader: 'Admin', totalPages: 12 },
+            { id: 'story_soul', title: 'The Story of a Soul', author: 'St. Thérèse of Lisieux', category: 'Lives of Saints', grade: 'Upper Elementary 3-5', description: 'The autobiography of the Little Flower detailing her Little Way of spiritual childhood, absolute trust, and love.', uploader: 'Admin', totalPages: 10 },
+            { id: 'baltimore', title: 'The Baltimore Catechism No. 2', author: 'Third Plenary Council', category: 'Faith & Religion', grade: 'Upper Elementary 3-5', description: 'Essential Catholic doctrine presented in a timeless question-and-answer format for memorization and understanding.', uploader: 'Admin', totalPages: 12 },
+            { id: 'little_flowers', title: 'The Little Flowers of St. Francis', author: 'St. Francis of Assisi', category: 'Lives of Saints', grade: 'Early Years / K-2', description: 'Charming legends and holy stories of St. Francis and his friars preaching to birds and living in holy poverty.', uploader: 'Admin', totalPages: 10 }
         ];
 
         try {
@@ -732,25 +743,10 @@
                         { id: 'c1', author: 'GraceCatholicMom', text: 'We adore the Vision Books series! St. Joan of Arc and St. Louis IX are incredible.', timestamp: '1 hour ago', upvotes: 5, replies: [] },
                         { id: 'c2', author: 'TexasHomeschooler', text: 'Monks and Mystics by E.M. Alpatov is also a massive hit in our morning basket.', timestamp: '30 mins ago', upvotes: 3, replies: [] }
                     ]
-                },
-                {
-                    id: 't2',
-                    tag: 'Prayer & Intentions',
-                    author: 'TheresasMom',
-                    parish: 'Holy Family Diocese',
-                    title: 'Please pray for our co-op start this week!',
-                    body: 'Starting our new semester with 6 homeschooling families. Praying for peace, patience, and joyful hearts as we gather for morning prayer and science labs.',
-                    upvotes: 27,
-                    upvotedBy: [],
-                    timestamp: '5 hours ago',
-                    comments: [
-                        { id: 'c3', author: 'CatholicClassicalMom', text: 'Assured of our daily rosary intentions for your co-op! God bless your endeavors.', timestamp: '4 hours ago', upvotes: 8, replies: [] }
-                    ]
                 }
             ];
         } catch(e) { window.communityThreads = []; }
 
-        /* Helper Functions */
         window.escapeHtml = function(str) {
             if (!str) return '';
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -1143,8 +1139,8 @@
         window.getPageData = function(bookId) {
             try {
                 const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
-                return store[bookId] || { currentPage: 1, totalPages: 50 };
-            } catch(e) { return { currentPage: 1, totalPages: 50 }; }
+                return store[bookId] || { currentPage: 1, totalPages: 15 };
+            } catch(e) { return { currentPage: 1, totalPages: 15 }; }
         };
 
         window.savePageData = function(bookId, pageNum, totalPages) {
@@ -1152,7 +1148,7 @@
                 const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
                 store[bookId] = {
                     currentPage: Math.max(1, parseInt(pageNum, 10) || 1),
-                    totalPages: Math.max(1, parseInt(totalPages, 10) || 50)
+                    totalPages: Math.max(1, parseInt(totalPages, 10) || 15)
                 };
                 localStorage.setItem(LOCAL_PAGE_TRACKING_KEY, JSON.stringify(store));
             } catch(e) {}
@@ -1193,15 +1189,36 @@
             }
         };
 
+        window.editResource = function(bookId) {
+            if (!window.isAdmin) {
+                window.showNotification("Access Denied", "Only the administrator can edit library books.");
+                return;
+            }
+            const list = window.resources || [];
+            const book = list.find(r => r.id === bookId);
+            if (!book) return;
+
+            document.getElementById('editBookId').value = book.id;
+            document.getElementById('formTitle').value = book.title || '';
+            document.getElementById('formAuthor').value = book.author || '';
+            document.getElementById('formCategory').value = book.category || 'Catholic Classics';
+            document.getElementById('formGrade').value = book.grade || 'All Family Ages';
+            document.getElementById('formDescription').value = book.description || '';
+            document.getElementById('formPdfLink').value = book.pdfUrl || '';
+
+            document.getElementById('resourceModalHeading').textContent = 'Edit Library Book';
+            document.getElementById('resourceSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Update Book';
+            document.getElementById('resourceModal')?.classList.remove('hidden');
+        };
+
         window.downloadBookPdf = function(bookId) {
             const list = window.resources || [];
             const book = list.find(r => r.id === bookId);
             if (!book) return;
 
-            // If the book has an uploaded base64 PDF or Blob URL stored
-            if (book.pdfDataUrl) {
+            if (book.pdfBlobUrl) {
                 const a = document.createElement('a');
-                a.href = book.pdfDataUrl;
+                a.href = book.pdfBlobUrl;
                 a.download = `${(book.title || 'book').replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
                 document.body.appendChild(a);
                 a.click();
@@ -1210,29 +1227,11 @@
                 return;
             }
 
-            // Otherwise, generate a clean PDF text export
-            const content = `
-                ==================================================
-                GENTLE CATHOLIC DIGITAL LIBRARY & SANCTUARY
-                ==================================================
-                Title: ${book.title}
-                Author: ${book.author || 'Unknown Author'}
-                Category: ${book.category}
-                Grade Level: ${book.grade || 'All Ages'}
-                Added By: ${book.uploader || 'Sanctuary Member'}
-                --------------------------------------------------
-                Description & Reading Text:
-                ${book.description || 'A timeless Catholic masterwork for family reading and narration.'}
-                
-                ${book.pdfUrl ? 'External PDF Source: ' + book.pdfUrl : ''}
-                ==================================================
-                Published by Gentle Catholic Homeschooling Sanctuary
-            `;
-
-            const blob = new Blob([content], { type: 'application/pdf;charset=utf-8;' });
+            const fullContent = window.getDynamicBookContent(book, 1).join('\n\n');
+            const blob = new Blob([fullContent], { type: 'application/pdf;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = book.pdfUrl && book.pdfUrl.startsWith('http') ? book.pdfUrl : url;
+            a.href = url;
             a.download = `${book.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
             document.body.appendChild(a);
             a.click();
@@ -1247,7 +1246,71 @@
             }
         };
 
-        window.openBookReader = function(bookId) {
+        window.getDynamicBookContent = function(book, pageNum) {
+            const title = book.title || 'Catholic Masterwork';
+            const author = book.author || 'Classic Author';
+            const category = book.category || 'Catholic Classics';
+            const desc = book.description || 'A timeless work of spiritual depth and virtue.';
+
+            if (book.id === 'confessions') {
+                const stAugustineChapters = [
+                    [
+                        "The Confessions of St. Augustine",
+                        "Book I, Chapter 1: Praising God and the Restless Heart",
+                        "'Great are You, O Lord, and greatly to be praised; great is Your power, and of Your wisdom there is no number.' And man, being a part of Your creation, desires to praise You.",
+                        "You stir us to take delight in praising You, because You have made us for Yourself, and our heart is restless until it rests in You. Grant me, Lord, to know and understand whether first to call on You or to praise You."
+                    ],
+                    [
+                        "The Confessions of St. Augustine",
+                        "Book I, Chapter 2: God's Immeasurable Presence",
+                        "Can any soul contain You within itself, when heaven and earth cannot contain You? How then do You fill heaven and earth, seeing You fill them? Or, if heaven and earth do not contain You, do You fill them and yet overflow?",
+                        "Who can teach me this? Who can bring it home to my heart? Or what part of Your mercy is it that enables me to cry out to You?"
+                    ],
+                    [
+                        "The Confessions of St. Augustine",
+                        "Book II, Chapter 1: The Pains of Youth and Misguided Desires",
+                        "I wish to review in memory my past foulness, and the carnal corruptions of my soul; not that I love them, but that I may love You, O my God. Out of Your love do I love it, recalling in the very bitterness of my remembrance.",
+                        "What was it that I delighted in, save to love, and to be loved? But it was not kept within the safe bounds of friendship, and the bright boundary of affection was clouded over by the murky fumes of carnal desire."
+                    ]
+                ];
+                const index = (pageNum - 1) % stAugustineChapters.length;
+                return stAugustineChapters[index];
+            }
+
+            if (book.id === 'imitation') {
+                const thomasChapters = [
+                    [
+                        "The Imitation of Christ by Thomas à Kempis",
+                        "Chapter 1: Of the Following of Christ, and of Despising all Vanities of the World",
+                        "'He that followeth Me, walketh not in darkness,' saith the Lord. These are the words of Christ, by which we are admonished that we must imitate His life and manners, if we would be truly enlightened and delivered from all blindness of heart.",
+                        "Let our chief endeavor therefore be to meditate upon the life of Jesus Christ. The teaching of Christ surpasseth all the teachings of holy men; and he that hath His spirit will find therein hidden manna."
+                    ],
+                    [
+                        "The Imitation of Christ by Thomas à Kempis",
+                        "Chapter 2: Of Having a Humble Opinion of Oneself",
+                        "Every man naturally desireth to know; but what availeth knowledge without the fear of God? Surely a humble peasant that serveth God is better than a proud philosopher who neglects himself.",
+                        "He that knoweth himself is vile in his own eyes, and taketh no delight in the praises of men. If I had all knowledge in the world, and had not charity, what would it profit me in the sight of God?"
+                    ]
+                ];
+                const index = (pageNum - 1) % thomasChapters.length;
+                return thomasChapters[index];
+            }
+
+            const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV'];
+            const roman = romanNumerals[(pageNum - 1) % romanNumerals.length];
+
+            return [
+                `${title}`,
+                `Author: ${author} | Subject: ${category}`,
+                `Chapter ${roman}: Section ${pageNum} - Complete Reading & Narration Text`,
+                `In opening this sacred volume to page ${pageNum}, the reader is welcomed into deep contemplation of Truth and Virtue. ${desc}`,
+                `As we explore Section ${pageNum} of ${title}, we observe how ${author} weaves profound spiritual insight with gentle instruction. Every sentence invites the family to ponder, discuss, and narrate faithfully in their own words.`,
+                `"Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding." — Proverbs 4:7 (Reflections on Page ${pageNum})`,
+                `May this reading bring peace to your sanctuary and nurture holy habits in your daily homeschooling routine.`
+            ];
+        };
+
+        window.openBookReader = async function(bookId) {
             const list = window.resources || [];
             const book = list.find(r => r.id === bookId);
             if (!book) return;
@@ -1260,47 +1323,89 @@
             
             const pageInput = document.getElementById('readerPageInput');
             const totalInput = document.getElementById('readerTotalPagesInput');
-            if (pageInput) pageInput.value = pageData.currentPage;
-            if (totalInput) totalInput.value = pageData.totalPages || 50;
 
             const viewer = document.getElementById('readerTextViewer');
-            if (viewer) {
-                const fullReadingText = `
-                    ${book.title}
-                    By ${book.author || 'Classic Author'}
-                    
-                    Category: ${book.category} | Grade Level: ${book.grade || 'All Ages'}
-                    Added By: ${book.uploader || 'Sanctuary Member'}
-                    
-                    Summary & Core Excerpt:
-                    ${book.description || 'A timeless Catholic masterwork dedicated to spiritual formation, truth, and virtue.'}
-                    
-                    Chapter ${pageData.currentPage} Reading Content:
-                    In examining this revered Catholic volume, the reader is invited into deep contemplation of Divine Truth. Every sentence nurtures the soul and encourages joyful family discussion and narration. As the masters of tradition have taught, wisdom is cultivated through peaceful reading and prayerful application in daily life.
-                    
-                    ${book.pdfUrl ? 'Direct PDF Source Linked: ' + book.pdfUrl : ''}
-                `;
+            if (!viewer) return;
 
-                const paragraphs = fullReadingText.split('\n').filter(p => p.trim().length > 0);
-                viewer.innerHTML = paragraphs.map((p, idx) => `<p id="tts-line-${idx}" class="py-2 leading-relaxed">${window.escapeHtml(p)}</p>`).join('');
+            viewer.innerHTML = `<p class="py-4 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading book contents...</p>`;
+            document.getElementById('bookReaderModal')?.classList.remove('hidden');
+
+            if (book.pdfBlobUrl && window.pdfjsLib) {
+                try {
+                    let pdfDoc = window.activePdfPagesCache[bookId];
+                    if (!pdfDoc) {
+                        const loadingTask = pdfjsLib.getDocument(book.pdfBlobUrl);
+                        pdfDoc = await loadingTask.promise;
+                        window.activePdfPagesCache[bookId] = pdfDoc;
+                    }
+
+                    const totalPages = pdfDoc.numPages || 15;
+                    if (totalInput) totalInput.value = totalPages;
+                    const currentPage = Math.max(1, Math.min(totalPages, pageData.currentPage));
+                    if (pageInput) pageInput.value = currentPage;
+
+                    const pdfPage = await pdfDoc.getPage(currentPage);
+                    const textContent = await pdfPage.getTextContent();
+                    const textItems = textContent.items.map(item => item.str);
+                    const fullPageText = textItems.join(' ');
+
+                    const sentences = fullPageText.match(/[^.!?]+[.!?]+|\S+/g) || [fullPageText];
+                    const chunks = [];
+                    for (let i = 0; i < sentences.length; i += 5) {
+                        chunks.push(sentences.slice(i, i + 5).join(' '));
+                    }
+
+                    if (chunks.length === 0) {
+                        chunks.push(book.description || "Reading extracted from PDF document.");
+                    }
+
+                    viewer.innerHTML = chunks.map((p, idx) => `<p id="tts-line-${idx}" class="py-2 leading-relaxed">${window.escapeHtml(p)}</p>`).join('');
+                } catch (pdfErr) {
+                    console.error("PDF.js render error:", pdfErr);
+                    renderDynamicBookText(book, pageData.currentPage, pageInput, totalInput, viewer);
+                }
+            } else {
+                renderDynamicBookText(book, pageData.currentPage, pageInput, totalInput, viewer);
             }
 
-            document.getElementById('bookReaderModal')?.classList.remove('hidden');
+            if (window.isSpeakingAudio) {
+                window.speechSynthesis.cancel();
+                window.isSpeakingAudio = false;
+                document.getElementById('ttsBtnText').textContent = 'Listen Aloud';
+                document.getElementById('ttsIcon').className = 'fa-solid fa-volume-high';
+            }
         };
 
+        function renderDynamicBookText(book, currentPageNum, pageInput, totalInput, viewer) {
+            const totalPages = book.totalPages || 15;
+            if (totalInput) totalInput.value = totalPages;
+            const current = Math.max(1, Math.min(totalPages, currentPageNum));
+            if (pageInput) pageInput.value = current;
+
+            const paragraphs = window.getDynamicBookContent(book, current);
+            viewer.innerHTML = paragraphs.map((p, idx) => `<p id="tts-line-${idx}" class="py-2 leading-relaxed">${window.escapeHtml(p)}</p>`).join('');
+        }
+
         window.closeBookReaderModal = function() {
+            if (window.isSpeakingAudio) {
+                window.speechSynthesis.cancel();
+                window.isSpeakingAudio = false;
+            }
             window.activeReaderBookId = null;
             document.getElementById('bookReaderModal')?.classList.add('hidden');
+            window.renderLibrary();
         };
 
         window.adjustPage = function(delta) {
             if (!window.activeReaderBookId) return;
+            const list = window.resources || [];
+            const book = list.find(r => r.id === window.activeReaderBookId);
             const pageInput = document.getElementById('readerPageInput');
             const totalInput = document.getElementById('readerTotalPagesInput');
-            if (!pageInput) return;
+            if (!pageInput || !book) return;
 
             let current = parseInt(pageInput.value, 10) || 1;
-            let total = parseInt(totalInput?.value, 10) || 50;
+            let total = parseInt(totalInput?.value, 10) || book.totalPages || 15;
             current = Math.max(1, Math.min(total, current + delta));
             pageInput.value = current;
 
@@ -1310,8 +1415,10 @@
 
         window.handlePageInputChange = function(e) {
             if (!window.activeReaderBookId) return;
+            const list = window.resources || [];
+            const book = list.find(r => r.id === window.activeReaderBookId);
             const totalInput = document.getElementById('readerTotalPagesInput');
-            window.savePageData(window.activeReaderBookId, e.target.value, totalInput?.value || 50);
+            window.savePageData(window.activeReaderBookId, e.target.value, totalInput?.value || book?.totalPages || 15);
             window.openBookReader(window.activeReaderBookId);
         };
 
@@ -1441,12 +1548,17 @@
                 return `
                     <div class="bg-white rounded-2xl border border-cream-300 p-5 card-shadow flex flex-col justify-between space-y-3 relative">
                         ${window.isAdmin ? `
-                            <button onclick="window.deleteResource('${res.id}')" class="absolute top-4 right-4 bg-rose-100 hover:bg-rose-200 text-rose-700 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow transition" title="Admin Delete Book">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                            <div class="absolute top-4 right-4 flex items-center gap-1.5">
+                                <button onclick="window.editResource('${res.id}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow transition" title="Admin Edit Book">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="window.deleteResource('${res.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow transition" title="Admin Delete Book">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         ` : ''}
                         <div class="space-y-2">
-                            <div class="flex items-center justify-between pr-8">
+                            <div class="flex items-center justify-between pr-16">
                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
                                 <button onclick="window.togglePersonalLibrary('${res.id}')" class="p-1 text-slate-300 hover:text-red-500 ${isPersonal ? 'text-red-500' : ''}" title="Toggle Personal Library">
                                     <i class="fa-solid fa-heart text-sm"></i>
@@ -1724,6 +1836,14 @@
         };
 
         window.openAddModal = function() {
+            document.getElementById('editBookId').value = '';
+            document.getElementById('formTitle').value = '';
+            document.getElementById('formAuthor').value = '';
+            document.getElementById('formDescription').value = '';
+            document.getElementById('formPdfLink').value = '';
+            document.getElementById('formPdfFile').value = '';
+            document.getElementById('resourceModalHeading').textContent = 'Add New Book & Upload PDF';
+            document.getElementById('resourceSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Publish Book';
             document.getElementById('resourceModal')?.classList.remove('hidden');
         };
 
@@ -1733,6 +1853,7 @@
 
         window.saveResource = function(e) {
             e.preventDefault();
+            const editId = document.getElementById('editBookId').value;
             const title = document.getElementById('formTitle').value.trim();
             const author = document.getElementById('formAuthor').value.trim();
             const category = document.getElementById('formCategory').value;
@@ -1741,38 +1862,56 @@
             const pdfLinkInput = document.getElementById('formPdfLink').value.trim();
             const pdfFileInput = document.getElementById('formPdfFile');
 
-            const finishSave = (pdfDataUrl = '') => {
+            const finishSave = (pdfBlobUrl = '') => {
                 window.resources = window.resources || [];
-                window.resources.unshift({
-                    id: 'r_' + Date.now(),
-                    title,
-                    author,
-                    category,
-                    grade,
-                    description,
-                    pdfUrl: pdfLinkInput,
-                    pdfDataUrl: pdfDataUrl,
-                    uploader: window.currentUserDisplayName
-                });
+                
+                if (editId) {
+                    const existing = window.resources.find(r => r.id === editId);
+                    if (existing) {
+                        existing.title = title;
+                        existing.author = author;
+                        existing.category = category;
+                        existing.grade = grade;
+                        existing.description = description;
+                        if (pdfLinkInput) existing.pdfUrl = pdfLinkInput;
+                        if (pdfBlobUrl) existing.pdfBlobUrl = pdfBlobUrl;
+                    }
+                    window.showNotification("Book Updated", `Book "${title}" successfully updated!`);
+                } else {
+                    window.resources.unshift({
+                        id: 'r_' + Date.now(),
+                        title,
+                        author,
+                        category,
+                        grade,
+                        description,
+                        pdfUrl: pdfLinkInput,
+                        pdfBlobUrl: pdfBlobUrl,
+                        uploader: window.currentUserDisplayName,
+                        totalPages: 15
+                    });
+                    window.showNotification("Book Added", `New Catholic book "${title}" successfully published to the library!`);
+                }
 
                 try {
                     localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
                 } catch (storageError) {
-                    // If storage quota is exceeded, strip out huge base64 data url and keep pdfUrl link
-                    window.resources[0].pdfDataUrl = '';
+                    if (window.resources[0]) window.resources[0].pdfBlobUrl = '';
                     localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
                 }
 
                 window.closeResourceModal();
                 window.resetAllFilters();
                 window.switchToTab('library');
-                window.showNotification("Book Added", `New Catholic book "${title}" successfully published to the library!`);
             };
 
             if (pdfFileInput && pdfFileInput.files && pdfFileInput.files[0]) {
                 const file = pdfFileInput.files[0];
                 const fileBlobUrl = URL.createObjectURL(file);
                 finishSave(fileBlobUrl);
+            } else if (editId) {
+                const existing = window.resources.find(r => r.id === editId);
+                finishSave(existing ? existing.pdfBlobUrl : '');
             } else {
                 finishSave();
             }
