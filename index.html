@@ -457,7 +457,6 @@
         </div>
     </div>
 
-    <!-- Notification Modal -->
     <div id="customNotifyModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-cream-300 p-6 text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto text-xl">
@@ -472,7 +471,6 @@
         </div>
     </div>
 
-    <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
@@ -686,13 +684,13 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v43';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v43';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v43';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v43';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v43';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v43';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v43';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v45';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v45';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v45';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v45';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v45';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v45';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v45';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -717,9 +715,38 @@
             { id: 'little_flowers', title: 'The Little Flowers of St. Francis', author: 'St. Francis of Assisi', category: 'Lives of Saints', grade: 'Early Years / K-2', description: 'Charming legends and holy stories of St. Francis and his friars preaching to birds and living in holy poverty.', uploader: 'Admin', totalPages: 10 }
         ];
 
-        try {
-            window.resources = JSON.parse(localStorage.getItem(LOCAL_RESOURCES_KEY)) || defaultCatholicLibrary;
-        } catch(e) { window.resources = defaultCatholicLibrary; }
+        // Safe Loaders with auto-sync fallback
+        window.loadResourcesFromStorage = function() {
+            try {
+                const data = localStorage.getItem(LOCAL_RESOURCES_KEY);
+                return data ? JSON.parse(data) : defaultCatholicLibrary;
+            } catch(e) { return defaultCatholicLibrary; }
+        };
+        window.resources = window.loadResourcesFromStorage();
+
+        window.loadThreadsFromStorage = function() {
+            try {
+                const data = localStorage.getItem(LOCAL_THREADS_KEY);
+                return data ? JSON.parse(data) : [
+                    {
+                        id: 't1',
+                        tag: 'Curriculum & Books',
+                        author: 'MotherOfFive',
+                        parish: 'St. Mary Parish',
+                        title: 'Favorite saint biographies for family read-aloud?',
+                        body: 'We are planning our term around medieval saints. What are your favorite Lives of the Saints that captivate both younger children and middle schoolers?',
+                        upvotes: 14,
+                        upvotedBy: [],
+                        timestamp: '2 hours ago',
+                        comments: [
+                            { id: 'c1', author: 'GraceCatholicMom', text: 'We adore the Vision Books series! St. Joan of Arc and St. Louis IX are incredible.', timestamp: '1 hour ago', upvotes: 5, replies: [] },
+                            { id: 'c2', author: 'TexasHomeschooler', text: 'Monks and Mystics by E.M. Alpatov is also a massive hit in our morning basket.', timestamp: '30 mins ago', upvotes: 3, replies: [] }
+                        ]
+                    }
+                ];
+            } catch(e) { return []; }
+        };
+        window.communityThreads = window.loadThreadsFromStorage();
 
         try {
             window.plannerLessons = JSON.parse(localStorage.getItem(LOCAL_LESSONS_KEY)) || [
@@ -727,26 +754,6 @@
                 { id: 'l2', student: 'Theresa', date: '2026-09-21', title: 'Baltimore Catechism Q1-10 Recitation', subject: 'Faith & Religion', completed: true }
             ];
         } catch(e) { window.plannerLessons = []; }
-
-        try {
-            window.communityThreads = JSON.parse(localStorage.getItem(LOCAL_THREADS_KEY)) || [
-                {
-                    id: 't1',
-                    tag: 'Curriculum & Books',
-                    author: 'MotherOfFive',
-                    parish: 'St. Mary Parish',
-                    title: 'Favorite saint biographies for family read-aloud?',
-                    body: 'We are planning our term around medieval saints. What are your favorite Lives of the Saints that captivate both younger children and middle schoolers?',
-                    upvotes: 14,
-                    upvotedBy: [],
-                    timestamp: '2 hours ago',
-                    comments: [
-                        { id: 'c1', author: 'GraceCatholicMom', text: 'We adore the Vision Books series! St. Joan of Arc and St. Louis IX are incredible.', timestamp: '1 hour ago', upvotes: 5, replies: [] },
-                        { id: 'c2', author: 'TexasHomeschooler', text: 'Monks and Mystics by E.M. Alpatov is also a massive hit in our morning basket.', timestamp: '30 mins ago', upvotes: 3, replies: [] }
-                    ]
-                }
-            ];
-        } catch(e) { window.communityThreads = []; }
 
         window.escapeHtml = function(str) {
             if (!str) return '';
@@ -1537,6 +1544,7 @@
         };
 
         window.getFilteredResources = function() {
+            window.resources = window.loadResourcesFromStorage();
             const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
             const gradeFilter = document.getElementById('gradeFilterSelect')?.value || 'all';
             const shelfFilter = document.getElementById('libraryShelfSelect')?.value || 'all';
@@ -1570,19 +1578,20 @@
                 const isPersonal = window.isInPersonalLibrary(res.id);
                 const pageData = window.getPageData(res.id);
                 const uploaderName = res.uploader || 'Member';
+                const canModify = window.isAdmin || (window.currentLoggedInEmail && res.uploaderEmail === window.currentLoggedInEmail);
 
                 return `
                     <div class="bg-white rounded-2xl border border-cream-300 p-5 card-shadow flex flex-col justify-between space-y-3 relative">
-                        ${window.isAdmin ? `
-                            <div class="absolute top-4 right-4 flex items-center gap-1.5">
-                                <button onclick="window.editResource('${res.id}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow transition" title="Admin Edit Book">
+                        <div class="absolute top-4 right-4 flex items-center gap-1.5">
+                            ${canModify ? `
+                                <button onclick="window.editResource('${res.id}')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow transition" title="Edit Book">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button onclick="window.deleteResource('${res.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow transition" title="Admin Delete Book">
+                                <button onclick="window.deleteResource('${res.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow transition" title="Delete Book">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
-                            </div>
-                        ` : ''}
+                            ` : ''}
+                        </div>
                         <div class="space-y-2">
                             <div class="flex items-center justify-between pr-16">
                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
@@ -1727,7 +1736,7 @@
         };
 
         window.upvoteThread = function(threadId) {
-            window.communityThreads = window.communityThreads || [];
+            window.communityThreads = window.loadThreadsFromStorage();
             const t = window.communityThreads.find(x => x.id === threadId);
             if (t) {
                 t.upvotes = (t.upvotes || 0) + 1;
@@ -1740,6 +1749,7 @@
             const container = document.getElementById('communityThreadsList');
             if (!container) return;
 
+            window.communityThreads = window.loadThreadsFromStorage();
             const tagFilter = document.getElementById('exchangeTagFilter')?.value || 'all';
             let safeThreads = [...(window.communityThreads || [])];
 
@@ -1817,7 +1827,7 @@
             const body = prompt("Enter your question or topic description:", "") || title;
             const tag = prompt("Select topic (Prayer & Intentions / Curriculum & Books / Morning Time / Co-op & Family Life):", "Curriculum & Books") || "Curriculum & Books";
 
-            window.communityThreads = window.communityThreads || [];
+            window.communityThreads = window.loadThreadsFromStorage();
             window.communityThreads.unshift({
                 id: 't_' + Date.now(),
                 tag,
@@ -1844,7 +1854,7 @@
             const textEl = document.getElementById(`reply-text-${threadId}`);
             if (!textEl || !textEl.value.trim()) return;
 
-            window.communityThreads = window.communityThreads || [];
+            window.communityThreads = window.loadThreadsFromStorage();
             const t = window.communityThreads.find(x => x.id === threadId);
             if (t) {
                 t.comments = t.comments || [];
@@ -1889,7 +1899,7 @@
             const pdfFileInput = document.getElementById('formPdfFile');
 
             const finishSave = (pdfBlobUrl = '') => {
-                window.resources = window.resources || [];
+                window.resources = window.loadResourcesFromStorage();
                 
                 if (editId) {
                     const existing = window.resources.find(r => r.id === editId);
@@ -1914,6 +1924,7 @@
                         pdfUrl: pdfLinkInput,
                         pdfBlobUrl: pdfBlobUrl,
                         uploader: window.currentUserDisplayName,
+                        uploaderEmail: window.currentLoggedInEmail || 'guest',
                         totalPages: 15
                     });
                     window.showNotification("Book Added", `New Catholic book "${title}" successfully published to the library!`);
@@ -1929,19 +1940,59 @@
                 window.closeResourceModal();
                 window.resetAllFilters();
                 window.switchToTab('library');
+                window.renderLibrary();
             };
 
             if (pdfFileInput && pdfFileInput.files && pdfFileInput.files[0]) {
                 const file = pdfFileInput.files[0];
-                const fileBlobUrl = URL.createObjectURL(file);
-                finishSave(fileBlobUrl);
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    finishSave(evt.target.result);
+                };
+                reader.onerror = function() {
+                    finishSave(pdfLinkInput);
+                };
+                reader.readAsDataURL(file);
             } else if (editId) {
                 const existing = window.resources.find(r => r.id === editId);
-                finishSave(existing ? existing.pdfBlobUrl : '');
+                finishSave(existing ? existing.pdfBlobUrl : pdfLinkInput);
             } else {
-                finishSave();
+                finishSave(pdfLinkInput);
             }
         };
+
+        // Real-Time Cross-Tab & Auto-Sync Listener
+        window.addEventListener('storage', (e) => {
+            if (e.key === LOCAL_RESOURCES_KEY) {
+                window.resources = window.loadResourcesFromStorage();
+                if (!document.getElementById('libraryContainer')?.closest('.hidden')) {
+                    window.renderLibrary();
+                }
+            } else if (e.key === LOCAL_THREADS_KEY) {
+                window.communityThreads = window.loadThreadsFromStorage();
+                if (!document.getElementById('communityContainer')?.closest('.hidden')) {
+                    window.renderCommunityThreads();
+                }
+            }
+        });
+
+        // Periodic background poll for seamless same-browser sync across views
+        setInterval(() => {
+            try {
+                const latestRes = window.loadResourcesFromStorage();
+                if (JSON.stringify(latestRes.length) !== JSON.stringify((window.resources || []).length)) {
+                    window.resources = latestRes;
+                    window.renderLibrary();
+                }
+                const latestThreads = window.loadThreadsFromStorage();
+                if (JSON.stringify(latestThreads.length) !== JSON.stringify((window.communityThreads || []).length)) {
+                    window.communityThreads = latestThreads;
+                    if (!document.getElementById('communityContainer')?.closest('.hidden')) {
+                        window.renderCommunityThreads();
+                    }
+                }
+            } catch(err) {}
+        }, 2000);
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem(LOCAL_SESSION_KEY);
