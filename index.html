@@ -79,7 +79,7 @@
 <body class="min-h-screen flex flex-col antialiased">
 
     <!-- Mandatory Authentication Gate Overlay (App Protection) -->
-    <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
+    <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-cream-300 overflow-hidden flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white text-center border-b-4 border-gold-400 space-y-2">
                 <div class="w-16 h-16 rounded-full bg-marian-950 mx-auto border-2 border-gold-400 flex items-center justify-center shadow-lg overflow-hidden">
@@ -793,7 +793,6 @@
                     return;
                 }
 
-                // Save user as unverified initially to require email confirmation
                 users[email] = {
                     email,
                     password,
