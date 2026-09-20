@@ -686,12 +686,13 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v41';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v41';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v41';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v41';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v41';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v41';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v43';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v43';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v43';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v43';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v43';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v43';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v43';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -917,23 +918,43 @@
 
                 window.currentLoggedInEmail = email;
                 window.currentUserDisplayName = users[email] ? users[email].momName : email.split('@')[0];
-                document.getElementById('userEmailDisplay').textContent = email;
-                document.getElementById('userEmailDisplay').classList.remove('hidden');
-                document.getElementById('authHeaderBtn').classList.add('hidden');
-                document.getElementById('logoutHeaderBtn').classList.remove('hidden');
-                document.getElementById('unsubscribeHeaderBtn').classList.remove('hidden');
-                document.getElementById('syncStatusText').textContent = email === ADMIN_EMAIL ? 'Admin Account Active' : 'Member Account Active';
-                
-                if (email === ADMIN_EMAIL) {
-                    document.getElementById('adminBadge').classList.remove('hidden');
-                    document.getElementById('adminMembersBtn').classList.remove('hidden');
-                }
+                localStorage.setItem(LOCAL_SESSION_KEY, email);
 
+                window.applyUserSessionUI();
                 window.closeAuthModal();
                 window.showNotification("Welcome Back", "Successfully signed into Catholic Sanctuary as " + window.currentUserDisplayName);
                 window.renderLibrary();
                 window.updateMemberCountBadge();
             }
+        };
+
+        window.applyUserSessionUI = function() {
+            const email = window.currentLoggedInEmail;
+            if (!email) return;
+
+            window.isAdmin = (email === ADMIN_EMAIL);
+            const users = window.getRegisteredUsers();
+            if (users[email]) {
+                window.currentUserDisplayName = users[email].momName || email.split('@')[0];
+            }
+
+            const emailDisplay = document.getElementById('userEmailDisplay');
+            if (emailDisplay) {
+                emailDisplay.textContent = email;
+                emailDisplay.classList.remove('hidden');
+            }
+            document.getElementById('authHeaderBtn')?.classList.add('hidden');
+            document.getElementById('logoutHeaderBtn')?.classList.remove('hidden');
+            document.getElementById('unsubscribeHeaderBtn')?.classList.remove('hidden');
+            
+            const syncText = document.getElementById('syncStatusText');
+            if (syncText) syncText.textContent = window.isAdmin ? 'Admin Account Active' : 'Member Account Active';
+
+            if (window.isAdmin) {
+                document.getElementById('adminBadge')?.classList.remove('hidden');
+                document.getElementById('adminMembersBtn')?.classList.remove('hidden');
+            }
+            window.updateMemberCountBadge();
         };
 
         window.handleForgotPasswordSubmit = function(e) {
@@ -1018,13 +1039,18 @@
             window.currentLoggedInEmail = null;
             window.currentUserDisplayName = 'Sanctuary Member';
             window.isAdmin = false;
-            document.getElementById('userEmailDisplay').classList.add('hidden');
-            document.getElementById('authHeaderBtn').classList.remove('hidden');
-            document.getElementById('logoutHeaderBtn').classList.add('hidden');
-            document.getElementById('unsubscribeHeaderBtn').classList.add('hidden');
-            document.getElementById('adminBadge').classList.add('hidden');
-            document.getElementById('adminMembersBtn').classList.add('hidden');
-            document.getElementById('syncStatusText').textContent = 'Catholic Sanctuary Member';
+            localStorage.removeItem(LOCAL_SESSION_KEY);
+
+            document.getElementById('userEmailDisplay')?.classList.add('hidden');
+            document.getElementById('authHeaderBtn')?.classList.remove('hidden');
+            document.getElementById('logoutHeaderBtn')?.classList.add('hidden');
+            document.getElementById('unsubscribeHeaderBtn')?.classList.add('hidden');
+            document.getElementById('adminBadge')?.classList.add('hidden');
+            document.getElementById('adminMembersBtn')?.classList.add('hidden');
+            
+            const syncText = document.getElementById('syncStatusText');
+            if (syncText) syncText.textContent = 'Catholic Sanctuary Member';
+
             window.showNotification("Signed Out", "You have successfully logged out of your Sanctuary account.");
             window.renderLibrary();
         };
@@ -1918,6 +1944,17 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem(LOCAL_SESSION_KEY);
+            if (savedEmail) {
+                let users = window.getRegisteredUsers();
+                if (savedEmail === ADMIN_EMAIL || users[savedEmail]) {
+                    window.currentLoggedInEmail = savedEmail;
+                    window.applyUserSessionUI();
+                } else {
+                    localStorage.removeItem(LOCAL_SESSION_KEY);
+                }
+            }
+
             window.renderLibrary();
             window.renderLessonPlanner();
             window.updateMemberCountBadge();
