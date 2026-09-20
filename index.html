@@ -674,8 +674,6 @@
         const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v71';
         const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v71';
         const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v71';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v71';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v71';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -756,16 +754,15 @@
             document.getElementById('customNotifyModal')?.classList.add('hidden');
         };
 
+        // Authentication is fully handled by Supabase Auth.
+        // These legacy helpers are kept only so older UI code does not break;
+        // they intentionally never read or write passwords or local accounts.
         window.getRegisteredUsers = function() {
-            try {
-                return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}');
-            } catch(e) { return {}; }
+            return window.remoteProfilesCache || {};
         };
 
-        window.saveRegisteredUsers = function(users) {
-            try {
-                localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
-            } catch(e) {}
+        window.saveRegisteredUsers = function() {
+            console.warn('Local account storage is disabled. Supabase Auth is the source of truth.');
         };
 
         // ================================================================
@@ -791,6 +788,7 @@
                 state: md.state || '',
                 kids: md.kids || '',
                 banned: !!md.banned,
+                is_admin: !!md.is_admin,
                 registeredDate: user?.created_at ? new Date(user.created_at).toLocaleDateString() : ''
             };
         };
@@ -813,8 +811,8 @@
             const { data, error } = await window.supabaseClient.from('profiles').select('*').order('created_at', { ascending: false });
             if (error) {
                 console.error('Profile directory error:', error);
-                window.showNotification('Member Directory Error', error.message);
-                return window.remoteProfilesCache;
+                window.showNotification('Member Directory Error', 'The online member directory could not be loaded. Check that the Supabase profiles table and RLS policies have been installed.');
+                return {};
             }
             window.remoteProfilesCache = {};
             (data || []).forEach(u => { window.remoteProfilesCache[(u.email || '').toLowerCase()] = u; });
@@ -822,10 +820,11 @@
         };
 
         window.updateMemberCountBadge = async function() {
-            if (!window.supabaseClient) return;
-            const { count, error } = await window.supabaseClient.from('profiles').select('id', { count: 'exact', head: true });
             const badge = document.getElementById('memberCountBadge');
-            if (!error && badge) badge.textContent = String(count || 0);
+            if (!badge) return;
+            if (!window.supabaseClient || !window.isAdmin) { badge.textContent = '0'; return; }
+            const { count, error } = await window.supabaseClient.from('profiles').select('id', { count: 'exact', head: true });
+            if (!error) badge.textContent = String(count || 0);
         };
 
         window.switchGateMode = function(mode) {
@@ -925,7 +924,7 @@
             }
             window.currentLoggedInEmail = email;
             window.currentUserDisplayName = profile?.momName || email.split('@')[0];
-            window.isAdmin = email === ADMIN_EMAIL.toLowerCase();
+            window.isAdmin = !!(profile?.is_admin || email === ADMIN_EMAIL.toLowerCase());
             window.applyUserSessionUI();
             document.getElementById('authGateOverlay')?.classList.add('hidden');
             window.renderLibrary();
@@ -960,6 +959,7 @@
             const confirmPassword = confirmEl?.value || '';
 
             if (!email) { window.showNotification('Email Required', 'Please enter your email address.'); emailEl?.focus(); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { window.showNotification('Invalid Email', 'Please enter a valid email address.'); emailEl?.focus(); return; }
 
             if (window.gateMode === 'reset') {
                 if (password.length < 8) { window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return; }
@@ -1057,17 +1057,19 @@
         window.applyUserSessionUI = function() {
             const email = window.currentLoggedInEmail;
             if (!email) return;
-            window.isAdmin = email === ADMIN_EMAIL.toLowerCase();
             const profile = window.currentProfile || {};
+            window.isAdmin = !!(profile.is_admin || email === ADMIN_EMAIL.toLowerCase());
             window.currentUserDisplayName = profile.momName || email.split('@')[0];
+
             const emailDisplay = document.getElementById('userEmailDisplay');
             if (emailDisplay) emailDisplay.textContent = email + ' (' + window.currentUserDisplayName + ')';
             const syncText = document.getElementById('syncStatusText');
             if (syncText) syncText.textContent = window.isAdmin ? 'Admin Account Active' : 'Online Member Account Active';
-            if (window.isAdmin) {
-                document.getElementById('adminBadge')?.classList.remove('hidden');
-                document.getElementById('adminMembersBtn')?.classList.remove('hidden');
-            }
+
+            const adminBadge = document.getElementById('adminBadge');
+            const adminBtn = document.getElementById('adminMembersBtn');
+            adminBadge?.classList.toggle('hidden', !window.isAdmin);
+            adminBtn?.classList.toggle('hidden', !window.isAdmin);
             window.updateMemberCountBadge();
         };
 
@@ -1960,8 +1962,6 @@
                 if (!document.getElementById('communityContainer').classList.contains('hidden')) {
                     window.renderCommunityThreads();
                 }
-            } else if (e.key === LOCAL_USERS_KEY) {
-                window.updateMemberCountBadge();
             }
         });
 
@@ -1982,30 +1982,56 @@
             }
         }, 1500);
 
+        window.finishPasswordRecoveryIfNeeded = async function() {
+            if (!window.supabaseClient) return false;
+            const { data } = await window.supabaseClient.auth.getSession();
+            const hash = window.location.hash || '';
+            const hasRecoveryHash = /type=recovery/i.test(hash);
+            if (hasRecoveryHash) {
+                window.switchGateMode('reset');
+                window.showNotification('Password Recovery', 'Your password-reset link has been accepted. Choose your new password below.');
+                return true;
+            }
+            return !!data?.session && window.gateMode === 'reset';
+        };
+
         document.addEventListener('DOMContentLoaded', async () => {
             window.switchGateMode('signin');
             if (!SUPABASE_CONFIGURED) {
                 document.getElementById('syncStatusText').textContent = 'Online Login Setup Required';
                 document.getElementById('authGateOverlay')?.classList.remove('hidden');
-                window.showNotification('One-Time Setup Needed', 'Open this HTML after adding your Supabase Project URL and anon/publishable key. The instructions file included with this app explains the setup.');
+                window.showNotification('One-Time Setup Needed', 'This app is not connected to Supabase. Add the Project URL and anon/publishable key, then reload the page.');
             } else {
-                const { data: { session } } = await window.supabaseClient.auth.getSession();
-                if (session?.user) {
+                const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+                if (error) console.error('Supabase session error:', error);
+
+                const recovering = /type=recovery/i.test(window.location.hash || '');
+                if (recovering) {
+                    window.switchGateMode('reset');
+                    document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                    window.showNotification('Password Recovery', 'Your password-reset link has been accepted. Choose your new password below.');
+                } else if (session?.user) {
                     await window.completeLogin(session.user);
                 } else {
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 }
-                window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
-                    if (event === 'SIGNED_IN' && session?.user) await window.completeLogin(session.user);
+
+                window.supabaseClient.auth.onAuthStateChange(async (event, nextSession) => {
+                    if (event === 'SIGNED_IN' && nextSession?.user && !recovering) {
+                        await window.completeLogin(nextSession.user);
+                    }
                     if (event === 'SIGNED_OUT') {
                         window.currentLoggedInEmail = null;
                         window.currentProfile = null;
+                        window.currentUserDisplayName = 'Sanctuary Member';
                         window.isAdmin = false;
+                        document.getElementById('adminBadge')?.classList.add('hidden');
+                        document.getElementById('adminMembersBtn')?.classList.add('hidden');
                         document.getElementById('authGateOverlay')?.classList.remove('hidden');
                     }
                     if (event === 'PASSWORD_RECOVERY') {
                         window.switchGateMode('reset');
-                        window.showNotification('Password Recovery', 'Your password-reset link has been accepted. Choose your new password below.');
+                        document.getElementById('authGateOverlay')?.classList.remove('hidden');
                     }
                 });
             }
