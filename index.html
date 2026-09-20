@@ -160,7 +160,6 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Liturgical Banner -->
         <div id="liturgicalBanner" class="no-print bg-gradient-to-r from-emerald-900 via-tealhalo-700 to-marian-900 text-white rounded-2xl p-4 mb-6 shadow-md border border-gold-400/30 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-amber-400/20 flex items-center justify-center text-gold-300 text-lg flex-shrink-0 border border-gold-400/40">
@@ -244,10 +243,8 @@
             </section>
         </div>
 
-        <!-- Digital Library Cards Container -->
         <div id="libraryContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-        <!-- Sacred Fine Art Tab -->
         <div id="artContainer" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white rounded-3xl p-6 border-b-4 border-gold-400 shadow-xl">
                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-gold-400 text-marian-950 uppercase tracking-widest">Catholic Tradition</span>
@@ -293,7 +290,6 @@
             </div>
         </div>
 
-        <!-- Lesson Planner Tab -->
         <div id="checklistContainer" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white rounded-3xl p-6 border-b-4 border-gold-400 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
@@ -361,7 +357,6 @@
             </div>
         </div>
 
-        <!-- Community Lounge Tab (Sanctuary Exchange) -->
         <div id="communityContainer" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white rounded-3xl p-6 border-b-4 border-gold-400 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
@@ -599,7 +594,6 @@
         </div>
     </div>
 
-    <!-- Add/Edit Book Modal -->
     <div id="resourceModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white rounded-t-3xl flex items-center justify-between border-b border-gold-400/40">
@@ -684,13 +678,13 @@
 
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v47';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v47';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v47';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v47';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v47';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v47';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v47';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v50';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v50';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v50';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v50';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v50';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v50';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v50';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -700,7 +694,6 @@
         window.currentLoggedInEmail = null;
         window.isAdmin = false;
         window.currentFontSize = 16;
-        window.currentTheme = 'white';
         window.isSpeakingAudio = false;
         window.isRegisterMode = false;
         window.exchangeSort = 'hot';
@@ -1959,35 +1952,14 @@
         window.addEventListener('storage', (e) => {
             if (e.key === LOCAL_RESOURCES_KEY) {
                 window.resources = window.loadResourcesFromStorage();
-                if (!document.getElementById('libraryContainer')?.closest('.hidden')) {
-                    window.renderLibrary();
-                }
+                window.renderLibrary();
             } else if (e.key === LOCAL_THREADS_KEY) {
                 window.communityThreads = window.loadThreadsFromStorage();
-                if (!document.getElementById('communityContainer')?.closest('.hidden')) {
-                    window.renderCommunityThreads();
-                }
+                window.renderCommunityThreads();
             } else if (e.key === LOCAL_USERS_KEY) {
                 window.updateMemberCountBadge();
             }
         });
-
-        setInterval(() => {
-            try {
-                const latestRes = window.loadResourcesFromStorage();
-                if (JSON.stringify(latestRes.length) !== JSON.stringify((window.resources || []).length)) {
-                    window.resources = latestRes;
-                    window.renderLibrary();
-                }
-                const latestThreads = window.loadThreadsFromStorage();
-                if (JSON.stringify(latestThreads.length) !== JSON.stringify((window.communityThreads || []).length)) {
-                    window.communityThreads = latestThreads;
-                    if (!document.getElementById('communityContainer')?.closest('.hidden')) {
-                        window.renderCommunityThreads();
-                    }
-                }
-            } catch(err) {}
-        }, 2000);
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem(LOCAL_SESSION_KEY);
