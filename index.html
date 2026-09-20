@@ -648,13 +648,13 @@
     
     <script>
         const ADMIN_EMAIL = 'gentlecatholichomeschool@gmail.com';
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v71';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v71';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v71';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v71';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v71';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v71';
-        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v71';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v79';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v79';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v79';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v79';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v79';
+        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v79';
+        const LOCAL_SESSION_KEY = 'gentle_catholic_session_user_v79';
 
         window.currentCategory = 'all';
         window.plannerRole = 'parent';
@@ -861,7 +861,7 @@
                 const verifyNoticeHtml = `
                     <div class="p-4 bg-amber-50 rounded-2xl border border-amber-300 text-left space-y-2 my-2">
                         <p class="text-xs font-bold text-amber-900"><i class="fa-solid fa-envelope-circle-check mr-1.5"></i> Verification Email Sent from gentlecatholichomeschool@gmail.com</p>
-                        <p class="text-xs text-slate-700">Dearest ${escapeHtml(momName)}, to confirm your email address, please click below:</p>
+                        <p class="text-xs text-slate-700">Dearest ${escapeHtml(momName)}, to confirm your email address and activate your account, please click below:</p>
                         <button onclick="window.confirmUserEmail('${email}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-check-circle"></i> Confirm Email & Enter Sanctuary
                         </button>
@@ -870,11 +870,6 @@
                 window.showNotification("Email Verification Required", "A verification link has been dispatched to your email address.", verifyNoticeHtml);
 
             } else {
-                if (email !== ADMIN_EMAIL && !users[email]) {
-                    window.showNotification("Account Not Found", "No registered account found with this email. Please click 'Register Account' to sign up.");
-                    return;
-                }
-
                 if (email === ADMIN_EMAIL) {
                     window.isAdmin = true;
                     if (!users[email]) {
@@ -882,6 +877,10 @@
                         window.saveRegisteredUsers(users);
                     }
                 } else {
+                    if (!users[email]) {
+                        window.showNotification("Account Not Found", "No registered account found with this email. Please click 'Register Account' to sign up.");
+                        return;
+                    }
                     if (users[email].banned) {
                         window.showNotification("Account Banned", "This account has been banned by the administrator for violating sanctuary guidelines.");
                         return;
@@ -1170,7 +1169,7 @@
                 const store = JSON.parse(localStorage.getItem(LOCAL_PAGE_TRACKING_KEY) || '{}');
                 store[bookId] = {
                     currentPage: Math.max(1, parseInt(pageNum, 10) || 1),
-                    totalPages: Math.max(1, parseInt(totalPages, 10) || 15)
+                    totalPages: Math.max(1, parseInt(totalPages, 10) || 1)
                 };
                 localStorage.setItem(LOCAL_PAGE_TRACKING_KEY, JSON.stringify(store));
             } catch(e) {}
