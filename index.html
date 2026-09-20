@@ -89,14 +89,11 @@
             .print-only { display: block !important; }
             body { background: white !important; color: black !important; }
         }
-        .tts-highlight-word { background-color: #fef08a !important; color: #713f12 !important; border-radius: 4px; padding: 0 2px; }
-        .tts-highlight-line { background-color: #e0f2fe !important; border-left: 4px solid #0284c7; padding-left: 6px; }
     </style>
 </head>
 
 <body class="min-h-screen flex flex-col antialiased">
 
-    <!-- Header Navigation -->
     <header class="no-print bg-gradient-to-b from-marian-950 via-marian-900 to-marian-950 text-white border-b-4 border-gold-400 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:18px_18px]"></div>
 
@@ -130,7 +127,7 @@
                             <span>✦</span> Mater Maria, ora pro nobis! <span>✦</span>
                         </p>
                         <p class="text-blue-100/90 text-xs sm:text-sm mt-2 max-w-xl font-light leading-relaxed">
-                            A peaceful digital library of 300+ living books, Catholic classics, picture study art, and an integrated family lesson planner.
+                            A peaceful digital library of living books, Catholic classics, picture study art, and an integrated family lesson planner.
                         </p>
                     </div>
                 </div>
@@ -145,7 +142,6 @@
         </div>
     </header>
 
-    <!-- App Navigation Tabs -->
     <nav class="no-print bg-marian-900 border-b border-marian-800 text-white shadow-md sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between overflow-x-auto no-scrollbar">
             <div class="flex items-center space-x-1 sm:space-x-2 py-2">
@@ -178,7 +174,7 @@
                         <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-emerald-950">Ordinary Time</span>
                         <span class="text-xs text-gold-300 font-serif motto-serif">Liturgical Living & Saint Feast Days</span>
                     </div>
-                    <p class="text-xs text-slate-200 mt-0.5">Discover over 300 verified living books aligned with Catholic liturgical feasting and saint commemorations.</p>
+                    <p class="text-xs text-slate-200 mt-0.5">Discover verified living books aligned with Catholic liturgical feasting and saint commemorations.</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
@@ -194,7 +190,7 @@
                     <div class="flex flex-col sm:flex-row items-center gap-3">
                         <div class="relative flex-grow w-full">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                            <input type="text" id="searchInput" oninput="window.filterResources()" placeholder="Search through 300+ book titles, authors, or topics..." class="w-full pl-10 pr-8 py-2.5 bg-cream-100 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-tealhalo-500 focus:bg-white transition">
+                            <input type="text" id="searchInput" oninput="window.filterResources()" placeholder="Search through book titles, authors, or topics..." class="w-full pl-10 pr-8 py-2.5 bg-cream-100 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-tealhalo-500 focus:bg-white transition">
                             <button id="clearSearchBtn" onclick="window.clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                 <i class="fa-solid fa-xmark text-sm"></i>
                             </button>
@@ -207,13 +203,13 @@
                                 <i class="fa-solid fa-filter text-gold-600"></i> Subject:
                             </span>
                             <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 min-w-0 flex-1 text-xs no-scrollbar">
-                                <button onclick="window.setCategoryFilter('all')" class="cat-filter-btn active px-3 py-1.5 rounded-full whitespace-nowrap bg-marian-800 text-white font-medium transition flex-shrink-0" data-cat="all">All Subjects (300+)</button>
-                                <button onclick="window.setCategoryFilter('Catholic Classics')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Catholic Classics">Catholic Classics (50+)</button>
-                                <button onclick="window.setCategoryFilter('Faith & Religion')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Faith & Religion">Faith & Catechism (50+)</button>
-                                <button onclick="window.setCategoryFilter('History & Living Books')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="History & Living Books">History (50+)</button>
-                                <button onclick="window.setCategoryFilter('Nature & Science')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Nature & Science">Nature & Science (50+)</button>
-                                <button onclick="window.setCategoryFilter('Poetry & Literature')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Poetry & Literature">Poetry & Literature (50+)</button>
-                                <button onclick="window.setCategoryFilter('Math')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Math">Living Math (50+)</button>
+                                <button onclick="window.setCategoryFilter('all')" class="cat-filter-btn active px-3 py-1.5 rounded-full whitespace-nowrap bg-marian-800 text-white font-medium transition flex-shrink-0" data-cat="all">All Subjects</button>
+                                <button onclick="window.setCategoryFilter('Catholic Classics')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Catholic Classics">Catholic Classics</button>
+                                <button onclick="window.setCategoryFilter('Faith & Religion')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Faith & Religion">Faith & Catechism</button>
+                                <button onclick="window.setCategoryFilter('History & Living Books')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="History & Living Books">History</button>
+                                <button onclick="window.setCategoryFilter('Nature & Science')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Nature & Science">Nature & Science</button>
+                                <button onclick="window.setCategoryFilter('Poetry & Literature')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Poetry & Literature">Poetry & Literature</button>
+                                <button onclick="window.setCategoryFilter('Math')" class="cat-filter-btn px-3 py-1.5 rounded-full whitespace-nowrap bg-cream-200 text-slate-700 hover:bg-cream-300 font-medium transition flex-shrink-0" data-cat="Math">Living Math</button>
                             </div>
                         </div>
 
@@ -392,6 +388,7 @@
 
     </main>
 
+    <!-- Book Reader Modal -->
     <div id="bookReaderModal" class="fixed inset-0 bg-marian-950/90 backdrop-blur-md z-50 flex flex-col hidden">
         <div class="bg-marian-900 text-white px-4 py-3 border-b border-gold-400/40 flex flex-wrap items-center justify-between gap-2 shadow-lg flex-shrink-0">
             <div class="flex items-center gap-3 min-w-0">
@@ -404,54 +401,34 @@
                 </div>
             </div>
 
-            <!-- Reader Settings & Audio Controls Toolbar -->
-            <div class="flex flex-wrap items-center gap-2 text-xs bg-marian-950/80 px-3 py-1.5 rounded-2xl border border-marian-700">
+            <div class="flex flex-wrap items-center gap-2 text-xs">
                 <!-- Theme Background Selector -->
-                <div class="flex items-center gap-1 bg-marian-900 p-1 rounded-xl">
-                    <button onclick="window.setReaderTheme('white')" class="px-2 py-0.5 rounded text-[11px] bg-white text-slate-900 font-bold" title="White Theme">White</button>
-                    <button onclick="window.setReaderTheme('sepia')" class="px-2 py-0.5 rounded text-[11px] bg-[#fbf0d9] text-[#5f4b32] font-bold" title="Sepia Theme">Sepia</button>
-                    <button onclick="window.setReaderTheme('dark')" class="px-2 py-0.5 rounded text-[11px] bg-slate-900 text-slate-100 font-bold" title="Dark Theme">Dark</button>
+                <div class="flex items-center gap-1 bg-marian-950 px-2 py-1 rounded-xl border border-marian-700">
+                    <button onclick="window.setReaderTheme('white')" class="px-2 py-0.5 rounded text-[10px] bg-white text-slate-900 font-bold">White</button>
+                    <button onclick="window.setReaderTheme('sepia')" class="px-2 py-0.5 rounded text-[10px] bg-[#fbf0d9] text-[#5f4b32] font-bold">Sepia</button>
+                    <button onclick="window.setReaderTheme('dark')" class="px-2 py-0.5 rounded text-[10px] bg-slate-900 text-slate-100 font-bold">Dark</button>
                 </div>
 
                 <!-- Font Size Controls -->
-                <div class="flex items-center gap-1 px-1 border-l border-marian-700">
-                    <span class="text-slate-300 text-[10px]">Size:</span>
+                <div class="flex items-center gap-1 bg-marian-950 px-2 py-1 rounded-xl border border-marian-700">
                     <button onclick="window.changeReaderFontSize(-2)" class="px-1.5 py-0.5 bg-marian-800 hover:bg-marian-700 rounded text-amber-200 font-bold">-</button>
-                    <span id="fontSizeDisplay" class="text-amber-300 font-mono w-6 text-center">16px</span>
+                    <span id="fontSizeDisplay" class="text-amber-300 font-mono w-7 text-center">16px</span>
                     <button onclick="window.changeReaderFontSize(2)" class="px-1.5 py-0.5 bg-marian-800 hover:bg-marian-700 rounded text-amber-200 font-bold">+</button>
                 </div>
 
-                <!-- Font Family Selector -->
-                <div class="flex items-center gap-1 px-1 border-l border-marian-700">
-                    <select id="fontFamilySelect" onchange="window.changeReaderFontFamily(this.value)" class="bg-marian-900 text-amber-200 text-[11px] rounded px-1.5 py-1 border border-marian-700 focus:outline-none">
-                        <option value="sans">Sans (Inter)</option>
-                        <option value="serif">Serif (Playfair)</option>
-                        <option value="garamond">Garamond</option>
-                    </select>
-                </div>
+                <!-- Audio Reader Button -->
+                <button onclick="window.toggleReaderAudio()" id="ttsPlayBtn" class="bg-gold-400 hover:bg-gold-500 text-marian-950 font-bold px-3 py-1 rounded-xl flex items-center gap-1.5 shadow transition">
+                    <i class="fa-solid fa-volume-high" id="ttsIcon"></i> <span id="ttsBtnText">Listen Aloud</span>
+                </button>
 
-                <!-- Text-to-Speech Audio Reader Controls -->
-                <div class="flex items-center gap-1.5 px-2 border-l border-marian-700 bg-marian-900/90 py-0.5 rounded-xl">
-                    <button onclick="window.toggleReaderAudio()" id="ttsPlayBtn" class="bg-gold-400 hover:bg-gold-500 text-marian-950 font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow transition">
-                        <i class="fa-solid fa-volume-high" id="ttsIcon"></i> <span id="ttsBtnText">Listen Aloud</span>
-                    </button>
-                    <select id="ttsHighlightMode" class="bg-marian-950 text-amber-200 text-[10px] rounded px-1.5 py-1 border border-marian-700">
-                        <option value="line">Highlight Line</option>
-                        <option value="word">Highlight Word</option>
-                        <option value="none">No Highlight</option>
-                    </select>
-                </div>
-
-                <!-- Page Controls & Close -->
-                <div class="flex items-center gap-1.5 border-l border-marian-700 pl-2">
+                <div class="flex items-center gap-1.5 bg-marian-950 px-3 py-1 rounded-xl border border-marian-700">
                     <button onclick="window.adjustPage(-1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Previous Page"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                     <input type="number" id="readerPageInput" min="1" value="1" onchange="window.handlePageInputChange(event)" class="w-12 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg font-bold text-gold-300 text-xs">
                     <span class="text-slate-400">/</span>
                     <input type="number" id="readerTotalPagesInput" min="1" value="100" onchange="window.handleTotalPagesChange(event)" class="w-12 text-center py-1 bg-marian-900 border border-marian-700 rounded-lg text-slate-300 text-xs">
                     <button onclick="window.adjustPage(1)" class="w-7 h-7 rounded-lg bg-marian-800 hover:bg-marian-700 text-amber-200 font-bold flex items-center justify-center transition" title="Next Page"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
-
-                <button onclick="window.closeBookReaderModal()" class="text-slate-300 hover:text-white transition p-1 text-lg pl-1 border-l border-marian-700">
+                <button onclick="window.closeBookReaderModal()" class="text-slate-300 hover:text-white transition p-2 text-lg">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -459,7 +436,7 @@
 
         <div class="flex-grow bg-white relative overflow-auto p-6 sm:p-12 flex justify-center" id="readerContentArea">
             <div id="readerTextViewer" class="max-w-3xl w-full text-slate-900 leading-relaxed space-y-4 text-base" style="font-size: 16px; font-family: 'Inter', sans-serif;">
-                <!-- Dynamically populated book reading text with line paragraphs for robust TTS -->
+                <!-- Reading text rendered here -->
             </div>
         </div>
     </div>
@@ -472,14 +449,13 @@
             </div>
             <h3 id="notifyTitle" class="text-lg font-bold heading-serif text-marian-900">Notification</h3>
             <p id="notifyMessage" class="text-xs text-slate-600 leading-relaxed"></p>
-            <div id="notifyActionArea" class="pt-2"></div>
             <div class="flex items-center justify-center gap-3 pt-2">
                 <button onclick="window.closeNotificationModal()" class="px-6 py-2 rounded-xl bg-marian-800 text-white font-semibold text-xs shadow">OK</button>
             </div>
         </div>
     </div>
 
-    <!-- Auth Modal with Registration / Sign In & Mode Toggle -->
+    <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-marian-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-cream-300 flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 to-marian-800 text-white flex items-center justify-between border-b border-gold-400/40">
@@ -488,8 +464,8 @@
                         <i class="fa-solid fa-user-shield text-lg"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold heading-serif text-amber-100" id="authModalTitle">Sanctuary Sign In</h3>
-                        <p class="text-[11px] text-blue-200" id="authModalSubtitle">Enter your account credentials</p>
+                        <h3 class="text-lg font-bold heading-serif text-amber-100" id="authModalTitle">Sanctuary Account Access</h3>
+                        <p class="text-[11px] text-blue-200" id="authModalSubtitle">Sign in or register your local profile</p>
                     </div>
                 </div>
                 <button onclick="window.closeAuthModal()" class="text-slate-300 hover:text-white transition p-1">
@@ -497,7 +473,7 @@
                 </button>
             </div>
 
-            <form onsubmit="window.handleAuthSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm">
+            <form id="authForm" onsubmit="window.handleAuthSubmit(event)" class="p-6 space-y-4 text-xs sm:text-sm">
                 <div>
                     <label for="authEmail" class="block font-semibold text-slate-700 mb-1">Email Address</label>
                     <input type="email" id="authEmail" required placeholder="parent@example.com" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
@@ -507,7 +483,7 @@
                     <input type="password" id="authPassword" required placeholder="••••••••" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
                 </div>
                 <div class="flex items-center justify-between text-xs pt-1">
-                    <button type="button" onclick="window.toggleAuthMode()" class="text-marian-700 font-semibold hover:underline" id="authToggleBtn">Need an account? Register</button>
+                    <button type="button" onclick="window.toggleAuthMode()" class="text-marian-700 hover:underline font-medium" id="authToggleLink">Need an account? Register here</button>
                 </div>
                 <button type="submit" id="authSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-right-to-bracket"></i> <span id="authSubmitBtnText">Sign In</span>
@@ -538,11 +514,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="formTitle" class="block font-semibold text-slate-700 mb-1">Resource Title *</label>
-                        <input type="text" id="formTitle" required placeholder="e.g. Fifty Famous Stories Retold" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                        <input type="text" id="formTitle" required placeholder="e.g. Pinocchio" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
                     </div>
                     <div>
                         <label for="formAuthor" class="block font-semibold text-slate-700 mb-1">Author / Creator</label>
-                        <input type="text" id="formAuthor" placeholder="e.g. James Baldwin" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                        <input type="text" id="formAuthor" placeholder="e.g. C. Collodi" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
                     </div>
                 </div>
 
@@ -586,116 +562,57 @@
     </div>
 
     <script>
-        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_book_pages_v5';
-        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v5';
-        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_list_v5';
-        const LOCAL_LESSONS_KEY = 'gentle_catholic_planner_lessons_v5';
-        const LOCAL_THREADS_KEY = 'gentle_catholic_community_threads_v5';
-        const LOCAL_USERS_KEY = 'gentle_catholic_registered_users_v5';
+        const LOCAL_RESOURCES_KEY = 'gentle_catholic_resources_v2';
+        const LOCAL_MY_LIBRARY_KEY = 'gentle_catholic_my_library_v2';
+        const LOCAL_PAGE_TRACKING_KEY = 'gentle_catholic_page_tracking_v2';
+        const LOCAL_LESSONS_KEY = 'gentle_catholic_lessons_v2';
+        const LOCAL_THREADS_KEY = 'gentle_catholic_threads_v2';
 
         window.currentCategory = 'all';
-        window.plannerRole = 'parent';
+        window.currentUserDisplayName = 'Sanctuary Mom';
         window.activeReaderBookId = null;
-        window.currentUserDisplayName = 'Sanctuary Parent';
+        window.isRegisterMode = false;
         window.currentFontSize = 16;
-        window.currentFontFamily = 'sans';
-        window.currentTheme = 'white';
         window.isSpeakingAudio = false;
-        window.isRegistering = false; // Auth mode toggle state
 
-        // Expanded comprehensive 300+ library across all subjects
-        const baseLibrary = [
-            { id: 'cc1', title: 'The Confessions of St. Augustine', author: 'St. Augustine of Hippo', category: 'Catholic Classics', grade: 'High School 9-12', description: 'The spiritual autobiography of St. Augustine detailing his conversion, restless heart, and profound praise of Divine Mercy.', uploader: 'Mother Mary Catherine' },
-            { id: 'cc2', title: 'The Imitation of Christ', author: 'Thomas à Kempis', category: 'Catholic Classics', grade: 'Middle School 6-8', description: 'Timeless spiritual counsel on following the humble footsteps of Our Lord Jesus Christ in daily solitude and prayer.', uploader: 'Father Thomas' },
-            { id: 'cc3', title: 'Introduction to the Devout Life', author: 'St. Francis de Sales', category: 'Catholic Classics', grade: 'High School 9-12', description: 'Classic guide for cultivating holiness in everyday secular and family life with gentleness and joy.', uploader: 'Sanctuary Admin' },
-            { id: 'cc4', title: 'The Story of a Soul', author: 'St. Thérèse of Lisieux', category: 'Catholic Classics', grade: 'Upper Elementary 3-5', description: 'The autobiography of the Little Flower detailing her Little Way of spiritual childhood, absolute trust, and love.', uploader: 'Theresa M.' },
-            { id: 'cc5', title: 'The Interior Castle', author: 'St. Teresa of Avila', category: 'Catholic Classics', grade: 'High School 9-12', description: 'Masterpiece on mystical prayer and the progress of the soul toward spiritual union with God.', uploader: 'Carmelite Guild' },
-            { id: 'cc6', title: 'The Practice of the Presence of God', author: 'Brother Lawrence', category: 'Catholic Classics', grade: 'Middle School 6-8', description: 'Simple, profound conversations and letters on abiding constantly in the loving awareness of God during humble kitchen labor.', uploader: 'Monastic Press' },
-            { id: 'cc7', title: 'The Rule of St. Benedict', author: 'St. Benedict of Nursia', category: 'Catholic Classics', grade: 'Middle School 6-8', description: 'Monastic wisdom on prayer, labor, community, and ordering daily family life with peace and balance.', uploader: 'Abbot John' },
-
-            { id: 'fr1', title: 'The Baltimore Catechism No. 2', author: 'Third Plenary Council', category: 'Faith & Religion', grade: 'Upper Elementary 3-5', description: 'Essential Catholic doctrine presented in a timeless question-and-answer format for memorization and understanding.', uploader: 'Catechist Guild' },
-            { id: 'fr2', title: 'The Catechism of the Council of Trent', author: 'St. Charles Borromeo', category: 'Faith & Religion', grade: 'High School 9-12', description: 'Comprehensive doctrinal instruction for pastors and faithful students of the Catholic Faith.', uploader: 'Diocesan Archives' },
-            { id: 'fr3', title: 'Myths of Northern Lands', author: 'H. A. Guerber', category: 'Faith & Religion', grade: 'Middle School 6-8', description: 'Mythology and folklore studied in contrast with Christian worldview and history.', uploader: 'Homeschool Co-op' },
-            { id: 'fr4', title: 'The Little Flowers of St. Francis', author: 'St. Francis of Assisi', category: 'Faith & Religion', grade: 'Early Years / K-2', description: 'Charming legends and holy stories of St. Francis and his friars preaching to birds and living in holy poverty.', uploader: 'Franciscan Friar' },
-
-            { id: 'hb1', title: 'Fifty Famous Stories Retold', author: 'James Baldwin', category: 'History & Living Books', grade: 'Early Years / K-2', description: 'Classic legendary historical living stories including King Alfred and the Cakes, Bruce and the Spider, and Robin Hood.', uploader: 'James Baldwin Society' },
-            { id: 'hb2', title: 'The Story of Mankind', author: 'Hendrik Willem van Loon', category: 'History & Living Books', grade: 'Middle School 6-8', description: 'Engaging narrative history tracing humanity from ancient civilizations to the modern era with illustrative maps.', uploader: 'History Teacher' },
-            { id: 'hb3', title: 'Trial and Triumph: Stories of Church Heroes', author: 'Richard Hannula', category: 'History & Living Books', grade: 'Upper Elementary 3-5', description: 'Inspiring biographical accounts of Christian martyrs and confessors through the centuries.', uploader: 'Church Historian' },
-
-            { id: 'ns1', title: 'The Storybook of Science', author: 'Jean-Henri Fabre', category: 'Nature & Science', grade: 'Upper Elementary 3-5', description: 'Charming conversations on natural philosophy, plants, ants, and the marvels of Creation.', uploader: 'Fabre Society' },
-            { id: 'ns2', title: 'The Secret of the Woods', author: 'William J. Long', category: 'Nature & Science', grade: 'Upper Elementary 3-5', description: 'Wonderful field observations of forest animals, beavers, and wilderness life.', uploader: 'Naturalist Guild' },
-            { id: 'ns3', title: 'Parables of Nature', author: 'Margaret Gatty', category: 'Nature & Science', grade: 'Early Years / K-2', description: 'Delightful insect and plant stories teaching moral and scientific lessons about life and metamorphosis.', uploader: 'Science Mom' },
-
-            { id: 'pl1', title: "A Child's Garden of Verses", author: 'Robert Louis Stevenson', category: 'Poetry & Literature', grade: 'Early Years / K-2', description: 'Beautiful nostalgic poetry capturing the innocence, imagination, and play of childhood.', uploader: 'Poetry Lover' },
-            { id: 'pl2', title: 'The Adventures of Pinocchio', author: 'C. Collodi', category: 'Poetry & Literature', grade: 'Early Years / K-2', description: 'The classic magical tale of a wooden puppet learning virtue, truth, obedience, and filial love.', uploader: 'Homeschool Family' },
-            { id: 'pl3', title: "Alice's Adventures in Wonderland", author: 'Lewis Carroll', category: 'Poetry & Literature', grade: 'Upper Elementary 3-5', description: 'Whimsical imaginative masterpiece exploring logic, language, and fantasy.', uploader: 'Carroll Scholar' },
-            { id: 'pl4', title: 'The Secret Garden', author: 'Frances Hodgson Burnett', category: 'Poetry & Literature', grade: 'Middle School 6-8', description: 'The uplifting story of renewal, friendship, and healing in a locked Yorkshire garden.', uploader: 'Mary Lennox' },
-            { id: 'pl5', title: 'Heidi', author: 'Johanna Spyri', category: 'Poetry & Literature', grade: 'Early Years / K-2', description: 'The heartwarming story of a Swiss orphan girl bringing joy to her grandfather in the Alps.', uploader: 'Alpine Reader' },
-            { id: 'pl6', title: 'The Adventures of Tom Sawyer', author: 'Mark Twain', category: 'Poetry & Literature', grade: 'Middle School 6-8', description: 'Classic boyhood adventures along the Mississippi River, whitewashing fences, and exploring caves.', uploader: 'Mark Twain Society' },
-            { id: 'pl7', title: 'Little Women', author: 'Louisa May Alcott', category: 'Poetry & Literature', grade: 'Middle School 6-8', description: 'The endearing trials, virtues, and artistic pursuits of the four March sisters.', uploader: 'Alcott Fan' },
-
-            { id: 'lm1', title: 'Number Stories of Long Ago', author: 'David Eugene Smith', category: 'Math', grade: 'Upper Elementary 3-5', description: 'Fascinating historical stories about how ancient civilizations discovered numbers, arithmetic, and geometry.', uploader: 'Math Historian' },
-            { id: 'lm2', title: 'First Book in Arithmetic', author: 'William W. Smith', category: 'Math', grade: 'Early Years / K-2', description: 'Gentle foundational exercises in counting, measuring, and practical home mathematics.', uploader: 'Arithmetic Teacher' }
+        const defaultResources = [
+            { id: 'r1', title: 'The Adventures of Pinocchio', author: 'C. Collodi', category: 'Catholic Classics', grade: 'Upper Elementary 3-5', description: 'The wondrous tale of a wooden puppet whose journey of conscience, love, and virtue transforms him into a real boy.', uploader: 'Sanctuary Co-op' },
+            { id: 'r2', title: 'The Secret Garden', author: 'Frances Hodgson Burnett', category: 'Nature & Science', grade: 'Upper Elementary 3-5', description: 'A timeless living book celebrating the healing power of nature, fresh air, and patient cultivation.', uploader: 'Sanctuary Co-op' },
+            { id: 'r3', title: 'Trial and Triumph: Stories of Church Heroes', author: 'Richard Hannula', category: 'Catholic Classics', grade: 'Middle School 6-8', description: 'Inspiring accounts of Christian witnesses and saints through the centuries who stood firm in faith.', uploader: 'Sanctuary Co-op' },
+            { id: 'r4', title: 'Heidi', author: 'Johanna Spyri', category: 'Poetry & Literature', grade: 'Early Years / K-2', description: 'The heartwarming story of a young orphan girl living in the Swiss Alps, discovering joy and grace.', uploader: 'Sanctuary Co-op' },
+            { id: 'r5', title: 'The Story of Civilization: Vol 1', author: 'Philip Campbell', category: 'History & Living Books', grade: 'Middle School 6-8', description: 'A sweeping Catholic overview of ancient history through the lens of divine providence.', uploader: 'Sanctuary Co-op' }
         ];
 
-        // Programmatically populate 50+ rich titles per category to total 300+ books
-        const subjectsList = ['Catholic Classics', 'Faith & Religion', 'History & Living Books', 'Nature & Science', 'Poetry & Literature', 'Math'];
-        const sampleAuthors = ['St. Alphonsus Liguori', 'Cardinal Newman', 'G. K. Chesterton', 'Hilaire Belloc', 'Rosa Mulholland', 'Fr. Faber', 'Jean-Henri Fabre', 'Charlotte Mason', 'Agnes Giberne'];
-        const sampleUploaders = ['Sanctuary Co-op', 'Mother Mary Catherine', 'Homeschool Family', 'Father Thomas', 'Grace Guild', 'St. Joseph Academy'];
-
-        let expandedLibrary = [...baseLibrary];
-        let autoIdCounter = 500;
-
-        subjectsList.forEach(subj => {
-            const existingCount = expandedLibrary.filter(b => b.category === subj).length;
-            const needed = 50 - existingCount;
-            for (let i = 1; i <= needed; i++) {
-                autoIdCounter++;
-                const author = sampleAuthors[(i + autoIdCounter) % sampleAuthors.length];
-                const uploader = sampleUploaders[(i * 3) % sampleUploaders.length];
-                expandedLibrary.push({
-                    id: 'gen_' + autoIdCounter,
-                    title: `${subj} Living Volume ${i}: Treasures of Truth`,
-                    author: author,
-                    category: subj,
-                    grade: (i % 2 === 0) ? 'Upper Elementary 3-5' : 'Middle School 6-8',
-                    description: `A verified Charlotte Mason living volume focusing on ${subj.toLowerCase()} principles, moral character, virtue, and joyful family narration.`,
-                    uploader: uploader
-                });
+        try {
+            if (!localStorage.getItem(LOCAL_RESOURCES_KEY)) {
+                localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(defaultResources));
             }
-        });
-
-        // Initialize Local Storage safely
-        try {
-            window.resources = JSON.parse(localStorage.getItem(LOCAL_RESOURCES_KEY)) || expandedLibrary;
-        } catch(e) { window.resources = expandedLibrary; }
+            window.resources = JSON.parse(localStorage.getItem(LOCAL_RESOURCES_KEY) || '[]');
+        } catch(e) { window.resources = defaultResources; }
 
         try {
-            window.plannerLessons = JSON.parse(localStorage.getItem(LOCAL_LESSONS_KEY)) || [
-                { id: 'l1', student: 'John', date: '2026-09-21', title: 'Confessions - Book I Reading & Narration', subject: 'Catholic Classics', completed: true },
-                { id: 'l2', student: 'Theresa', date: '2026-09-21', title: 'Baltimore Catechism Q1-10 Recitation', subject: 'Faith & Religion', completed: true }
+            window.plannerLessons = JSON.parse(localStorage.getItem(LOCAL_LESSONS_KEY) || 'null') || [
+                { id: 'l1', student: 'John', title: 'Read Chapter 3 of Pinocchio', subject: 'Literature', completed: false },
+                { id: 'l2', student: 'Theresa', title: 'Nature Journal Sketching', subject: 'Nature Study', completed: true },
+                { id: 'l3', student: 'Francis', title: 'Catechism Lesson 4: Creation', subject: 'Faith & Religion', completed: false }
             ];
         } catch(e) { window.plannerLessons = []; }
 
         try {
-            window.communityThreads = JSON.parse(localStorage.getItem(LOCAL_THREADS_KEY)) || [
-                { id: 't1', flair: 'Recommendation', author: 'MotherOfFive', title: 'Favorite living books for medieval history spine?', preview: 'We are planning our term around medieval Europe. What are your favorite saint biographies?', upvotes: 12, comments: [] }
+            window.communityThreads = JSON.parse(localStorage.getItem(LOCAL_THREADS_KEY) || 'null') || [
+                { id: 't1', flair: 'Morning Time', author: 'Maria S.', title: 'Favorite hymns for Ordinary Time?', preview: 'We have been loving Gregorian chant during breakfast...', body: 'We have been loving Gregorian chant during breakfast.', upvotes: 12, comments: [] }
             ];
         } catch(e) { window.communityThreads = []; }
 
-        /* Helper Functions */
         window.escapeHtml = function(str) {
-            if (!str) return '';
-            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         };
 
-        window.showNotification = function(title, msg, actionHTML = '') {
+        window.showNotification = function(title, msg) {
             const titleEl = document.getElementById('notifyTitle');
             const msgEl = document.getElementById('notifyMessage');
-            const actionArea = document.getElementById('notifyActionArea');
             if (titleEl) titleEl.textContent = title;
             if (msgEl) msgEl.textContent = msg;
-            if (actionArea) actionArea.innerHTML = actionHTML;
             document.getElementById('customNotifyModal')?.classList.remove('hidden');
         };
 
@@ -707,46 +624,21 @@
         window.closeAuthModal = function() { document.getElementById('authModal')?.classList.add('hidden'); };
 
         window.toggleAuthMode = function() {
-            window.isRegistering = !window.isRegistering;
+            window.isRegisterMode = !window.isRegisterMode;
             const titleEl = document.getElementById('authModalTitle');
             const subtitleEl = document.getElementById('authModalSubtitle');
-            const toggleBtn = document.getElementById('authToggleBtn');
+            const toggleLink = document.getElementById('authToggleLink');
             const submitBtnText = document.getElementById('authSubmitBtnText');
-
-            if (window.isRegistering) {
-                if (titleEl) titleEl.textContent = 'Register New Account';
-                if (subtitleEl) subtitleEl.textContent = 'Email confirmation is required to activate';
-                if (toggleBtn) toggleBtn.textContent = 'Already have an account? Sign in';
-                if (submitBtnText) submitBtnText.textContent = 'Register & Send Confirmation Email';
+            if (window.isRegisterMode) {
+                if (titleEl) titleEl.textContent = 'Create Sanctuary Account';
+                if (subtitleEl) subtitleEl.textContent = 'Register for a new family profile';
+                if (toggleLink) toggleLink.textContent = 'Already have an account? Sign in here';
+                if (submitBtnText) submitBtnText.textContent = 'Register Account';
             } else {
-                if (titleEl) titleEl.textContent = 'Sanctuary Sign In';
-                if (subtitleEl) subtitleEl.textContent = 'Enter your account credentials';
-                if (toggleBtn) toggleBtn.textContent = 'Need an account? Register';
+                if (titleEl) titleEl.textContent = 'Sanctuary Account Access';
+                if (subtitleEl) subtitleEl.textContent = 'Sign in to your local profile';
+                if (toggleLink) toggleLink.textContent = 'Need an account? Register here';
                 if (submitBtnText) submitBtnText.textContent = 'Sign In';
-            }
-        };
-
-        // Simulated Email Confirmation Database Store
-        window.getRegisteredUsers = function() {
-            try {
-                return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}');
-            } catch(e) { return {}; }
-        };
-
-        window.saveRegisteredUsers = function(users) {
-            try {
-                localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
-            } catch(e) {}
-        };
-
-        window.confirmUserEmailToken = function(email) {
-            let users = window.getRegisteredUsers();
-            if (users[email]) {
-                users[email].verified = true;
-                window.saveRegisteredUsers(users);
-                window.closeNotificationModal();
-                window.showNotification("Email Verified!", "Your email has been successfully confirmed. You may now sign in to your Sanctuary account.");
-                window.openAuthModal();
             }
         };
 
@@ -770,20 +662,27 @@
 
                 window.closeAuthModal();
 
-                // Simulate incoming email verification link modal
+                // Simulate incoming email verification link modal from gentlecatholichomeschool@gmail.com
                 const confirmLinkHTML = `
-                    <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-left space-y-2 my-2">
-                        <p class="text-[11px] font-bold text-amber-900"><i class="fa-solid fa-envelope-circle-check mr-1"></i> Simulated Email Inbox for: ${window.escapeHtml(email)}</p>
-                        <p class="text-[11px] text-slate-700">Dear Homeschool Mom, please confirm your registration by clicking the secure link below:</p>
-                        <button onclick="window.confirmUserEmailToken('${email}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow transition">
-                            <i class="fa-solid fa-check-circle mr-1"></i> Confirm My Email Address Now
+                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-left space-y-3 my-2 shadow-inner">
+                        <div class="flex items-center gap-2 border-b border-amber-200 pb-2">
+                            <div class="w-8 h-8 rounded-full bg-marian-900 text-gold-300 flex items-center justify-center text-xs font-bold">GC</div>
+                            <div>
+                                <p class="text-[11px] font-bold text-marian-900">From: gentlecatholichomeschool@gmail.com</p>
+                                <p class="text-[10px] text-slate-500">To: ${window.escapeHtml(email)}</p>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-700 font-medium">Dearest Homeschool Mom,</p>
+                        <p class="text-[11px] text-slate-600">Welcome to the Gentle Catholic Homeschooling Sanctuary! Please click the confirmation link below to activate your account and access your living library:</p>
+                        <button onclick="window.confirmUserEmailToken('${email}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-envelope-circle-check"></i> Confirm Email & Activate Sanctuary Account
                         </button>
                     </div>
                 `;
 
                 window.showNotification(
                     "Verification Email Sent!", 
-                    `We have sent a confirmation email to ${email}. Please click the confirmation link below to activate your account before logging in.`,
+                    `We have sent a confirmation message from gentlecatholichomeschool@gmail.com to ${email}. Please check your simulated inbox below.`,
                     confirmLinkHTML
                 );
 
@@ -802,8 +701,13 @@
                 if (!users[email].verified) {
                     window.showNotification(
                         "Email Not Confirmed", 
-                        `You must confirm your email (${email}) before you can sign in. Please check your inbox for the confirmation link.`,
-                        `<button onclick="window.confirmUserEmailToken('${email}')" class="mt-2 px-4 py-1.5 bg-gold-500 text-marian-950 font-bold rounded-xl text-xs">Simulate Clicking Confirmation Link</button>`
+                        `You must confirm your email (${email}) by opening the email from gentlecatholichomeschool@gmail.com before you can sign in.`,
+                        `<div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-left space-y-2 mt-2">
+                            <p class="text-[11px] font-bold text-marian-900">Message from gentlecatholichomeschool@gmail.com:</p>
+                            <button onclick="window.confirmUserEmailToken('${email}')" class="w-full py-2 bg-gold-500 hover:bg-gold-600 text-marian-950 font-bold rounded-xl text-xs shadow">
+                                Open Email & Click Confirmation Link
+                            </button>
+                         </div>`
                     );
                     return;
                 }
@@ -892,34 +796,29 @@
             const pageData = window.getPageData(bookId);
 
             document.getElementById('readerBookTitle').textContent = book.title;
-            document.getElementById('readerBookAuthor').textContent = 'by ' + (book.author || 'Unknown Author');
+            document.getElementById('readerBookAuthor').textContent = 'by ' + (book.author || 'Unknown');
             
             const pageInput = document.getElementById('readerPageInput');
             const totalInput = document.getElementById('readerTotalPagesInput');
             if (pageInput) pageInput.value = pageData.currentPage;
             if (totalInput) totalInput.value = pageData.totalPages;
 
-            // Populate rich reader text paragraphs for reading & TTS
             const viewer = document.getElementById('readerTextViewer');
             if (viewer) {
-                const textParagraphs = [
-                    `${book.title}`,
-                    `Written by ${book.author || 'Classic Author'}`,
-                    ``,
-                    `Chapter ${pageData.currentPage}: Introduction & Living Narrative`,
-                    `${book.description || 'A timeless volume dedicated to truth, beauty, and moral formation.'}`,
-                    `In presenting this classic work to homeschooling families, we embrace the rich heritage of Christian wisdom, attentive narration, and the gentle cultivation of intellectual curiosity. Every paragraph invites the reader into quiet contemplation and deep conversation.`,
-                    `As Saint Augustine and the great masters taught us, all learning is an unfolding of wonder before the majesty of Creation. Let us proceed with peaceful minds and grateful hearts.`
-                ];
-                viewer.innerHTML = textParagraphs.map((p, idx) => `<p id="tts-line-${idx}" class="py-2 leading-relaxed">${window.escapeHtml(p)}</p>`).join('');
+                viewer.innerHTML = `
+                    <h2 class="text-xl font-bold heading-serif text-marian-900">${window.escapeHtml(book.title)}</h2>
+                    <p class="text-xs text-slate-500 font-medium">Author: ${window.escapeHtml(book.author || 'Classic Author')}</p>
+                    <hr class="my-3 border-slate-200">
+                    <p class="text-sm font-semibold text-marian-800">Chapter ${pageData.currentPage}: Narrative Excerpt</p>
+                    <p class="leading-relaxed text-slate-700">${window.escapeHtml(book.description || 'A timeless volume dedicated to truth, beauty, and moral formation.')}</p>
+                    <p class="leading-relaxed text-slate-700">In presenting this classic work to homeschooling families, we embrace the rich heritage of Christian wisdom, attentive narration, and the gentle cultivation of intellectual curiosity.</p>
+                `;
             }
 
-            // Stop any active speech
             if (window.isSpeakingAudio) {
                 window.speechSynthesis.cancel();
                 window.isSpeakingAudio = false;
                 document.getElementById('ttsBtnText').textContent = 'Listen Aloud';
-                document.getElementById('ttsIcon').className = 'fa-solid fa-volume-high';
             }
 
             document.getElementById('bookReaderModal')?.classList.remove('hidden');
@@ -961,9 +860,7 @@
             window.savePageData(window.activeReaderBookId, pageInput?.value || 1, e.target.value);
         };
 
-        /* Reader Customization Features */
         window.setReaderTheme = function(theme) {
-            window.currentTheme = theme;
             const area = document.getElementById('readerContentArea');
             const viewer = document.getElementById('readerTextViewer');
             if (!area || !viewer) return;
@@ -988,15 +885,6 @@
             if (display) display.textContent = window.currentFontSize + 'px';
         };
 
-        window.changeReaderFontFamily = function(family) {
-            window.currentFontFamily = family;
-            const viewer = document.getElementById('readerTextViewer');
-            if (!viewer) return;
-            if (family === 'sans') viewer.style.fontFamily = "'Inter', sans-serif";
-            else if (family === 'serif') viewer.style.fontFamily = "'Playfair Display', Georgia, serif";
-            else if (family === 'garamond') viewer.style.fontFamily = "'EB Garamond', serif";
-        };
-
         window.toggleReaderAudio = function() {
             if (!window.activeReaderBookId) return;
             const list = window.resources || [];
@@ -1004,56 +892,30 @@
             if (!book) return;
 
             const ttsBtnText = document.getElementById('ttsBtnText');
-            const ttsIcon = document.getElementById('ttsIcon');
-            const highlightMode = document.getElementById('ttsHighlightMode')?.value || 'line';
 
             if (window.isSpeakingAudio) {
                 window.speechSynthesis.cancel();
                 window.isSpeakingAudio = false;
                 if(ttsBtnText) ttsBtnText.textContent = 'Listen Aloud';
-                if(ttsIcon) ttsIcon.className = 'fa-solid fa-volume-high';
-                document.querySelectorAll('[id^="tts-line-"]').forEach(el => el.className = 'py-2 leading-relaxed');
-                window.showNotification("Audio Stopped", "Text-to-speech audio reader paused.");
+                window.showNotification("Audio Stopped", "Audio reader paused.");
             } else {
                 if (!('speechSynthesis' in window)) {
                     window.showNotification("Not Supported", "Text-to-speech is not supported in your browser.");
                     return;
                 }
 
-                const lineElements = Array.from(document.querySelectorAll('[id^="tts-line-"]'));
-                const fullText = lineElements.map(el => el.textContent).join('. ');
-
+                const fullText = `${book.title}. Written by ${book.author || 'Author'}. ${book.description || ''}`;
                 const utterance = new SpeechSynthesisUtterance(fullText);
                 utterance.rate = 0.95;
-                utterance.pitch = 1.0;
-
-                utterance.onboundary = (event) => {
-                    if (highlightMode === 'none') return;
-                    let charCount = 0;
-                    for (let i = 0; i < lineElements.length; i++) {
-                        const lineEl = lineElements[i];
-                        charCount += lineEl.textContent.length + 2;
-                        if (event.charIndex <= charCount) {
-                            document.querySelectorAll('[id^="tts-line-"]').forEach(el => el.className = 'py-2 leading-relaxed');
-                            if (highlightMode === 'line') {
-                                lineEl.className = 'py-2 leading-relaxed tts-highlight-line';
-                            }
-                            break;
-                        }
-                    }
-                };
 
                 utterance.onend = () => {
                     window.isSpeakingAudio = false;
                     if(ttsBtnText) ttsBtnText.textContent = 'Listen Aloud';
-                    if(ttsIcon) ttsIcon.className = 'fa-solid fa-volume-high';
-                    document.querySelectorAll('[id^="tts-line-"]').forEach(el => el.className = 'py-2 leading-relaxed');
                 };
 
                 window.speechSynthesis.speak(utterance);
                 window.isSpeakingAudio = true;
                 if(ttsBtnText) ttsBtnText.textContent = 'Stop Audio';
-                if(ttsIcon) ttsIcon.className = 'fa-solid fa-volume-xmark';
                 window.showNotification("Audio Playing", `Reading aloud: ${book.title}`);
             }
         };
