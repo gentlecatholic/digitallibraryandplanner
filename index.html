@@ -1168,8 +1168,12 @@
                     if (code === 'email_not_confirmed' || /email not confirmed/i.test(msg)) {
                         window.setPendingConfirmationEmail(email);
                         window.showNotification('Email Not Confirmed Yet', `Please open the confirmation email sent to ${email} and click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.closeNotificationModal(); window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Resend Confirmation Email</button><button type="button" onclick="window.closeNotificationModal(); window.switchGateMode('register'); document.getElementById('gateEmail').value=${JSON.stringify(email)}; document.getElementById('gateConfirmEmail').value=${JSON.stringify(email)}" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">Check Email Address</button></div>`);
-                    } else if (code === 'invalid_credentials' || /invalid login credentials|invalid credentials/i.test(msg)) {
-                        window.showNotification('Incorrect Email or Password', 'The email and password combination did not match. Please check your password carefully. If you forgot it, use Forgot Password to create a new one.');
+                    } else if (code === 'invalid_credentials' || /invalid login credentials|invalid credentials|email or password/i.test(msg)) {
+                        document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                        window.switchGateMode('signin');
+                        if (emailEl) emailEl.value = email;
+                        if (passwordEl) { passwordEl.value = ''; passwordEl.focus(); }
+                        window.showNotification('Incorrect Email or Password', 'The password you entered is incorrect, or this email is not registered. Please try again or use Forgot Password.');
                     } else if (/too many|rate limit/i.test(msg)) {
                         window.showNotification('Too Many Attempts', 'Please wait a few minutes before trying to sign in again.');
                     } else {
@@ -2187,39 +2191,61 @@
             document.getElementById('authGateOverlay')?.classList.add('hidden');
             window.switchGateMode('signin');
             window.pendingConfirmationEmail = window.getPendingConfirmationEmail();
+
             if (!SUPABASE_CONFIGURED) {
                 document.getElementById('syncStatusText').textContent = 'Online Login Setup Required';
                 document.getElementById('authGateOverlay')?.classList.remove('hidden');
                 window.showNotification('One-Time Setup Needed', 'This app is not connected to Supabase. Add the Project URL and anon/publishable key, then reload the page.');
             } else {
                 const redirectHadError = window.handleAuthRedirectMessage();
+                let recoveryMode = false;
+
+                // IMPORTANT: listen BEFORE getSession(). Supabase may emit PASSWORD_RECOVERY
+                // while it is consuming the recovery link. If we listen afterwards, the event
+                // can be missed and the temporary recovery session looks like a normal login.
+                window.supabaseClient.auth.onAuthStateChange(async (event, nextSession) => {
+                    if (event === 'PASSWORD_RECOVERY') {
+                        recoveryMode = true;
+                        window.gateMode = 'reset';
+                        window.switchGateMode('reset');
+                        document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                        document.getElementById('authBootOverlay')?.classList.add('hidden');
+                        window.showNotification('Choose a New Password', 'Your secure reset link was accepted. Enter and confirm your new password before entering the library.');
+                        return;
+                    }
+                    if (event === 'SIGNED_IN' && nextSession?.user) {
+                        // A recovery link creates a temporary signed-in session. Never open the
+                        // library while the recovery form is active.
+                        if (recoveryMode || window.gateMode === 'reset') return;
+                        await window.completeLogin(nextSession.user);
+                    }
+                    if (event === 'SIGNED_OUT') {
+                        recoveryMode = false;
+                        window.currentLoggedInEmail = null; window.currentProfile = null; window.currentUserDisplayName = 'Sanctuary Member'; window.isAdmin = false;
+                        document.getElementById('adminBadge')?.classList.add('hidden'); document.getElementById('adminMembersBtn')?.classList.add('hidden');
+                        document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                    }
+                });
+
+                // Give Supabase a moment to exchange/consume an incoming auth callback and emit
+                // PASSWORD_RECOVERY before deciding that an existing session is a normal login.
+                const callbackLooksLikeAuth = /(?:^|[?#&])(code=|access_token=|type=recovery|error=|error_code=)/i.test(window.location.href);
+                if (callbackLooksLikeAuth) await new Promise(resolve => setTimeout(resolve, 500));
+
                 const { data: { session }, error } = await window.supabaseClient.auth.getSession();
                 if (error) console.error('Supabase session error:', error);
-                const recovering = /type=recovery/i.test(window.location.hash || '');
-                if (recovering) {
+
+                if (recoveryMode || window.gateMode === 'reset') {
                     window.switchGateMode('reset');
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
-                    window.showNotification('Password Recovery', 'Your password-reset link has been accepted. Choose your new password below.');
                 } else if (session?.user) {
                     await window.completeLogin(session.user);
                 } else {
                     document.getElementById('authGateOverlay')?.classList.remove('hidden');
                     if (!redirectHadError) window.switchGateMode('signin');
                 }
-                window.supabaseClient.auth.onAuthStateChange(async (event, nextSession) => {
-                    if (event === 'SIGNED_IN' && nextSession?.user && !/type=recovery/i.test(window.location.hash || '')) await window.completeLogin(nextSession.user);
-                    if (event === 'SIGNED_OUT') {
-                        window.currentLoggedInEmail = null; window.currentProfile = null; window.currentUserDisplayName = 'Sanctuary Member'; window.isAdmin = false;
-                        document.getElementById('adminBadge')?.classList.add('hidden'); document.getElementById('adminMembersBtn')?.classList.add('hidden');
-                        document.getElementById('authGateOverlay')?.classList.remove('hidden');
-                    }
-                    if (event === 'PASSWORD_RECOVERY') {
-                        window.switchGateMode('reset'); document.getElementById('authGateOverlay')?.classList.remove('hidden');
-                    }
-                });
             }
-            // Authentication check is complete; remove the startup screen so the
-            // login box never flashes briefly during a page refresh.
+
             document.getElementById('authBootOverlay')?.classList.add('hidden');
             window.renderLibrary();
             window.renderLessonPlanner();
