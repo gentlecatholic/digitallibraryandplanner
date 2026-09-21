@@ -164,6 +164,36 @@
                         <i class="fa-solid fa-right-to-bracket"></i> <span id="gateSubmitBtnText">Sign In to Sanctuary</span>
                     </button>
                 </form>
+
+                <div id="gateVerifyPanel" class="hidden space-y-4 text-center">
+                    <div class="w-14 h-14 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-envelope-circle-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold heading-serif text-marian-900">Check Your Email</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mt-2">
+                            We sent a confirmation link to
+                            <strong id="gateVerifyEmail" class="text-marian-900 break-all"></strong>.
+                            Keep this page open while you check your inbox.
+                        </p>
+                    </div>
+                    <div id="gateVerifyStatus" class="text-[11px] leading-relaxed rounded-xl bg-cream-100 border border-cream-300 p-3 text-slate-600">
+                        Check your Inbox, Spam, Junk, and Promotions folders. Delivery can take a few minutes.
+                    </div>
+                    <button id="gateResendVerifyBtn" type="button" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition">
+                        <i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email
+                    </button>
+                    <button id="gateWrongVerifyEmailBtn" type="button" class="w-full py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold hover:bg-cream-100 transition">
+                        <i class="fa-solid fa-pen mr-1"></i> Review / Correct Registration
+                    </button>
+                    <button id="gateVerifySigninBtn" type="button" class="text-xs text-marian-700 font-semibold hover:underline">
+                        I already confirmed my email — go to Sign In
+                    </button>
+                    <p class="text-[10px] text-slate-500 leading-relaxed">
+                        You cannot enter the Sanctuary until your email is confirmed and you sign in with your password.
+                    </p>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -803,32 +833,76 @@
             if (actionArea) actionArea.innerHTML = '';
         };
 
-        // Registration-success dialog uses real event listeners instead of inline onclick
-        // so the controls remain reliable after dynamic HTML is inserted.
+        // Professional post-registration verification state.
+        // Do not dismiss the user to Sign In immediately; keep the confirmation
+        // address and resend/correction controls visible until she chooses to leave.
         window.showRegistrationConfirmationDialog = function(email) {
             const cleanEmail = String(email || '').trim().toLowerCase();
-            window.showNotification(
-                'Registration Successful — Check Your Email',
-                `Your account for ${cleanEmail} was created successfully. We sent a confirmation email to this address. Please click the confirmation link before signing in.`,
-                `<div class="flex flex-col gap-2">
-                    <button id="notifyResendConfirmationBtn" type="button" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold"><i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email</button>
-                    <button id="notifyWrongEmailBtn" type="button" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold"><i class="fa-solid fa-pen mr-1"></i> I Entered the Wrong Email</button>
-                </div>`
-            );
-            const resendBtn = document.getElementById('notifyResendConfirmationBtn');
-            const wrongBtn = document.getElementById('notifyWrongEmailBtn');
-            resendBtn?.addEventListener('click', async function() {
-                if (resendBtn.disabled) return;
-                resendBtn.disabled = true;
-                const original = resendBtn.innerHTML;
-                resendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending…';
-                try { await window.resendConfirmationEmail(cleanEmail); }
-                finally { if (document.body.contains(resendBtn)) { resendBtn.disabled = false; resendBtn.innerHTML = original; } }
-            });
-            wrongBtn?.addEventListener('click', function() {
-                window.openRegistrationForEmail(cleanEmail);
-            });
+            window.setPendingConfirmationEmail(cleanEmail);
+            document.getElementById('authGateOverlay')?.classList.remove('hidden');
+            document.getElementById('gateForm')?.classList.add('hidden');
+            document.getElementById('gateTabsContainer')?.classList.add('hidden');
+            document.getElementById('gateBackToSigninBtn')?.classList.add('hidden');
+            document.getElementById('gateVerifyPanel')?.classList.remove('hidden');
+            const verifyEmail = document.getElementById('gateVerifyEmail');
+            if (verifyEmail) verifyEmail.textContent = cleanEmail;
+            const status = document.getElementById('gateVerifyStatus');
+            if (status) status.textContent = 'Check your Inbox, Spam, Junk, and Promotions folders. Delivery can take a few minutes.';
+            const title = document.getElementById('gateHeaderTitle');
+            const desc = document.getElementById('gateHeaderDesc');
+            if (title) title.textContent = 'Registration Successful';
+            if (desc) desc.textContent = 'One more step: confirm your email address before signing in.';
         };
+
+        window.leaveVerificationScreen = function(mode = 'signin') {
+            document.getElementById('gateVerifyPanel')?.classList.add('hidden');
+            document.getElementById('gateForm')?.classList.remove('hidden');
+            window.switchGateMode(mode);
+        };
+
+        window.handleVerifyResend = async function() {
+            const email = window.getPendingConfirmationEmail();
+            const btn = document.getElementById('gateResendVerifyBtn');
+            const status = document.getElementById('gateVerifyStatus');
+            if (!email) {
+                if (status) status.textContent = 'We no longer have the registration email on this device. Please review your registration and enter it again.';
+                return;
+            }
+            if (btn?.disabled) return;
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-60', 'cursor-not-allowed');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending…';
+            }
+            if (status) status.textContent = 'Requesting another confirmation email…';
+            try {
+                const result = await window.sendConfirmationEmailRequest(email, false);
+                if (status) status.textContent = result.ok
+                    ? `A new confirmation email was requested for ${email}. Please check Inbox, Spam, Junk, and Promotions.`
+                    : result.message;
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email';
+                }
+            }
+        };
+
+        // Bind permanent verification controls.
+        document.getElementById('gateResendVerifyBtn')?.addEventListener('click', window.handleVerifyResend);
+        document.getElementById('gateWrongVerifyEmailBtn')?.addEventListener('click', function() {
+            const email = window.getPendingConfirmationEmail();
+            window.leaveVerificationScreen('register');
+            window.openRegistrationForEmail(email);
+        });
+        document.getElementById('gateVerifySigninBtn')?.addEventListener('click', function() {
+            const email = window.getPendingConfirmationEmail();
+            window.leaveVerificationScreen('signin');
+            const emailEl = document.getElementById('gateEmail');
+            if (emailEl) emailEl.value = email;
+            document.getElementById('gatePassword')?.focus();
+        });
 
         // Bind the permanent OK control once. No inline JavaScript is required.
         document.getElementById('notifyOkBtn')?.addEventListener('click', function() {
@@ -986,6 +1060,8 @@
 
         window.switchGateMode = function(mode) {
             window.gateMode = mode;
+            document.getElementById('gateVerifyPanel')?.classList.add('hidden');
+            document.getElementById('gateForm')?.classList.remove('hidden');
             const tabSignin = document.getElementById('gateTabSignin');
             const tabRegister = document.getElementById('gateTabRegister');
             const registerFields = document.getElementById('gateRegisterFields');
@@ -1136,16 +1212,16 @@
             }
         };
 
-        window.resendConfirmationEmail = async function(email) {
-            email = (email || window.getPendingConfirmationEmail() || document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
+        window.sendConfirmationEmailRequest = async function(email, showPopup = true) {
+            email = String(email || '').trim().toLowerCase();
             if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                window.showNotification('Email Needed', 'Please enter the email address you used when registering.');
-                window.switchGateMode('signin');
-                document.getElementById('gateEmail')?.focus();
-                return;
+                const message = 'Please enter the email address you used when registering.';
+                if (showPopup) window.showNotification('Email Needed', message);
+                return { ok: false, message };
             }
-            if (!(await window.authReady())) return;
-            window.setAuthBusy(true, 'Sending confirmation…');
+            if (!(await window.authReady())) {
+                return { ok: false, message: 'The online authentication service is not connected.' };
+            }
             try {
                 const { error } = await window.supabaseClient.auth.resend({
                     type: 'signup',
@@ -1153,22 +1229,32 @@
                     options: { emailRedirectTo: window.getRegistrationRedirectUrl() }
                 });
                 if (error) {
-                    const msg = String(error.message || '');
-                    if (/rate limit|too many/i.test(msg)) {
-                        window.showNotification('Please Wait', 'Supabase has temporarily limited confirmation emails. Please wait a little while before requesting another email.');
-                    } else {
-                        window.showNotification('Confirmation Email Not Sent', window.friendlyAuthError(error));
+                    const raw = String(error.message || '');
+                    let message = window.friendlyAuthError(error);
+                    if (/rate limit|too many/i.test(raw)) {
+                        message = 'Too many authentication emails have been requested. Please wait before trying again.';
+                    } else if (/not authorized|email address not authorized/i.test(raw)) {
+                        message = 'Supabase did not authorize delivery to this address. A custom SMTP email provider must be configured before confirmation emails can be sent to ordinary users.';
                     }
-                    return;
+                    if (showPopup) window.showNotification('Confirmation Email Not Sent', message);
+                    return { ok: false, message };
                 }
                 window.setPendingConfirmationEmail(email);
-                window.showNotification('Confirmation Email Sent', `A new confirmation email was requested for ${email}. Please check your inbox and spam/junk folder.`);
+                const message = `A new confirmation email was requested for ${email}. Check Inbox, Spam, Junk, and Promotions.`;
+                if (showPopup) window.showNotification('Confirmation Email Requested', message);
+                return { ok: true, message };
             } catch (err) {
                 console.error('Resend confirmation error:', err);
-                window.showNotification('Confirmation Email Not Sent', window.friendlyAuthError(err));
-            } finally { window.setAuthBusy(false); }
+                const message = window.friendlyAuthError(err);
+                if (showPopup) window.showNotification('Confirmation Email Not Sent', message);
+                return { ok: false, message };
+            }
         };
 
+        window.resendConfirmationEmail = async function(email) {
+            email = (email || window.getPendingConfirmationEmail() || document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
+            return window.sendConfirmationEmailRequest(email, true);
+        };
 
         window.showEmailNotConfirmedDialog = function(email) {
             const cleanEmail = String(email || '').trim().toLowerCase();
@@ -1270,7 +1356,7 @@
                         const ok = await window.completeLogin(data.user);
                         if (ok) window.showNotification('Registration Successful', `Welcome, ${momName}! Your Catholic Sanctuary account has been created and you are now signed in.`);
                     } else {
-                        window.switchGateMode('signin'); if (emailEl) emailEl.value = email;
+                        if (emailEl) emailEl.value = email;
                         window.showRegistrationConfirmationDialog(email);
                     }
                     return;
