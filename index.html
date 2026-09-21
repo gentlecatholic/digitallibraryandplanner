@@ -797,7 +797,10 @@
         };
 
         window.closeNotificationModal = function() {
-            document.getElementById('customNotifyModal')?.classList.add('hidden');
+            const modal = document.getElementById('customNotifyModal');
+            modal?.classList.add('hidden');
+            const actionArea = document.getElementById('notifyActionArea');
+            if (actionArea) actionArea.innerHTML = '';
         };
 
         // Authentication is fully handled by Supabase Auth.
@@ -809,6 +812,8 @@
         const PENDING_CONFIRM_EMAIL_KEY = 'gentle_catholic_pending_confirmation_email_v1';
         window.authBusy = false;
         window.pendingConfirmationEmail = '';
+        // Non-sensitive registration draft. Passwords are deliberately never stored.
+        window.registrationDraft = null;
 
         window.getPendingConfirmationEmail = function() {
             try { return localStorage.getItem(PENDING_CONFIRM_EMAIL_KEY) || ''; } catch(e) { return ''; }
@@ -1048,13 +1053,38 @@
             return true;
         };
 
+        window.captureRegistrationDraft = function() {
+            window.registrationDraft = {
+                momName: (document.getElementById('gateMomName')?.value || '').trim(),
+                parish: (document.getElementById('gateParish')?.value || '').trim(),
+                state: (document.getElementById('gateState')?.value || '').trim(),
+                kids: (document.getElementById('gateKids')?.value || '').trim(),
+                email: (document.getElementById('gateEmail')?.value || '').trim().toLowerCase()
+            };
+            return window.registrationDraft;
+        };
+
         window.openRegistrationForEmail = function(email) {
+            const draft = window.registrationDraft || {};
+            window.closeNotificationModal();
             window.switchGateMode('register');
+            document.getElementById('authGateOverlay')?.classList.remove('hidden');
+            const values = {
+                gateMomName: draft.momName || '',
+                gateParish: draft.parish || '',
+                gateState: draft.state || '',
+                gateKids: draft.kids || ''
+            };
+            Object.entries(values).forEach(([id, value]) => { const el = document.getElementById(id); if (el) el.value = value; });
             const emailEl = document.getElementById('gateEmail');
             const confirmEmailEl = document.getElementById('gateConfirmEmail');
-            if (emailEl) emailEl.value = email || '';
-            if (confirmEmailEl) confirmEmailEl.value = email || '';
-            document.getElementById('gateMomName')?.focus();
+            if (emailEl) { emailEl.value = email || draft.email || ''; emailEl.focus(); emailEl.select(); }
+            if (confirmEmailEl) confirmEmailEl.value = '';
+            const passwordEl = document.getElementById('gatePassword');
+            const confirmPasswordEl = document.getElementById('gateConfirmPassword');
+            if (passwordEl) passwordEl.value = '';
+            if (confirmPasswordEl) confirmPasswordEl.value = '';
+            window.showNotification('Review Your Registration', 'Please review your name, parish/diocese, location, children/grades, and especially your email address. Correct anything necessary, confirm the email again, then re-enter your password and submit the registration.');
         };
 
         window.openForgotForEmail = function(email) {
@@ -1084,7 +1114,11 @@
             if (!(await window.authReady())) return;
             window.setAuthBusy(true, 'Sending confirmation…');
             try {
-                const { error } = await window.supabaseClient.auth.resend({ type: 'signup', email });
+                const { error } = await window.supabaseClient.auth.resend({
+                    type: 'signup',
+                    email,
+                    options: { emailRedirectTo: window.getRegistrationRedirectUrl() }
+                });
                 if (error) {
                     const msg = String(error.message || '');
                     if (/rate limit|too many/i.test(msg)) {
@@ -1095,7 +1129,10 @@
                     return;
                 }
                 window.setPendingConfirmationEmail(email);
-                window.showNotification('Confirmation Email Sent', `A new confirmation email was requested for ${email}. Please check your inbox and spam/junk folder. If the address itself is incorrect, register again using the correct email address.`);
+                window.showNotification('Confirmation Email Sent', `A new confirmation email was requested for ${email}. Please check your inbox and spam/junk folder.`);
+            } catch (err) {
+                console.error('Resend confirmation error:', err);
+                window.showNotification('Confirmation Email Not Sent', window.friendlyAuthError(err));
             } finally { window.setAuthBusy(false); }
         };
 
@@ -1161,6 +1198,7 @@
                     if (!momName || !parish || !state || !kids) { window.showNotification('Required Fields Missing', 'Please complete your name, parish/diocese, location, and children/grades.'); return; }
                     if (password.length < 8) { window.showNotification('Password Too Short', 'Please choose a password with at least 8 characters.'); return; }
                     if (password !== confirmPassword) { window.showNotification('Passwords Do Not Match', 'The password and confirmation password are different. Please type them again.'); return; }
+                    window.captureRegistrationDraft();
                     const { data, error } = await window.supabaseClient.auth.signUp({
                         email, password,
                         options: { emailRedirectTo: window.getRegistrationRedirectUrl(), data: { momName, parish, state, kids, banned: false } }
@@ -1185,7 +1223,7 @@
                         if (ok) window.showNotification('Registration Successful', `Welcome, ${momName}! Your Catholic Sanctuary account has been created and you are now signed in.`);
                     } else {
                         window.switchGateMode('signin'); if (emailEl) emailEl.value = email;
-                        window.showNotification('Registration Successful — Check Your Email', `Your account for ${email} was created successfully. We sent a confirmation email to this address. Please click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.closeNotificationModal(); window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Resend Confirmation Email</button><button type="button" onclick="window.closeNotificationModal(); window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">I Entered the Wrong Email</button></div>`);
+                        window.showNotification('Registration Successful — Check Your Email', `Your account for ${email} was created successfully. We sent a confirmation email to this address. Please click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold"><i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email</button><button type="button" onclick="window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold"><i class="fa-solid fa-pen mr-1"></i> I Entered the Wrong Email</button></div>`);
                     }
                     return;
                 }
@@ -1196,7 +1234,7 @@
                     const msg = String(error?.message || '');
                     if (code === 'email_not_confirmed' || /email not confirmed/i.test(msg)) {
                         window.setPendingConfirmationEmail(email);
-                        window.showNotification('Email Not Confirmed Yet', `Please open the confirmation email sent to ${email} and click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.closeNotificationModal(); window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold">Resend Confirmation Email</button><button type="button" onclick="window.closeNotificationModal(); window.switchGateMode('register'); document.getElementById('gateEmail').value=${JSON.stringify(email)}; document.getElementById('gateConfirmEmail').value=${JSON.stringify(email)}" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold">Check Email Address</button></div>`);
+                        window.showNotification('Email Not Confirmed Yet', `Please open the confirmation email sent to ${email} and click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold"><i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email</button><button type="button" onclick="window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold"><i class="fa-solid fa-pen mr-1"></i> Review / Correct Registration</button></div>`);
                     } else if (code === 'invalid_credentials' || /invalid login credentials|invalid credentials|email or password/i.test(msg)) {
                         document.getElementById('authGateOverlay')?.classList.remove('hidden');
                         window.switchGateMode('signin');
@@ -1249,7 +1287,7 @@
             const email = (window.currentLoggedInEmail || '').trim().toLowerCase();
             if (!email || !(await window.authReady())) return;
             window.setAuthBusy(false);
-            const { error } = await window.supabaseClient.auth.resend({ type: 'signup', email });
+            const { error } = await window.supabaseClient.auth.resend({ type: 'signup', email, options: { emailRedirectTo: window.getRegistrationRedirectUrl() } });
             if (error) { window.showNotification('Confirmation Email Not Sent', window.friendlyAuthError(error)); return; }
             window.showNotification('Confirmation Email Sent', `A new confirmation email was requested for ${email}. Please check your inbox and spam/junk folder.`);
         };
