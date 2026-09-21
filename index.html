@@ -148,11 +148,11 @@
                     </div>
                     <div id="gatePasswordFieldWrapper">
                         <label class="block font-semibold text-slate-700 mb-1">Password *</label>
-                        <input type="password" id="gatePassword" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                        <div class="relative"><input type="password" id="gatePassword" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters" class="w-full p-2.5 pr-11 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500"><button type="button" onclick="window.togglePasswordVisibility('gatePassword', this)" class="absolute inset-y-0 right-0 px-3 text-slate-500 hover:text-marian-800" aria-label="Show password" title="Show password"><i class="fa-solid fa-eye"></i></button></div>
                     </div>
                     <div id="gateConfirmPasswordFieldWrapper" class="hidden">
                         <label class="block font-semibold text-slate-700 mb-1">Confirm Password *</label>
-                        <input type="password" id="gateConfirmPassword" minlength="8" autocomplete="new-password" placeholder="Re-enter your password" class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500">
+                        <div class="relative"><input type="password" id="gateConfirmPassword" minlength="8" autocomplete="new-password" placeholder="Re-enter your password" class="w-full p-2.5 pr-11 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500"><button type="button" onclick="window.togglePasswordVisibility('gateConfirmPassword', this)" class="absolute inset-y-0 right-0 px-3 text-slate-500 hover:text-marian-800" aria-label="Show password" title="Show password"><i class="fa-solid fa-eye"></i></button></div>
                     </div>
 
                     <div id="gateForgotLinkRow" class="flex items-center justify-between gap-3 text-xs pt-1">
@@ -826,6 +826,26 @@
             return PRODUCTION_APP_URL;
         };
 
+        window.getRegistrationRedirectUrl = function() {
+            return PRODUCTION_APP_URL + '?auth=confirmed';
+        };
+
+        window.togglePasswordVisibility = function(inputId, button) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            const icon = button?.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-eye', showing);
+                icon.classList.toggle('fa-eye-slash', !showing);
+            }
+            if (button) {
+                button.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+                button.title = showing ? 'Show password' : 'Hide password';
+            }
+        };
+
         window.cleanAuthUrl = function() {
             try { window.history.replaceState({}, document.title, window.location.pathname + window.location.search); } catch(e) {}
         };
@@ -900,9 +920,11 @@
                 window.remoteProfilesCache[(data.email || user.email || '').toLowerCase()] = data;
                 return data;
             }
-            window.currentProfile = window.profileFromUser(user);
-            window.remoteProfilesCache[(user.email || '').toLowerCase()] = window.currentProfile;
-            return window.currentProfile;
+            // A valid Auth identity without a profiles row means Sanctuary access was removed.
+            // Do not recreate/fabricate a profile here; otherwise a deleted member could log back in.
+            window.currentProfile = null;
+            delete window.remoteProfilesCache[(user.email || '').toLowerCase()];
+            return null;
         };
 
         window.refreshRemoteProfiles = async function() {
@@ -1003,6 +1025,13 @@
             const email = (user?.email || '').toLowerCase();
             if (!user || !email) return false;
             const profile = await window.refreshOwnProfile(user);
+            if (!profile) {
+                await window.supabaseClient.auth.signOut();
+                document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                window.switchGateMode('signin');
+                window.showNotification('Account Access Removed', 'This account no longer has an active Sanctuary member profile. Please contact the administrator if you believe this was a mistake.');
+                return false;
+            }
             if (profile?.banned) {
                 await window.supabaseClient.auth.signOut();
                 window.showNotification('Account Restricted', 'This account has been restricted by the administrator. Please contact the administrator if you believe this is an error.');
@@ -1134,7 +1163,7 @@
                     if (password !== confirmPassword) { window.showNotification('Passwords Do Not Match', 'The password and confirmation password are different. Please type them again.'); return; }
                     const { data, error } = await window.supabaseClient.auth.signUp({
                         email, password,
-                        options: { emailRedirectTo: window.getAuthRedirectUrl(), data: { momName, parish, state, kids, banned: false } }
+                        options: { emailRedirectTo: window.getRegistrationRedirectUrl(), data: { momName, parish, state, kids, banned: false } }
                     });
                     if (error) {
                         const msg = String(error.message || '');
@@ -1301,7 +1330,7 @@
             const { error } = await window.supabaseClient.from('profiles').update({ banned: !u.banned, updated_at: new Date().toISOString() }).eq('id', u.id);
             if (error) { window.showNotification('Update Failed', error.message); return; }
             await window.openAdminMembersModal();
-            window.showNotification('Member Updated', `Member status for ${email} has been updated.`);
+            window.showNotification(u.banned ? 'Member Unbanned' : 'Member Banned', u.banned ? `${email} can sign in again.` : `${email} has been blocked from entering the Sanctuary. If this member is currently signed in on another device, that existing page may remain visible until it refreshes or makes a new access check.`);
         };
 
         window.adminDeleteMember = async function(email) {
@@ -1312,7 +1341,7 @@
             if (error) { window.showNotification('Delete Failed', error.message); return; }
             await window.openAdminMembersModal();
             window.updateMemberCountBadge();
-            window.showNotification('Profile Removed', 'The member profile has been removed. The underlying Auth identity remains unless deleted in Supabase Auth.');
+            window.showNotification('Member Access Removed', 'The member profile has been deleted. V5 will reject future Sanctuary logins for this Auth identity because there is no active member profile. The underlying Supabase Auth identity still exists until it is deleted with a trusted server-side admin action.');
         };
 
         window.adminEditMember = async function(email) {
@@ -2199,6 +2228,23 @@
             } else {
                 const redirectHadError = window.handleAuthRedirectMessage();
                 let recoveryMode = false;
+                const registrationConfirmationReturn = new URLSearchParams(window.location.search).get('auth') === 'confirmed';
+                let confirmationHandled = false;
+
+                const finishRegistrationConfirmation = async function() {
+                    if (confirmationHandled) return;
+                    confirmationHandled = true;
+                    await window.supabaseClient.auth.signOut();
+                    window.currentLoggedInEmail = null;
+                    window.currentProfile = null;
+                    window.currentUserDisplayName = 'Sanctuary Member';
+                    window.isAdmin = false;
+                    window.cleanAuthUrl();
+                    window.switchGateMode('signin');
+                    document.getElementById('authGateOverlay')?.classList.remove('hidden');
+                    document.getElementById('authBootOverlay')?.classList.add('hidden');
+                    window.showNotification('Email Confirmed', 'Your email address has been confirmed. Please enter your email and password to sign in to the Sanctuary.');
+                };
 
                 // IMPORTANT: listen BEFORE getSession(). Supabase may emit PASSWORD_RECOVERY
                 // while it is consuming the recovery link. If we listen afterwards, the event
@@ -2217,6 +2263,11 @@
                         // A recovery link creates a temporary signed-in session. Never open the
                         // library while the recovery form is active.
                         if (recoveryMode || window.gateMode === 'reset') return;
+                        // Registration confirmation must end at the sign-in box, not auto-enter the library.
+                        if (registrationConfirmationReturn) {
+                            await finishRegistrationConfirmation();
+                            return;
+                        }
                         await window.completeLogin(nextSession.user);
                     }
                     if (event === 'SIGNED_OUT') {
@@ -2234,6 +2285,11 @@
 
                 const { data: { session }, error } = await window.supabaseClient.auth.getSession();
                 if (error) console.error('Supabase session error:', error);
+
+                if (registrationConfirmationReturn && session?.user && !recoveryMode) {
+                    await finishRegistrationConfirmation();
+                    return;
+                }
 
                 if (recoveryMode || window.gateMode === 'reset') {
                     window.switchGateMode('reset');
