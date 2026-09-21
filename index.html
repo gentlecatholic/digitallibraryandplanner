@@ -82,7 +82,19 @@
 
 <body class="min-h-screen flex flex-col antialiased">
 
-    <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+    <div id="authBootOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[110] flex items-center justify-center p-4">
+        <div class="text-center text-white space-y-4">
+            <div class="w-16 h-16 rounded-full border-2 border-gold-400 flex items-center justify-center mx-auto shadow-lg">
+                <i class="fa-solid fa-shield-halved text-gold-300 text-2xl"></i>
+            </div>
+            <div>
+                <p class="font-bold text-lg heading-serif text-amber-100">Opening the Catholic Sanctuary…</p>
+                <p class="text-xs text-blue-100/80 mt-1">Checking your secure account.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="authGateOverlay" class="fixed inset-0 bg-marian-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-cream-300 overflow-hidden flex flex-col">
             <div class="p-6 bg-gradient-to-r from-marian-950 via-marian-900 to-marian-950 text-white text-center border-b-4 border-gold-400 space-y-2">
                 <div class="w-16 h-16 rounded-full bg-marian-950 mx-auto border-2 border-gold-400 flex items-center justify-center shadow-lg overflow-hidden">
@@ -98,6 +110,10 @@
                     <button type="button" id="gateTabSignin" onclick="window.switchGateMode('signin')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-marian-800 text-white shadow">Sign In</button>
                     <button type="button" id="gateTabRegister" onclick="window.switchGateMode('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-marian-900">Register Account</button>
                 </div>
+
+                <button type="button" id="gateBackToSigninBtn" onclick="window.switchGateMode('signin')" class="hidden w-full text-left text-xs text-marian-700 font-semibold hover:underline mb-1">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Back to Sign In
+                </button>
 
                 <form id="gateForm" onsubmit="window.handleGateSubmit(event)" class="space-y-3 text-xs sm:text-sm">
                     <div id="gateRegisterFields" class="hidden space-y-3 pb-2 border-b border-cream-200">
@@ -141,7 +157,7 @@
 
                     <div id="gateForgotLinkRow" class="flex items-center justify-between gap-3 text-xs pt-1">
                         <span id="gateAccountHint" class="text-slate-500">Not sure if you registered? Enter your email and we’ll check.</span>
-                        <button type="button" onclick="window.switchGateMode('forgot')" class="text-marian-700 font-semibold hover:underline whitespace-nowrap">Forgot Password?</button>
+                        <button type="button" onclick="window.openForgotPassword()" class="text-marian-700 font-semibold hover:underline whitespace-nowrap">Forgot Password?</button>
                     </div>
 
                     <button type="submit" id="gateSubmitBtn" class="w-full py-3 rounded-xl bg-marian-800 hover:bg-marian-900 text-white font-semibold shadow-md transition flex items-center justify-center gap-2 mt-2">
@@ -928,6 +944,8 @@
             const password = document.getElementById('gatePassword');
             const confirm = document.getElementById('gateConfirmPassword');
             const accountHint = document.getElementById('gateAccountHint');
+            const backBtn = document.getElementById('gateBackToSigninBtn');
+            if (backBtn) backBtn.classList.toggle('hidden', mode === 'signin' || mode === 'register');
             if (confirm) confirm.value = '';
             if (confirmEmail && mode !== 'register') confirmEmail.value = '';
             if (password) password.value = '';
@@ -1017,6 +1035,15 @@
             emailEl?.focus();
         };
 
+        window.openForgotPassword = function() {
+            window.switchGateMode('forgot');
+            const emailEl = document.getElementById('gateEmail');
+            if (emailEl) {
+                emailEl.value = '';
+                emailEl.focus();
+            }
+        };
+
         window.resendConfirmationEmail = async function(email) {
             email = (email || window.getPendingConfirmationEmail() || document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
             if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -1091,7 +1118,7 @@
                     const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.getAuthRedirectUrl() });
                     if (error) { window.showNotification('Reset Email Could Not Be Sent', window.friendlyAuthError(error)); return; }
                     window.setPendingConfirmationEmail(email);
-                    window.showNotification('Password Reset Email Sent', `If ${email} is registered, Supabase has sent a password-reset link. Check your inbox and spam/junk folder.`);
+                    window.showNotification('Password Reset Request Submitted', `We submitted the reset request for ${email}. If that address belongs to a Sanctuary account, Supabase will send a password-reset email. Please check inbox and spam/junk. If nothing arrives after a few minutes, the email-delivery settings in Supabase need to be checked.`);
                     return;
                 }
 
@@ -2157,6 +2184,7 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('accountSecurityBtn')?.classList.add('hidden');
+            document.getElementById('authGateOverlay')?.classList.add('hidden');
             window.switchGateMode('signin');
             window.pendingConfirmationEmail = window.getPendingConfirmationEmail();
             if (!SUPABASE_CONFIGURED) {
@@ -2190,6 +2218,9 @@
                     }
                 });
             }
+            // Authentication check is complete; remove the startup screen so the
+            // login box never flashes briefly during a page refresh.
+            document.getElementById('authBootOverlay')?.classList.add('hidden');
             window.renderLibrary();
             window.renderLessonPlanner();
             window.updateMemberCountBadge();
