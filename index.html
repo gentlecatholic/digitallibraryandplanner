@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
+    <!-- SUPABASE SHARED LIBRARY V10 - 2026-09-21 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gentle Catholic Digital Library & Sanctuary</title>
@@ -715,6 +716,12 @@
                     </div>
                 </div>
 
+                <div class="p-4 bg-cream-100 rounded-2xl border border-cream-300 space-y-2">
+                    <label class="block font-bold text-marian-900"><i class="fa-solid fa-image text-tealhalo-700 mr-1.5"></i> Book Cover (optional)</label>
+                    <input type="file" id="formCoverFile" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-marian-800 file:text-white hover:file:bg-marian-900 cursor-pointer">
+                    <p class="text-[10px] text-slate-500">JPEG, PNG, or WebP. The cover will be stored securely in Supabase.</p>
+                </div>
+
                 <div>
                     <label for="formDescription" class="block font-semibold text-slate-700 mb-1">Description & Notes</label>
                     <textarea id="formDescription" rows="3" placeholder="Brief summary of the book..." class="w-full p-2.5 bg-cream-100 border border-slate-300 rounded-xl focus:ring-2 focus:ring-tealhalo-500"></textarea>
@@ -772,13 +779,98 @@
             { id: 'little_flowers', title: 'The Little Flowers of St. Francis', author: 'St. Francis of Assisi', category: 'Lives of Saints', grade: 'Early Years / K-2', description: 'Charming legends and holy stories of St. Francis and his friars preaching to birds and living in holy poverty.', uploader: 'Admin', totalPages: 10 }
         ];
 
+        // ================================================================
+        // SUPABASE LIBRARY DATA
+        // The shared Library now comes from public.books.
+        // localStorage is no longer the source of truth for shared books.
+        // ================================================================
+        window.resources = [];
+
         window.loadResourcesFromStorage = function() {
-            try {
-                const data = localStorage.getItem(LOCAL_RESOURCES_KEY);
-                return data ? JSON.parse(data) : defaultCatholicLibrary;
-            } catch(e) { return defaultCatholicLibrary; }
+            return Array.isArray(window.resources) ? window.resources : [];
         };
-        window.resources = window.loadResourcesFromStorage();
+
+        window.getSignedStorageUrl = async function(bucket, path, expiresIn = 3600) {
+            if (!path || !window.supabaseClient) return '';
+            const { data, error } = await window.supabaseClient.storage.from(bucket).createSignedUrl(path, expiresIn);
+            if (error) {
+                console.warn(`Unable to create signed URL for ${bucket}/${path}`, error);
+                return '';
+            }
+            return data?.signedUrl || '';
+        };
+
+        window.mapSupabaseBook = async function(row) {
+            let pdfBlobUrl = '';
+            let coverUrl = '';
+            if (row.pdf_path) pdfBlobUrl = await window.getSignedStorageUrl('book-pdfs', row.pdf_path);
+            if (row.cover_path) coverUrl = await window.getSignedStorageUrl('book-covers', row.cover_path);
+
+            return {
+                id: row.id,
+                title: row.title || '',
+                subtitle: row.subtitle || '',
+                author: row.author || '',
+                category: row.category || 'Catholic Classics',
+                grade: row.grade_level || 'All Family Ages',
+                description: row.description || '',
+                pdfPath: row.pdf_path || '',
+                coverPath: row.cover_path || '',
+                pdfBlobUrl,
+                pdfUrl: row.original_source_url || '',
+                coverUrl,
+                uploader: row.contributor_name || 'Sanctuary Member',
+                uploaderId: row.contributed_by || '',
+                status: row.status || 'pending',
+                textStatus: row.text_status || '',
+                totalPages: row.total_pages || 15,
+                totalChapters: row.total_chapters || 0,
+                allowReading: row.allow_reading !== false,
+                allowDownload: row.allow_download !== false,
+                allowTts: row.allow_tts !== false,
+                featured: !!row.featured,
+                rightsStatus: row.rights_status || '',
+                licenseName: row.license_name || '',
+                licenseUrl: row.license_url || '',
+                rightsNotes: row.rights_notes || ''
+            };
+        };
+
+        window.loadBooksFromSupabase = async function() {
+            if (!window.supabaseClient || !window.currentProfile?.id) {
+                window.resources = [];
+                window.renderLibrary();
+                return [];
+            }
+
+            const container = document.getElementById('libraryContainer');
+            if (container) {
+                container.innerHTML = `<p class="col-span-full text-center text-slate-400 py-12 bg-white rounded-2xl border border-cream-300"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading the shared Catholic Library...</p>`;
+            }
+
+            const { data, error } = await window.supabaseClient
+                .from('books')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Library load failed:', error);
+                window.resources = [];
+                window.renderLibrary();
+                window.showNotification('Library Could Not Load', error.message);
+                return [];
+            }
+
+            const visibleRows = (data || []).filter(row =>
+                row.status === 'published' ||
+                window.isAdmin ||
+                row.contributed_by === window.currentProfile.id
+            );
+
+            window.resources = await Promise.all(visibleRows.map(window.mapSupabaseBook));
+            window.renderLibrary();
+            return window.resources;
+        };
 
         window.loadThreadsFromStorage = function() {
             try {
@@ -1156,7 +1248,7 @@
             window.applyUserSessionUI();
             document.getElementById('authGateOverlay')?.classList.add('hidden');
             window.setPendingConfirmationEmail('');
-            window.renderLibrary();
+            await window.loadBooksFromSupabase();
             window.renderCommunityThreads();
             return true;
         };
@@ -1603,17 +1695,27 @@
             } catch(e) {}
         };
 
-        window.deleteResource = function(bookId) {
+        window.deleteResource = async function(bookId) {
             if (!window.isAdmin) {
-                window.showNotification("Access Denied", "Only the administrator can delete books from the library.");
+                window.showNotification("Access Denied", "Only the administrator can permanently remove books from the shared library.");
                 return;
             }
-            if (confirm("Are you sure you want to delete this book from the library?")) {
-                window.resources = window.loadResourcesFromStorage().filter(r => r.id !== bookId);
-                localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
-                window.renderLibrary();
-                window.showNotification("Book Deleted", "The book has been successfully removed.");
+            const book = window.resources.find(r => r.id === bookId);
+            if (!book) return;
+            if (!confirm(`Permanently remove "${book.title}" from the shared Library?`)) return;
+
+            const { error } = await window.supabaseClient.from('books').delete().eq('id', bookId);
+            if (error) {
+                window.showNotification("Delete Failed", error.message);
+                return;
             }
+
+            // Clean up stored files after the database record is removed.
+            if (book.pdfPath) await window.supabaseClient.storage.from('book-pdfs').remove([book.pdfPath]);
+            if (book.coverPath) await window.supabaseClient.storage.from('book-covers').remove([book.coverPath]);
+
+            await window.loadBooksFromSupabase();
+            window.showNotification("Book Removed", `"${book.title}" has been removed from the shared Library.`);
         };
 
         window.editResource = function(bookId) {
@@ -1621,8 +1723,7 @@
                 window.showNotification("Access Denied", "Only the administrator can edit library books.");
                 return;
             }
-            const list = window.loadResourcesFromStorage();
-            const book = list.find(r => r.id === bookId);
+            const book = window.resources.find(r => r.id === bookId);
             if (!book) return;
 
             document.getElementById('editBookId').value = book.id;
@@ -1632,39 +1733,38 @@
             document.getElementById('formGrade').value = book.grade || 'All Family Ages';
             document.getElementById('formDescription').value = book.description || '';
             document.getElementById('formPdfLink').value = book.pdfUrl || '';
+            const coverInput = document.getElementById('formCoverFile'); if (coverInput) coverInput.value = '';
 
             document.getElementById('resourceModalHeading').textContent = 'Edit Library Book';
             document.getElementById('resourceSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Update Book';
             document.getElementById('resourceModal')?.classList.remove('hidden');
         };
 
-        window.downloadBookPdf = function(bookId) {
-            const list = window.loadResourcesFromStorage();
-            const book = list.find(r => r.id === bookId);
+        window.downloadBookPdf = async function(bookId) {
+            const book = window.resources.find(r => r.id === bookId);
             if (!book) return;
-
-            if (book.pdfBlobUrl) {
-                const a = document.createElement('a');
-                a.href = book.pdfBlobUrl;
-                a.download = `${(book.title || 'book').replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.showNotification("Downloading PDF", `Initiated download for "${book.title}".`);
+            if (book.allowDownload === false) {
+                window.showNotification("Download Unavailable", "Downloading is not enabled for this title.");
                 return;
             }
 
-            const fullContent = window.getDynamicBookContent(book, 1).join('\n\n');
-            const blob = new Blob([fullContent], { type: 'application/pdf;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
+            let url = book.pdfBlobUrl || book.pdfUrl || '';
+            if (book.pdfPath) {
+                url = await window.getSignedStorageUrl('book-pdfs', book.pdfPath, 120);
+            }
+            if (!url) {
+                window.showNotification("PDF Unavailable", "No downloadable PDF has been attached to this title yet.");
+                return;
+            }
+
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${book.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.download = `${(book.title || 'book').replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-
-            window.showNotification("Downloading PDF", `Successfully initiated download for "${book.title}".`);
         };
 
         window.downloadActiveBookPdf = function() {
@@ -1712,9 +1812,9 @@
         };
 
         window.openBookReader = async function(bookId) {
-            const list = window.loadResourcesFromStorage();
-            const book = list.find(r => r.id === bookId);
+            const book = window.resources.find(r => r.id === bookId);
             if (!book) return;
+            if (book.allowReading === false) { window.showNotification('Reading Unavailable', 'Online reading is not enabled for this title.'); return; }
 
             window.activeReaderBookId = bookId;
             const pageData = window.getPageData(bookId);
@@ -1731,11 +1831,12 @@
             viewer.innerHTML = `<p class="py-4 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading book contents...</p>`;
             document.getElementById('bookReaderModal')?.classList.remove('hidden');
 
-            if (book.pdfBlobUrl && window.pdfjsLib) {
+            const readablePdfUrl = book.pdfBlobUrl || book.pdfUrl || '';
+            if (readablePdfUrl && window.pdfjsLib) {
                 try {
                     let pdfDoc = window.activePdfPagesCache[bookId];
                     if (!pdfDoc) {
-                        const loadingTask = pdfjsLib.getDocument(book.pdfBlobUrl);
+                        const loadingTask = pdfjsLib.getDocument(readablePdfUrl);
                         pdfDoc = await loadingTask.promise;
                         window.activePdfPagesCache[bookId] = pdfDoc;
                     }
@@ -1946,7 +2047,7 @@
                 const isPersonal = window.isInPersonalLibrary(res.id);
                 const pageData = window.getPageData(res.id);
                 const uploaderName = res.uploader || 'Member';
-                const canModify = window.isAdmin || (window.currentLoggedInEmail && res.uploaderEmail === window.currentLoggedInEmail);
+                const canModify = window.isAdmin || (window.currentProfile?.id && res.uploaderId === window.currentProfile.id && res.status !== 'published');
 
                 return `
                     <div class="bg-white rounded-2xl border border-cream-300 p-5 card-shadow flex flex-col justify-between space-y-3 relative">
@@ -1961,6 +2062,7 @@
                             ` : ''}
                         </div>
                         <div class="space-y-2">
+                            ${res.coverUrl ? `<img src="${window.escapeHtml(res.coverUrl)}" alt="Cover of ${window.escapeHtml(res.title)}" class="w-full h-52 object-contain rounded-xl bg-cream-100 border border-cream-200 mb-3">` : ''}
                             <div class="flex items-center justify-between pr-16">
                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-marian-100 text-marian-800">${window.escapeHtml(res.category)}</span>
                                 <button onclick="window.togglePersonalLibrary('${res.id}')" class="p-1 text-slate-300 hover:text-red-500 ${isPersonal ? 'text-red-500' : ''}" title="Toggle Personal Library">
@@ -1978,6 +2080,7 @@
                             </div>
 
                             <p class="text-[11px] text-tealhalo-700 font-semibold pt-1"><i class="fa-solid fa-user-circle mr-1"></i>Added by: <span class="text-marian-900 underline">${window.escapeHtml(uploaderName)}</span></p>
+                            ${res.status !== 'published' ? `<p class="text-[10px] font-bold text-amber-700"><i class="fa-solid fa-clock mr-1"></i>${res.status === 'rejected' ? 'Not approved' : 'Pending administrator review'}</p>` : ''}
                         </div>
                         <div class="pt-2 border-t border-cream-200 flex items-center justify-between">
                             <span class="text-[11px] text-amber-800 font-semibold"><i class="fa-solid fa-bookmark mr-1"></i>Page ${pageData.currentPage}</span>
@@ -2246,8 +2349,9 @@
             document.getElementById('formDescription').value = '';
             document.getElementById('formPdfLink').value = '';
             document.getElementById('formPdfFile').value = '';
+            const coverInput = document.getElementById('formCoverFile'); if (coverInput) coverInput.value = '';
             document.getElementById('resourceModalHeading').textContent = 'Add New Book & Upload PDF';
-            document.getElementById('resourceSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Publish Book';
+            document.getElementById('resourceSubmitBtn').innerHTML = window.isAdmin ? '<i class="fa-solid fa-floppy-disk"></i> Save & Publish Book' : '<i class="fa-solid fa-cloud-arrow-up"></i> Submit Book for Review';
             document.getElementById('resourceModal')?.classList.remove('hidden');
         };
 
@@ -2255,8 +2359,13 @@
             document.getElementById('resourceModal')?.classList.add('hidden');
         };
 
-        window.saveResource = function(e) {
+        window.saveResource = async function(e) {
             e.preventDefault();
+            if (!window.supabaseClient || !window.currentProfile?.id) {
+                window.showNotification('Sign In Required', 'Please sign in before adding a book.');
+                return;
+            }
+
             const editId = document.getElementById('editBookId').value;
             const title = document.getElementById('formTitle').value.trim();
             const author = document.getElementById('formAuthor').value.trim();
@@ -2264,68 +2373,101 @@
             const grade = document.getElementById('formGrade').value;
             const description = document.getElementById('formDescription').value.trim();
             const pdfLinkInput = document.getElementById('formPdfLink').value.trim();
-            const pdfFileInput = document.getElementById('formPdfFile');
+            const pdfFile = document.getElementById('formPdfFile')?.files?.[0] || null;
+            const coverFile = document.getElementById('formCoverFile')?.files?.[0] || null;
+            const submitBtn = document.getElementById('resourceSubmitBtn');
 
-            const finishSave = (pdfBlobUrl = '') => {
-                window.resources = window.loadResourcesFromStorage();
-                
-                if (editId) {
-                    const existing = window.resources.find(r => r.id === editId);
-                    if (existing) {
-                        existing.title = title;
-                        existing.author = author;
-                        existing.category = category;
-                        existing.grade = grade;
-                        existing.description = description;
-                        if (pdfLinkInput) existing.pdfUrl = pdfLinkInput;
-                        if (pdfBlobUrl) existing.pdfBlobUrl = pdfBlobUrl;
-                    }
-                    window.showNotification("Book Updated", `Book "${title}" successfully updated!`);
-                } else {
-                    window.resources.unshift({
-                        id: 'r_' + Date.now(),
-                        title,
-                        author,
-                        category,
-                        grade,
-                        description,
-                        pdfUrl: pdfLinkInput,
-                        pdfBlobUrl: pdfBlobUrl,
-                        uploader: window.currentUserDisplayName,
-                        uploaderEmail: window.currentLoggedInEmail || 'guest',
-                        totalPages: 15
-                    });
-                    window.showNotification("Book Added", `New Catholic book "${title}" successfully published to the library!`);
+            if (!title) {
+                window.showNotification('Book Title Required', 'Please enter the book title.');
+                return;
+            }
+            if (!editId && !pdfFile && !pdfLinkInput) {
+                window.showNotification('PDF Required', 'Please upload a PDF or provide a direct PDF URL.');
+                return;
+            }
+
+            const originalLabel = submitBtn?.innerHTML;
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving to Library...';
+            }
+
+            try {
+                const uid = window.currentProfile.id;
+                const existing = editId ? window.resources.find(r => r.id === editId) : null;
+                let pdfPath = existing?.pdfPath || null;
+                let coverPath = existing?.coverPath || null;
+
+                if (pdfFile) {
+                    if (pdfFile.type !== 'application/pdf') throw new Error('Please choose a PDF file.');
+                    const pdfName = `${uid}/${crypto.randomUUID()}.pdf`;
+                    const { error: pdfError } = await window.supabaseClient.storage
+                        .from('book-pdfs')
+                        .upload(pdfName, pdfFile, { contentType: 'application/pdf', upsert: false });
+                    if (pdfError) throw pdfError;
+                    pdfPath = pdfName;
                 }
 
-                try {
-                    localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
-                } catch (storageError) {
-                    if (window.resources[0]) window.resources[0].pdfBlobUrl = '';
-                    localStorage.setItem(LOCAL_RESOURCES_KEY, JSON.stringify(window.resources));
+                if (coverFile) {
+                    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+                    if (!allowed.includes(coverFile.type)) throw new Error('Book cover must be JPEG, PNG, or WebP.');
+                    const ext = coverFile.type === 'image/png' ? 'png' : coverFile.type === 'image/webp' ? 'webp' : 'jpg';
+                    const coverName = `${uid}/${crypto.randomUUID()}.${ext}`;
+                    const { error: coverError } = await window.supabaseClient.storage
+                        .from('book-covers')
+                        .upload(coverName, coverFile, { contentType: coverFile.type, upsert: false });
+                    if (coverError) throw coverError;
+                    coverPath = coverName;
+                }
+
+                const payload = {
+                    title,
+                    author: author || null,
+                    category,
+                    grade_level: grade,
+                    description: description || null,
+                    pdf_path: pdfPath,
+                    cover_path: coverPath,
+                    original_source_url: pdfLinkInput || existing?.pdfUrl || null,
+                    contributor_name: window.currentUserDisplayName || 'Sanctuary Member',
+                    contributed_by: uid
+                };
+
+                if (!editId) {
+                    payload.status = window.isAdmin ? 'published' : 'pending';
+                    payload.text_status = 'not_extracted';
+                    payload.allow_reading = true;
+                    payload.allow_download = true;
+                    payload.allow_tts = true;
+                    if (window.isAdmin) payload.published_at = new Date().toISOString();
+
+                    const { error } = await window.supabaseClient.from('books').insert(payload);
+                    if (error) throw error;
+
+                    window.showNotification(
+                        window.isAdmin ? 'Book Published' : 'Contribution Received',
+                        window.isAdmin
+                            ? `"${title}" is now in the shared Catholic Library.`
+                            : `"${title}" was uploaded successfully and is waiting for administrator review.`
+                    );
+                } else {
+                    const { error } = await window.supabaseClient.from('books').update(payload).eq('id', editId);
+                    if (error) throw error;
+                    window.showNotification('Book Updated', `"${title}" was updated successfully.`);
                 }
 
                 window.closeResourceModal();
                 window.resetAllFilters();
+                await window.loadBooksFromSupabase();
                 window.switchToTab('library');
-                window.renderLibrary();
-            };
-
-            if (pdfFileInput && pdfFileInput.files && pdfFileInput.files[0]) {
-                const file = pdfFileInput.files[0];
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    finishSave(evt.target.result);
-                };
-                reader.onerror = function() {
-                    finishSave(pdfLinkInput);
-                };
-                reader.readAsDataURL(file);
-            } else if (editId) {
-                const existing = window.loadResourcesFromStorage().find(r => r.id === editId);
-                finishSave(existing ? existing.pdfBlobUrl : pdfLinkInput);
-            } else {
-                finishSave(pdfLinkInput);
+            } catch (err) {
+                console.error('Book save failed:', err);
+                window.showNotification('Book Could Not Be Saved', err?.message || 'Please try again.');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalLabel || '<i class="fa-solid fa-floppy-disk"></i> Save Book';
+                }
             }
         };
 
