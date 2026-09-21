@@ -549,7 +549,7 @@
             <p id="notifyMessage" class="text-xs text-slate-600 leading-relaxed"></p>
             <div id="notifyActionArea"></div>
             <div class="flex items-center justify-center gap-3 pt-2">
-                <button onclick="window.closeNotificationModal()" class="px-6 py-2 rounded-xl bg-marian-800 text-white font-semibold text-xs shadow">OK</button>
+                <button id="notifyOkBtn" type="button" class="px-6 py-2 rounded-xl bg-marian-800 text-white font-semibold text-xs shadow">OK</button>
             </div>
         </div>
     </div>
@@ -792,7 +792,7 @@
             const actionArea = document.getElementById('notifyActionArea');
             if (titleEl) titleEl.textContent = title;
             if (msgEl) msgEl.textContent = msg;
-            if (actionArea) actionArea.innerHTML = actionHTML;
+            if (actionArea) actionArea.innerHTML = actionHTML || '';
             document.getElementById('customNotifyModal')?.classList.remove('hidden');
         };
 
@@ -802,6 +802,38 @@
             const actionArea = document.getElementById('notifyActionArea');
             if (actionArea) actionArea.innerHTML = '';
         };
+
+        // Registration-success dialog uses real event listeners instead of inline onclick
+        // so the controls remain reliable after dynamic HTML is inserted.
+        window.showRegistrationConfirmationDialog = function(email) {
+            const cleanEmail = String(email || '').trim().toLowerCase();
+            window.showNotification(
+                'Registration Successful — Check Your Email',
+                `Your account for ${cleanEmail} was created successfully. We sent a confirmation email to this address. Please click the confirmation link before signing in.`,
+                `<div class="flex flex-col gap-2">
+                    <button id="notifyResendConfirmationBtn" type="button" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold"><i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email</button>
+                    <button id="notifyWrongEmailBtn" type="button" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold"><i class="fa-solid fa-pen mr-1"></i> I Entered the Wrong Email</button>
+                </div>`
+            );
+            const resendBtn = document.getElementById('notifyResendConfirmationBtn');
+            const wrongBtn = document.getElementById('notifyWrongEmailBtn');
+            resendBtn?.addEventListener('click', async function() {
+                if (resendBtn.disabled) return;
+                resendBtn.disabled = true;
+                const original = resendBtn.innerHTML;
+                resendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending…';
+                try { await window.resendConfirmationEmail(cleanEmail); }
+                finally { if (document.body.contains(resendBtn)) { resendBtn.disabled = false; resendBtn.innerHTML = original; } }
+            });
+            wrongBtn?.addEventListener('click', function() {
+                window.openRegistrationForEmail(cleanEmail);
+            });
+        };
+
+        // Bind the permanent OK control once. No inline JavaScript is required.
+        document.getElementById('notifyOkBtn')?.addEventListener('click', function() {
+            window.closeNotificationModal();
+        });
 
         // Authentication is fully handled by Supabase Auth.
         // These legacy helpers are kept only so older UI code does not break;
@@ -1084,7 +1116,8 @@
             const confirmPasswordEl = document.getElementById('gateConfirmPassword');
             if (passwordEl) passwordEl.value = '';
             if (confirmPasswordEl) confirmPasswordEl.value = '';
-            window.showNotification('Review Your Registration', 'Please review your name, parish/diocese, location, children/grades, and especially your email address. Correct anything necessary, confirm the email again, then re-enter your password and submit the registration.');
+            const hint = document.getElementById('gateAccountHint');
+            if (hint) hint.textContent = 'Review and correct your registration details below. Confirm your email again and re-enter your password before submitting.';
         };
 
         window.openForgotForEmail = function(email) {
@@ -1134,6 +1167,21 @@
                 console.error('Resend confirmation error:', err);
                 window.showNotification('Confirmation Email Not Sent', window.friendlyAuthError(err));
             } finally { window.setAuthBusy(false); }
+        };
+
+
+        window.showEmailNotConfirmedDialog = function(email) {
+            const cleanEmail = String(email || '').trim().toLowerCase();
+            window.showNotification(
+                'Email Not Confirmed Yet',
+                `Please open the confirmation email sent to ${cleanEmail} and click the confirmation link before signing in.`,
+                `<div class="flex flex-col gap-2">
+                    <button id="notifyResendConfirmationBtn" type="button" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold"><i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email</button>
+                    <button id="notifyWrongEmailBtn" type="button" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold"><i class="fa-solid fa-pen mr-1"></i> Review / Correct Registration</button>
+                </div>`
+            );
+            document.getElementById('notifyResendConfirmationBtn')?.addEventListener('click', () => window.resendConfirmationEmail(cleanEmail));
+            document.getElementById('notifyWrongEmailBtn')?.addEventListener('click', () => window.openRegistrationForEmail(cleanEmail));
         };
 
         window.handleGateSubmit = async function(e) {
@@ -1223,7 +1271,7 @@
                         if (ok) window.showNotification('Registration Successful', `Welcome, ${momName}! Your Catholic Sanctuary account has been created and you are now signed in.`);
                     } else {
                         window.switchGateMode('signin'); if (emailEl) emailEl.value = email;
-                        window.showNotification('Registration Successful — Check Your Email', `Your account for ${email} was created successfully. We sent a confirmation email to this address. Please click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold"><i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email</button><button type="button" onclick="window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold"><i class="fa-solid fa-pen mr-1"></i> I Entered the Wrong Email</button></div>`);
+                        window.showRegistrationConfirmationDialog(email);
                     }
                     return;
                 }
@@ -1234,7 +1282,7 @@
                     const msg = String(error?.message || '');
                     if (code === 'email_not_confirmed' || /email not confirmed/i.test(msg)) {
                         window.setPendingConfirmationEmail(email);
-                        window.showNotification('Email Not Confirmed Yet', `Please open the confirmation email sent to ${email} and click the confirmation link before signing in.`, `<div class="flex flex-col gap-2"><button type="button" onclick="window.resendConfirmationEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl bg-marian-800 text-white font-semibold"><i class="fa-solid fa-paper-plane mr-1"></i> Resend Confirmation Email</button><button type="button" onclick="window.openRegistrationForEmail(${JSON.stringify(email)})" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-semibold"><i class="fa-solid fa-pen mr-1"></i> Review / Correct Registration</button></div>`);
+                        window.showEmailNotConfirmedDialog(email);
                     } else if (code === 'invalid_credentials' || /invalid login credentials|invalid credentials|email or password/i.test(msg)) {
                         document.getElementById('authGateOverlay')?.classList.remove('hidden');
                         window.switchGateMode('signin');
