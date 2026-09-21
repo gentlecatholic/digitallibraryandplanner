@@ -1351,14 +1351,20 @@
                         }
                         return;
                     }
-                    window.setPendingConfirmationEmail(email);
+                    // FREE MODE: Supabase Confirm email is OFF.
+                    // Supabase may automatically create a session after sign-up.
+                    // End that automatic session so every new member must manually sign in.
                     if (data?.session && data?.user) {
-                        const ok = await window.completeLogin(data.user);
-                        if (ok) window.showNotification('Registration Successful', `Welcome, ${momName}! Your Catholic Sanctuary account has been created and you are now signed in.`);
-                    } else {
-                        if (emailEl) emailEl.value = email;
-                        window.showRegistrationConfirmationDialog(email);
+                        try { await window.supabaseClient.auth.signOut(); } catch (signOutErr) { console.warn(signOutErr); }
                     }
+                    window.setPendingConfirmationEmail('');
+                    window.leaveVerificationScreen('signin');
+                    if (emailEl) emailEl.value = email;
+                    if (passwordEl) passwordEl.value = '';
+                    window.showNotification(
+                        'Registration Successful',
+                        'Your family account has been created successfully. Please sign in using your email address and password.'
+                    );
                     return;
                 }
 
@@ -1390,7 +1396,12 @@
             } finally { window.setAuthBusy(false); }
         };
 
-        window.openResetModal = function(email) { window.openForgotForEmail(email); };
+        window.openResetModal = function(email) {
+            window.showNotification(
+                'Password Help',
+                'Automatic password recovery by email is temporarily unavailable while the Sanctuary uses the free email setup. Please contact the Sanctuary administrator if you cannot access your account.'
+            );
+        };
 
         window.closeAccountSecurityModal = function() { document.getElementById('accountSecurityModal')?.classList.add('hidden'); };
 
@@ -1402,19 +1413,10 @@
         };
 
         window.sendPasswordChangeEmail = async function() {
-            const email = (window.currentLoggedInEmail || '').trim().toLowerCase();
-            if (!email || !(await window.authReady())) return;
-            window.setAuthBusy(false);
-            try {
-                const redirectTo = window.getAuthRedirectUrl();
-                const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
-                if (error) { window.showNotification('Password Change Email Not Sent', window.friendlyAuthError(error)); return; }
-                window.closeAccountSecurityModal();
-                window.showNotification('Password Change Email Sent', `A secure password-change link was sent to ${email}. Open the newest email and follow the link to choose your new password.`);
-            } catch (err) {
-                console.error(err);
-                window.showNotification('Password Change Failed', 'We could not send the password-change email. Please check your connection and try again.');
-            }
+            window.showNotification(
+                'Password Help',
+                'Password-change emails are temporarily unavailable while the Sanctuary uses the free email setup.'
+            );
         };
 
         window.resendConfirmationForCurrentAccount = async function() {
